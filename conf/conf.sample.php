@@ -9,8 +9,8 @@ define('DB_USER', '');
 define('DB_PASSWORD', '');
 define('DB_NAME', '');
 
-define('SITE_DIR', 'http://tools.dicare.org/');
-define('SITE_STATIC_DIR', 'http://tools.dicare.org/static/');
+define('SITE_DIR', 'https://tools.dicare.org/');
+define('SITE_STATIC_DIR', 'https://tools.dicare.org/static/');
 
 define('BATEAUX_SITE_DIR', 'bateaux/');
 
