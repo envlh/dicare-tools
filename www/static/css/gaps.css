@@ -1,0 +1,89 @@
+#content {
+    max-width: 1300px;
+}
+
+label {
+    display: inline-block;
+    width: 180px;
+    padding: 4px;
+    font-weight: bold;
+    text-align: right;
+}
+select {
+    min-width: 420px;
+}
+option, input[type=text], input[type=submit] {
+    padding: 2px 4px;
+}
+input[type=text] {
+    width: 100px;
+}
+input[type=submit] {
+    min-width: 60px;
+    border: 1px solid #CCC;
+    background: #EEE;
+}
+
+table {
+    width: 100%;
+}
+
+tr:hover th.row, tr:hover td {
+    background: #F9F9F9;
+}
+
+td {
+    padding-top: 0;
+    padding-bottom: 0;
+    border-top: 0;
+}
+th {
+    width: 80px;
+    padding: 2px 10px;
+    background: #EEE;
+}
+th.title {
+    width: 150px;
+}
+th.data {
+    text-align: right;
+}
+th.gap {
+    width: auto;
+    padding: 0;
+}
+th.row {
+    width: 150px;
+    max-width: 150px;
+    padding: 0 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+    font-weight: normal;
+    background: #FFF;
+    color: #000;
+}
+th.selected a {
+    text-decoration: underline;
+}
+
+td.data {
+    text-align: right;
+}
+td.gap {
+    text-align: center;
+}
+
+div.female, div.male {
+    height: 22px;
+}
+
+div.female {
+    float: left;
+    background: orange;
+}
+div.male {
+    float: right;
+    background: green;
+}

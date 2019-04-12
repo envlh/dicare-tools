@@ -1,0 +1,7 @@
+Dicare Tools
+Copyright (c) 2016-2019 Envel Le Hir
+
+All files are available under the terms of the GNU Affero General Public License (AGPL). See LICENSE file for details for this license.
+
+This project includes work from third parties:
+* files in /www/static/sorttable/ are Copyright (c) 1997-date Stuart Langridge (MIT license)

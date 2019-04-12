@@ -1,0 +1,197 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body, input, select {
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    background: #FFF;
+}
+
+p, ul, ol, th, td {
+    line-height: 22px;
+}
+pre {
+    line-height: 20px;
+}
+
+h2, h3, p, ul, ol, table, pre {
+    margin: 12px 0;
+}
+h1 {
+    margin: 8px;
+    font-size: 28px;
+}
+h2 {
+    margin-top: 18px;
+    font-size: 20px;
+}
+h3 {
+    margin-top: 18px;
+    font-size: 16px;
+}
+
+ul, ol {
+    margin-left: 32px;
+}
+p + ul {
+    margin-top: -12px;
+}
+li > ul {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+table {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 2px 8px;
+}
+th {
+    background: #EEE;
+}
+td {
+    border-top: 1px solid #DDD;
+}
+tr:hover {
+    background: #F9F9F9;
+}
+
+a {
+    text-decoration: none;
+    color: #369;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+input {
+    padding: 2px 5px;
+    border: 1px solid #CCC;
+    border-radius: 3px;
+}
+input[type=submit] {
+    padding: 2px 10px;
+    background: #EEE;
+}
+input[type=checkbox] {
+    vertical-align: -3px;
+}
+select {
+    border: 1px solid #CCC;
+    border-radius: 3px;
+}
+option {
+    padding: 2px 5px;
+}
+textarea {
+    width: 100%;
+    max-width: 600px;
+    border: 1px solid #CCC;
+}
+
+#header {
+    padding: 4px 8px;
+    background: #369;
+    color: #FFF;
+}
+#header a {
+    color: #FFF;
+}
+
+#menu {
+    padding: 0 32px 12px 32px;
+    background: #369;
+    color: #FFF;
+}
+#menu a {
+    font-weight: bold;
+    color: #FFF;
+}
+
+#content {
+    margin: 16px;
+}
+
+#footer {
+    clear: both;
+    background: #369;
+    color: #FFF;
+}
+#footer p {
+    margin-bottom: 0;
+    padding: 4px;
+}
+#footer a {
+    font-weight: bold;
+    color: #FFF;
+}
+#footer img {
+    vertical-align: middle;
+}
+
+.language {
+    vertical-align: middle;
+    font-family: monospace;
+}
+
+.occupation {
+    color: red;
+}
+
+.stats tr {
+    border-top: 1px solid #CCC;
+}
+.stats th {
+    width: 100px;
+    background: #F9F9F9;
+}
+.stats td {
+    text-align: right;
+}
+.stats th.label {
+    width: 250px;
+}
+.stats th.ratio {
+    width: 200px;
+}
+.stats td.ratio {
+    text-align: left;
+}
+.stats td.label {
+    text-align: left;
+}
+
+.ships tr {
+    border-top: 1px solid #CCC;
+}
+.ships th {
+    background: #F9F9F9;
+}
+.ships td.label {
+    font-weight: bold;
+}
+
+.blob {
+    float: left;
+    max-width: 750px;
+    margin-top: -12px;
+    padding-right: 32px;
+}
+.properties th.data {
+    width: 80px;
+}
+.properties td.data {
+    text-align: right;
+}
+.properties td.label {
+    font-weight: bold;
+}
+.properties img.percent {
+    display: block;
+    height: 2px;
+    float: right;
+}
