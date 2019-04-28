@@ -4,4 +4,63 @@ Copyright (c) 2016-2019 Envel Le Hir
 All files are available under the terms of the GNU Affero General Public License (AGPL). See LICENSE file for details for this license.
 
 This project includes work from third parties:
-* files in /www/static/sorttable/ are Copyright (c) 1997-date Stuart Langridge (MIT license)
+
+Files in /www/static/sorttable/ are Copyright (c) 1997-date Stuart Langridge (MIT license)
+
+Wikimedia logos:
+* /www/static/img/logo-commons.png
+  public domain
+  https://commons.wikimedia.org/wiki/File:Notification-icon-Commons-logo.svg
+* /www/static/img/logo-incubator.png
+  CC BY-SA 3.0
+  Copyright (c) User:Jdforrester (WMF), User:NielsF
+  https://commons.wikimedia.org/wiki/File:Notification-icon-Incubator-logo.svg
+* /www/static/img/logo-mediawiki.png
+  CC BY-SA 2.5
+  Copyright (c) User:Jdforrester (WMF), User:DieBuche, User:Poznaniak
+  https://commons.wikimedia.org/wiki/File:Notification-icon-MediaWiki-logo.svg
+* /www/static/img/logo-meta.png
+  public domain
+  https://commons.wikimedia.org/wiki/File:Notification-icon-Meta-logo.svg
+* /www/static/img/logo-wikibooks.png
+  CC BY-SA 3.0
+  Copyright (c) User:Jdforrester (WMF), User:Ramac, User:Bastique
+  https://commons.wikimedia.org/wiki/File:Notification-icon-Wikibooks-logo.svg
+* /www/static/img/logo-wikidata.png
+  public domain
+  https://commons.wikimedia.org/wiki/File:Notification-icon-Wikidata-logo.svg
+* /www/static/img/logo-wikimania.png
+  CC BY-SA 3.0
+  Copyright (c) User:Tlogmer
+  https://commons.wikimedia.org/wiki/File:Wikimania.svg
+* /www/static/img/logo-wikinews.png
+  CC BY-SA 3.0
+  Copyright (c) User:Jdforrester (WMF), User:Time3000, User:Simon, User:NGerda, User:David Vasquez
+  https://commons.wikimedia.org/wiki/File:Notification-icon-Wikinews-logo.svg
+* /www/static/img/logo-wikipedia.png
+  CC BY-SA 3.0
+  Copyright (c) User:Nohat, User:Paullusmagnus
+  https://commons.wikimedia.org/wiki/File:Wikipedia-logo.png
+* /www/static/img/logo-wikiquote.png
+  public domain
+  https://commons.wikimedia.org/wiki/File:Notification-icon-Wikiquote.svg
+* /www/static/img/logo-wikisource.png
+  CC BY-SA 3.0
+  Copyright (c) Jdforrester (WMF), Rei-artur, Nicholas Moreau
+  https://commons.wikimedia.org/wiki/File:Notification-icon-Wikisource-logo.svg
+* /www/static/img/logo-wikispecies.png
+  CC BY-SA 3.0
+  Copyright (c) User:Jdforrester (WMF), User:Lycaon
+  https://commons.wikimedia.org/wiki/File:Notification-icon-Wikispecies-logo.svg
+* /www/static/img/logo-wikiversity.png
+  CC BY-SA 3.0
+  Copyright (c) User:Jdforrester, User:verdy_p, User:Snorky
+  https://commons.wikimedia.org/wiki/File:Notification-icon-Wikiversity-logo.svg
+* /www/static/img/logo-wikivoyage.png
+  CC BY-SA 3.0
+  Copyright (c) User:Jdforrester (WMF), User:AleXXw, User:Danapit
+  https://commons.wikimedia.org/wiki/File:Notification-icon-Wikivoyage-logo.svg
+* /www/static/img/logo-wiktionary.png
+  CC BY-SA 3.0
+  Copyright (c) User:Jdforrester (WMF), User:Az1568
+  https://commons.wikimedia.org/wiki/File:Notification-icon-Wiktionary-logo.svg

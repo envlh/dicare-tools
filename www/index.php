@@ -14,6 +14,7 @@ require '../inc/header.inc.php';
 <ul>
 <li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.TRANSLATHON_SITE_DIR; ?>">Transl-a-thon</a></strong>: find items needing to be translated in Wikidata</li>
 <li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.PROPERTIES_SITE_DIR; ?>">[Wikidata] Related Properties</a></strong>: explore Wikidata properties and their related siblings</li>
+<li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.PROJECTS_SITE_DIR; ?>">[Wikimedia] Related Projects</a></strong>: find which projects are the closest to each other, given their sitelinks usage</li>
 <li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.DIFF_SITE_DIR; ?>">Wikidata Diff</a></strong>: compare the properties of two Wikidata items</li>
 <li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.DD_SITE_DIR; ?>">Dedicated Dashboard</a></strong>: another tool to improve the data quality in Wikidata</li>
 <li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.BNF_SITE_DIR; ?>">BnF To Wikidata</a></strong>: import sourced data from BnF into Wikidata</li>

@@ -181,16 +181,20 @@ textarea {
     margin-top: -12px;
     padding-right: 32px;
 }
-.properties th.data {
+.p th.data {
     width: 80px;
 }
-.properties td.data {
+.p td.data {
     text-align: right;
 }
-.properties td.label {
+.p td.label {
     font-weight: bold;
 }
-.properties img.percent {
+.p img.logo {
+    height: 18px;
+    vertical-align: text-bottom;
+}
+.p img.percent {
     display: block;
     height: 2px;
     float: right;

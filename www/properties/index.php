@@ -48,13 +48,13 @@ function properties_filter_form($types, $property, $selection) {
     }
     echo 'Display properties of the following types:&nbsp;&nbsp;';
     foreach ($types as $type) {
-        echo '<input type="checkbox" id="type_'.htmlentities($type).'" name="type[]" value="'.htmlentities($type).'" ';
+        echo '<span style="white-space: nowrap;"><input type="checkbox" id="type_'.htmlentities($type).'" name="type[]" value="'.htmlentities($type).'" ';
         if (empty($selection) || in_array($type, $selection)) {
             echo ' checked="checked"';
         }
-        echo ' /> <label for="type_'.htmlentities($type).'">'.htmlentities($type).'</label>&nbsp;&nbsp;';
+        echo ' /> <label for="type_'.htmlentities($type).'">'.htmlentities($type).'</label></span>&nbsp; ';
     }
-    echo ' <input type="submit" value="Filter" /></p>';
+    echo '<input type="submit" value="Filter" /></p>';
 }
 
 if ($http_404) {
@@ -79,7 +79,7 @@ properties_filter_form($types, $property, $selection);
 
 $max = null;
 echo '<div class="blob"><h2 id="intersection_cardinality">Closest properties by cardinality of intersection</h2>
-<table class="properties"><tr><th class="data">ID</th><th>Label</th><th class="data">Intersection cardinality</th><th class="data">Jaccard index</th></tr>';
+<table class="p"><tr><th class="data">ID</th><th>Label</th><th class="data">Intersection cardinality</th><th class="data">Jaccard index</th></tr>';
 $res = db::query('SELECT `properties`.`propertyB`, `pB`.`label` AS `labelB`, `properties`.`intersection_cardinality`, `properties`.`jaccard_index` FROM `properties`, `property` `pB` WHERE `properties`.`propertyA` = '.$property->id.' AND `properties`.`propertyB` = `pB`.`id`'.(!empty($selectionSQL) ? ' AND `pB`.`type` '.$selectionSQL : '').' ORDER BY `properties`.`intersection_cardinality` DESC, `properties`.`jaccard_index` DESC, `properties`.`propertyB` ASC LIMIT 50');
 while ($row = $res->fetch_object()) {
     if ($max === null): $max = $row->intersection_cardinality; endif;
@@ -94,7 +94,7 @@ echo '</table></div>';
 
 // $max from previous table
 echo '<div class="blob"><h2 id="jaccard_index">Closest properties by Jaccard index</h2>
-<table class="properties"><th class="data">ID</th><th>Label</th><th class="data">Intersection cardinality</th><th class="data">Jaccard index</th></tr>';
+<table class="p"><th class="data">ID</th><th>Label</th><th class="data">Intersection cardinality</th><th class="data">Jaccard index</th></tr>';
 $res = db::query('SELECT `properties`.`propertyB`, `pB`.`label` AS `labelB`, `properties`.`intersection_cardinality`, `properties`.`jaccard_index` FROM `properties`, `property` `pB` WHERE `properties`.`propertyA` = '.$property->id.' AND `properties`.`propertyB` = `pB`.`id`'.(!empty($selectionSQL) ? ' AND `pB`.`type` '.$selectionSQL : '').' ORDER BY `properties`.`jaccard_index` DESC, `properties`.`intersection_cardinality` DESC, `properties`.`propertyB` ASC LIMIT 50');
 while ($row = $res->fetch_object()) {
     echo '<tr>
@@ -117,7 +117,7 @@ properties_filter_form($types, $property, $selection);
 
 $max = null;
 echo '<h2 id="most_used">Most used properties</h2>
-<table class="properties"><tr><th class="data">ID</th><th>Label</th><th class="data">Cardinality</th></tr>';
+<table class="p"><tr><th class="data">ID</th><th>Label</th><th class="data">Cardinality</th></tr>';
 $res = db::query('SELECT `id`, `label`, `cardinality` FROM `property`'.(!empty($selectionSQL) ? ' WHERE `type` '.$selectionSQL : '').' ORDER BY `cardinality` DESC LIMIT 50');
 while ($row = $res->fetch_object()) {
     if ($max === null): $max = $row->cardinality; endif;
@@ -131,7 +131,7 @@ echo '</table>';
 
 $max = null;
 echo '<h2 id="intersection_cardinality">Closest properties by cardinality of intersection</h2>
-<table class="properties"><tr><th class="data">ID</th><th>Label</th><th class="data">ID</th><th>Label</th><th class="data">Intersection cardinality</th><th class="data">Jaccard index</th></tr>';
+<table class="p"><tr><th class="data">ID</th><th>Label</th><th class="data">ID</th><th>Label</th><th class="data">Intersection cardinality</th><th class="data">Jaccard index</th></tr>';
 $res = db::query('SELECT `properties`.`propertyA`, `pA`.`label` AS `labelA`, `properties`.`propertyB`, `pB`.`label` AS `labelB`, `properties`.`intersection_cardinality`, `properties`.`jaccard_index` FROM `properties`, `property` `pA`, `property` `pB` WHERE `properties`.`propertyA` = `pA`.`id` AND `properties`.`propertyB` = `pB`.`id` AND `properties`.`propertyA` < `properties`.`propertyB`'.(!empty($selectionSQL) ? ' AND `pA`.`type` '.$selectionSQL.' AND `pB`.`type` '.$selectionSQL : '').' ORDER BY `properties`.`intersection_cardinality` DESC, `properties`.`jaccard_index` DESC, `properties`.`propertyA` ASC, `properties`.`propertyB` ASC LIMIT 50');
 while ($row = $res->fetch_object()) {
     if ($max === null): $max = $row->intersection_cardinality; endif;
@@ -148,7 +148,7 @@ echo '</table>';
 
 // $max from previous table
 echo '<h2 id="jaccard_index">Closest properties by Jaccard index</h2>
-<table class="properties"><tr><th class="data">ID</th><th>Label</th><th class="data">ID</th><th>Label</th><th class="data">Intersection cardinality</th><th class="data">Jaccard index</th></tr>';
+<table class="p"><tr><th class="data">ID</th><th>Label</th><th class="data">ID</th><th>Label</th><th class="data">Intersection cardinality</th><th class="data">Jaccard index</th></tr>';
 $res = db::query('SELECT `properties`.`propertyA`, `pA`.`label` AS `labelA`, `properties`.`propertyB`, `pB`.`label` AS `labelB`, `properties`.`intersection_cardinality`, `properties`.`jaccard_index` FROM `properties`, `property` `pA`, `property` `pB` WHERE `properties`.`propertyA` = `pA`.`id` AND `properties`.`propertyB` = `pB`.`id` AND `properties`.`propertyA` < `properties`.`propertyB`'.(!empty($selectionSQL) ? ' AND `pA`.`type` '.$selectionSQL.' AND `pB`.`type` '.$selectionSQL : '').' ORDER BY `properties`.`jaccard_index` DESC, `properties`.`intersection_cardinality` DESC, `properties`.`propertyA` ASC, `properties`.`propertyB` ASC LIMIT 50');
 while ($row = $res->fetch_object()) {
     echo '<tr>
@@ -164,8 +164,8 @@ echo '</table>';
 
 echo '<h2 id="download">Downloads</h2>
 <ul>
-    <li><a href="'.SITE_DIR.PROPERTIES_SITE_DIR.'data/properties_'.htmlentities(parameter::get('properties_dump')).'.csv">All Wikidata properties with their cardinalities</a> (CSV, about 150 KB)</li>
-    <li><a href="'.SITE_DIR.PROPERTIES_SITE_DIR.'data/relations_'.htmlentities(parameter::get('properties_dump')).'.csv">All relations between Wikidata properties with their intersection cardinalities and Jaccard indexes</a> (CSV, about 25 MB)</li>
+    <li><a href="'.SITE_DIR.PROPERTIES_SITE_DIR.'data/properties_'.htmlentities(parameter::get('properties_dump')).'.csv">All Wikidata properties with their cardinalities</a> (CSV file)</li>
+    <li><a href="'.SITE_DIR.PROPERTIES_SITE_DIR.'data/properties_relations_'.htmlentities(parameter::get('properties_dump')).'.csv">All relations between Wikidata properties with their intersection cardinalities and Jaccard indexes</a> (CSV file)</li>
 </ul>';
 
 }
@@ -174,7 +174,5 @@ else {
 }
 
 require '../../inc/footer.inc.php';
-
-// blue iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mM0Tpv5HwAEOQIz8kcbTwAAAABJRU5ErkJggg==
 
 ?>

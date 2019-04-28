@@ -46,7 +46,7 @@ $res = db::query('SELECT `propertyA`, `propertyB`, `intersection_cardinality`, `
 while ($row = $res->fetch_object()) {
     $data .= 'P'.$row->propertyA.',P'.$row->propertyB.','.$row->intersection_cardinality.','.$row->jaccard_index."\n";
 }
-file_put_contents('../www/properties/data/relations_'.$dump.'.csv', $data);
+file_put_contents('../www/properties/data/properties_relations_'.$dump.'.csv', $data);
 
 # commit
 

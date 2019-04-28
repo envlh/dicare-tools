@@ -25,6 +25,7 @@ define('DIFF_SITE_DIR', 'wikidata-diff/');
 define('NOMS_SITE_DIR', 'noms/');
 define('NOMS_LANG_FALLBACK', 'en de es it nl br ca');
 
+define('PROJECTS_SITE_DIR', 'projects/');
 define('PROPERTIES_SITE_DIR', 'properties/');
 
 define('TRANSLATHON_SITE_DIR', 'translathon/');
