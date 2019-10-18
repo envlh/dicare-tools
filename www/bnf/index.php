@@ -143,19 +143,24 @@ WHERE {
         // bnf id
         echo 'LAST'."\t".'P268'."\t".'"'.$bnfId.'"'."\t".$source."\n";
         // other ids
-        $res = bnf::query('SELECT ?value WHERE { <http://data.bnf.fr/ark:/12148/cb'.$bnfId.'> <http://www.w3.org/2004/02/skos/core#exactMatch> ?value }')->results->bindings;
+        //$res = bnf::query('SELECT ?value WHERE { <http://data.bnf.fr/ark:/12148/cb'.$bnfId.'> <http://www.w3.org/2004/02/skos/core#exactMatch> ?value }')->results->bindings;
+        $res = bnf::query('SELECT ?value WHERE {
+  { SELECT ?value WHERE { <http://data.bnf.fr/ark:/12148/cb'.$bnfId.'#about> <http://www.w3.org/2002/07/owl#sameAs> ?value } }
+  UNION
+  { SELECT ?value WHERE { <http://data.bnf.fr/ark:/12148/cb'.$bnfId.'> <http://isni.org/ontology#identifierValid> ?isni . BIND (CONCAT("http://isni.org/isni/", ?isni) AS ?value) } }
+}')->results->bindings;
         foreach ($res as $value) {
-            $uri = $value->value->value;
+            $uri = trim($value->value->value);
             // P213: ISNI ID
-            if (preg_match('@^http://isni.org/isni/(\d{15}[0-9X])@', $uri, $match)) {
+            if (preg_match('@^http://isni.org/isni/(\d{15}[0-9X])$@', $uri, $match)) {
                 echo 'LAST'."\t".'P213'."\t".'"'.trim(chunk_split($match[1], 4, ' ')).'"'.$source."\n";
             }
             // P214: VIAF ID
-            elseif (preg_match('@^http://viaf\.org/viaf/(\d+)/$@', $uri, $match)) {
+            elseif (preg_match('@^http://viaf\.org/viaf/(\d+)$@', $uri, $match)) {
                 echo 'LAST'."\t".'P214'."\t".'"'.$match[1].'"'.$source."\n";
             }
             // P269: IDRef / SUDOC
-            elseif (preg_match('@^http://www\.idref\.fr/(\d{8}[\dX])$@', $uri, $match)) {
+            elseif (preg_match('@^http://www\.idref\.fr/(\d{8}[\dX])/id$@', $uri, $match)) {
                 echo 'LAST'."\t".'P269'."\t".'"'.$match[1].'"'.$source."\n";
             }
             // P434: MusicBrainz artist ID
@@ -165,6 +170,10 @@ WHERE {
             // P3599: archival creator authority record at the Archives nationales
             elseif (preg_match('@^https://www\.siv\.archives-nationales.culture\.gouv\.fr/siv/NP/(FRAN_NP_\d{6})$@', $uri, $match)) {
                 echo 'LAST'."\t".'P3599'."\t".'"'.$match[1].'"'.$source."\n";
+            }
+            // bnf
+            elseif (preg_match('@^http://data\.bnf\.fr/@', $uri)) {
+                // nothing
             }
             // dbpedia
             elseif (preg_match('@^http://fr\.dbpedia\.org/@', $uri)) {
@@ -180,7 +189,7 @@ WHERE {
             }
             // unknown
             else {
-                $warnings[] = 'Unknown URI: '.htmlentities($uri);
+                $warnings[] = 'Unknown URI: <'.htmlentities($uri).'>';
             }
         }
         
@@ -189,7 +198,7 @@ WHERE {
         if (!empty($warnings)) {
             echo '<p><strong style="color: red;">Warning'.(count($warnings) > 1 ? 's' : '').':</strong></p><ul>';
             foreach ($warnings as $warning) {
-                echo '<li>'.$warning.'</li>';
+                echo '<li>'.htmlentities($warning).'</li>';
             }
             echo '</ul>';
         }
