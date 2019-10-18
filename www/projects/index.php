@@ -107,7 +107,7 @@ echo '</table></div>';
 }
 elseif (empty($_GET['project'])) {
 
-echo '<p>The tool <strong><em>[Wikidata] Related projects</em></strong> provides statistics about Wikimedia projects and the relations between them, using the number of sitelinks they have in common.</p><p>As of <strong>'.htmlentities(parameter::get('projects_dump')).'</strong>, Wikimedia counts <strong>'.number_format(db::query('SELECT COUNT(*) AS `count` FROM `project`')->fetch_object()->count).'</strong> projects with sitelinks stored on Wikidata.</p>';
+echo '<p>The tool <strong><em>[Wikimedia] Related projects</em></strong> provides statistics about Wikimedia projects and the relations between them, using the number of sitelinks they have in common.</p><p>As of <strong>'.htmlentities(parameter::get('projects_dump')).'</strong>, Wikimedia counts <strong>'.number_format(db::query('SELECT COUNT(*) AS `count` FROM `project`')->fetch_object()->count).'</strong> projects with sitelinks stored on Wikidata.</p>';
 
 echo '<p><a href="#most_used">Projects with the most sitelinks</a> | Closest projects: <a href="#intersection_cardinality">by cardinality of intersection</a>, <a href="#jaccard_index">by Jaccard index</a> | <a href="#download">Downloads</a></p>';
 
