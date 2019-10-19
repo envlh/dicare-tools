@@ -69,7 +69,7 @@ parameter::set('projects_dump', $dump);
 db::query('DELETE FROM `project`');
 db::query('DELETE FROM `projects`');
 
-$projects = wdqs::query('SELECT ?item ?label ?code (GROUP_CONCAT(DISTINCT ?instanceOf) AS ?instanceOf) (GROUP_CONCAT(DISTINCT ?url) AS ?url) { ?item wdt:P31 ?instanceOf ; wdt:P856 ?url ; wdt:P1800 ?code ; rdfs:label ?label . FILTER(LANG(?label) = "en") . } GROUP BY ?item ?label ?code', 0);
+$projects = wdqs::query('SELECT ?item ?label ?code (GROUP_CONCAT(DISTINCT ?instanceOf_) AS ?instanceOf) (GROUP_CONCAT(DISTINCT ?url_) AS ?url) { ?item wdt:P31 ?instanceOf_ ; wdt:P856 ?url_ ; wdt:P1800 ?code ; rdfs:label ?label . FILTER(LANG(?label) = "en") . } GROUP BY ?item ?label ?code', 0);
 foreach ($projects->results->bindings as $project) {
     $project_code = $project->code->value;
     $res = db::query('SELECT `cardinality` FROM `import_project` WHERE `code` = \''.db::sec($project_code).'\'');
