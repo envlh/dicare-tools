@@ -56,10 +56,15 @@ if (!empty($_POST['input'])) {
         
         $warnings = array();
         
+        $qid = null;
+        
         $res = wdqs::query('SELECT ?item { ?item wdt:P268 \''.$bnfId.'\' } LIMIT 1')->results->bindings;
         if (count($res) >= 1) {
-            $id = substr($res[0]->item->value, 31);
-            echo '<p><strong style="color: red;">Warning: there is already one or more Wikidata items with this BnF id (<a href="https://www.wikidata.org/wiki/'.$id.'">'.$id.'</a>).</strong></p>';
+            $qid = substr($res[0]->item->value, 31);
+            echo '<p><strong style="color: red;">Warning: there is already one or more Wikidata items with this BnF id (<a href="https://www.wikidata.org/wiki/'.$qid.'">'.$qid.'</a>).</strong></p>';
+        }
+        else {
+            $qid = 'LAST';
         }
         
         $res = bnf::query('SELECT ?page ?label ?type ?gender ?birth ?death ?country
@@ -85,33 +90,37 @@ WHERE {
         
         echo '<p>BnF id: '.$bnfId.' [<a href="'.htmlentities($page).'">data</a>, <a href="https://catalogue.bnf.fr/ark:/12148/cb'.$bnfId.'">catalogue</a>].';
         
-        echo '<p><textarea rows="20" style="width: 100%; max-width: 100%;">CREATE'."\n";
+        echo '<p><textarea rows="20" style="width: 100%; max-width: 100%;">';
+        if ($qid == 'LAST') {
+            echo 'CREATE';
+        }
+        echo "\n";
         
         $source = "\t".'S248'."\t".'Q15222191'."\t".'S268'."\t".'"'.$bnfId.'"'."\t".'S813'."\t".'+'.date('Y-m-d').'T00:00:00Z/11'."\t".'S854'."\t".'"https://catalogue.bnf.fr/ark:/12148/cb'.$bnfId.'"';
         
         // labels
         if (!empty($label)) {
             $label = trim(preg_replace('/(.*)\(.*\)/', '$1', $label));
-            echo 'LAST'."\t".'Lfr'."\t".'"'.$label.'"'."\n";
-            echo 'LAST'."\t".'Len'."\t".'"'.$label.'"'."\n";
+            echo $qid."\t".'Lfr'."\t".'"'.$label.'"'."\n";
+            echo $qid."\t".'Len'."\t".'"'.$label.'"'."\n";
         }
         // human
         if (!empty($type) && ($type === 'http://xmlns.com/foaf/0.1/Person')) {
-            echo 'LAST'."\t".'P31'."\t".'Q5'.$source."\n";
+            echo $qid."\t".'P31'."\t".'Q5'.$source."\n";
         } else {
             $warnings[] = 'Are you sure that the URL you provided is about a human (and not about a work)?';
         }
         // gender
         if (!empty($gender)) {
-            echo 'LAST'."\t".'P21'."\t".($gender == 'male' ? 'Q6581097' : 'Q6581072').$source."\n";
+            echo $qid."\t".'P21'."\t".($gender == 'male' ? 'Q6581097' : 'Q6581072').$source."\n";
         }
         // date of birth
         if (!empty($birth)) {
-            echo 'LAST'."\t".'P569'."\t".$birth.$source."\n";
+            echo $qid."\t".'P569'."\t".$birth.$source."\n";
         }
         // date of death
         if (!empty($death)) {
-            echo 'LAST'."\t".'P570'."\t".$death.$source."\n";
+            echo $qid."\t".'P570'."\t".$death.$source."\n";
         }
         // country
         if (!empty($country)) {
@@ -121,7 +130,7 @@ WHERE {
                 if (count($wd_res) === 0) {
                     $warnings[] = 'Unknwon MARC vocabulary ID "countries/'.htmlentities($country_code).'" in Wikidata.';
                 } elseif (count($wd_res) === 1) {
-                    echo 'LAST'."\t".'P27'."\t".substr($wd_res[0]->item->value, 31).$source."\n";
+                    echo $qid."\t".'P27'."\t".substr($wd_res[0]->item->value, 31).$source."\n";
                 } else {
                     $warnings[] = 'MARC vocabulary ID "countries/'.htmlentities($country_code).'" is used in several Wikidata items.';
                 }
@@ -135,13 +144,13 @@ WHERE {
             if (count($wd_res) === 0) {
                 $warnings[] = 'Unknwon ISO 639-2 code "'.htmlentities($country_code).'" in Wikidata.';
             } elseif (count($wd_res) === 1) {
-                echo 'LAST'."\t".'P1412'."\t".substr($wd_res[0]->item->value, 31).$source."\n";
+                echo $qid."\t".'P1412'."\t".substr($wd_res[0]->item->value, 31).$source."\n";
             } else {
                 $warnings[] = 'ISO 639-2 code "'.htmlentities($lang).'" is used in several Wikidata items.';
             }
         }
         // bnf id
-        echo 'LAST'."\t".'P268'."\t".'"'.$bnfId.'"'."\t".$source."\n";
+        echo $qid."\t".'P268'."\t".'"'.$bnfId.'"'."\t".$source."\n";
         // other ids
         //$res = bnf::query('SELECT ?value WHERE { <http://data.bnf.fr/ark:/12148/cb'.$bnfId.'> <http://www.w3.org/2004/02/skos/core#exactMatch> ?value }')->results->bindings;
         $res = bnf::query('SELECT ?value WHERE {
@@ -153,23 +162,23 @@ WHERE {
             $uri = trim($value->value->value);
             // P213: ISNI ID
             if (preg_match('@^http://isni.org/isni/(\d{15}[0-9X])$@', $uri, $match)) {
-                echo 'LAST'."\t".'P213'."\t".'"'.trim(chunk_split($match[1], 4, ' ')).'"'.$source."\n";
+                echo $qid."\t".'P213'."\t".'"'.trim(chunk_split($match[1], 4, ' ')).'"'.$source."\n";
             }
             // P214: VIAF ID
             elseif (preg_match('@^http://viaf\.org/viaf/(\d+)$@', $uri, $match)) {
-                echo 'LAST'."\t".'P214'."\t".'"'.$match[1].'"'.$source."\n";
+                echo $qid."\t".'P214'."\t".'"'.$match[1].'"'.$source."\n";
             }
             // P269: IDRef / SUDOC
             elseif (preg_match('@^http://www\.idref\.fr/(\d{8}[\dX])/id$@', $uri, $match)) {
-                echo 'LAST'."\t".'P269'."\t".'"'.$match[1].'"'.$source."\n";
+                echo $qid."\t".'P269'."\t".'"'.$match[1].'"'.$source."\n";
             }
             // P434: MusicBrainz artist ID
             elseif (preg_match('@^https://musicbrainz\.org/artist/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$@', $uri, $match)) {
-                echo 'LAST'."\t".'P434'."\t".'"'.$match[1].'"'.$source."\n";
+                echo $qid."\t".'P434'."\t".'"'.$match[1].'"'.$source."\n";
             }
             // P3599: archival creator authority record at the Archives nationales
             elseif (preg_match('@^https://www\.siv\.archives-nationales.culture\.gouv\.fr/siv/NP/(FRAN_NP_\d{6})$@', $uri, $match)) {
-                echo 'LAST'."\t".'P3599'."\t".'"'.$match[1].'"'.$source."\n";
+                echo $qid."\t".'P3599'."\t".'"'.$match[1].'"'.$source."\n";
             }
             // bnf
             elseif (preg_match('@^http://data\.bnf\.fr/@', $uri)) {
