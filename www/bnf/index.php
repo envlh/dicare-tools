@@ -58,7 +58,7 @@ if (!empty($_POST['input'])) {
         
         $qid = null;
         
-        $res = wdqs::query('SELECT ?item { ?item wdt:P268 \''.$bnfId.'\' } LIMIT 1')->results->bindings;
+        $res = wdqs::query('SELECT ?item { ?item wdt:P268 \''.$bnfId.'\' } LIMIT 1', 300)->results->bindings;
         if (count($res) >= 1) {
             $qid = substr($res[0]->item->value, 31);
             echo '<p><strong style="color: red;">Warning: there is already one or more Wikidata items with this BnF id (<a href="https://www.wikidata.org/wiki/'.$qid.'">'.$qid.'</a>).</strong></p>';
