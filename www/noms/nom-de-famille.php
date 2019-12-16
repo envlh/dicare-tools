@@ -63,20 +63,20 @@ SELECT ?nameLabel WHERE {
 
     $query = '
 SELECT ?person
-(GROUP_CONCAT(DISTINCT ?personLabel ; separator = ",") AS ?personLabel)
-(GROUP_CONCAT(DISTINCT ?birthname ; separator = ",") AS ?birthname)
-(GROUP_CONCAT(DISTINCT ?pseudo ; separator = ",") AS ?pseudo)
-(GROUP_CONCAT(DISTINCT ?alias ; separator = ",") AS ?alias)
+(GROUP_CONCAT(DISTINCT ?personLabel_ ; separator = ",") AS ?personLabel)
+(GROUP_CONCAT(DISTINCT ?birthname_ ; separator = ",") AS ?birthname)
+(GROUP_CONCAT(DISTINCT ?pseudo_ ; separator = ",") AS ?pseudo)
+(GROUP_CONCAT(DISTINCT ?alias_ ; separator = ",") AS ?alias)
 WHERE {
     ?person wdt:P31 wd:Q5 .
     ?person wdt:P27 ?nation .
     FILTER ('.implode(' || ', $countriesConditions).')
     FILTER NOT EXISTS { ?person wdt:P734 ?anything }
-    ?person rdfs:label ?personLabel
-    FILTER (LANG(?personLabel) = "fr" && STRENDS(?personLabel, " '.$name.'"))
-    OPTIONAL { ?person wdt:P1477 ?birthname . }
-    OPTIONAL { ?person wdt:P742 ?pseudo . }
-    OPTIONAL { ?person wdt:P1449 ?alias . }
+    ?person rdfs:label ?personLabel_
+    FILTER (LANG(?personLabel_) = "fr" && STRENDS(?personLabel_, " '.$name.'"))
+    OPTIONAL { ?person wdt:P1477 ?birthname_ . }
+    OPTIONAL { ?person wdt:P742 ?pseudo_ . }
+    OPTIONAL { ?person wdt:P1449 ?alias_ . }
 }
 GROUP BY ?person
 ORDER BY ?personLabel
