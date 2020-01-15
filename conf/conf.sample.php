@@ -30,4 +30,10 @@ define('PROPERTIES_SITE_DIR', 'properties/');
 
 define('TRANSLATHON_SITE_DIR', 'translathon/');
 
+# Twitter API
+define('TWITTER_CONSUMER_KEY', '');
+define('TWITTER_CONSUMER_SECRET', '');
+define('TWITTER_ACCESS_TOKEN', '');
+define('TWITTER_ACCESS_TOKEN_SECRET', '');
+
 ?>
