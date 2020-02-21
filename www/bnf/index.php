@@ -39,7 +39,7 @@ function date2qs($date) {
 
 if (!empty($_POST['input'])) {
     
-    if (preg_match('@(\d{8}[0-9bcdfghjkmnpqrstvwxz])$@', $_POST['input'], $match)) {
+    if (preg_match('@(\d{8}[0-9bcdfghjkmnpqrstvwxz])@', $_POST['input'], $match)) {
         $bnfId = $match[1];
     }
     elseif (preg_match('@^https://data\.bnf\.fr/([a-z]+/)?[0-9]+/[a-z0-9_-]+/$@', $_POST['input'])) {
@@ -150,7 +150,7 @@ WHERE {
             }
         }
         // bnf id
-        echo $qid."\t".'P268'."\t".'"'.$bnfId.'"'."\t".$source."\n";
+        echo $qid."\t".'P268'."\t".'"'.$bnfId.'"'.$source."\n";
         // other ids
         //$res = bnf::query('SELECT ?value WHERE { <http://data.bnf.fr/ark:/12148/cb'.$bnfId.'> <http://www.w3.org/2004/02/skos/core#exactMatch> ?value }')->results->bindings;
         $res = bnf::query('SELECT ?value WHERE {

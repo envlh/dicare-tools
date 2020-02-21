@@ -15,6 +15,7 @@ define('SITE_STATIC_DIR', 'https://tools.dicare.org/static/');
 define('BATEAUX_SITE_DIR', 'bateaux/');
 
 define('BNF_SITE_DIR', 'bnf/');
+define('IDREF_SITE_DIR', 'idref/');
 
 define('DEPUTES_SITE_DIR', 'deputes/');
 
