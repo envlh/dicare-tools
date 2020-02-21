@@ -35,6 +35,7 @@ require '../inc/header.inc.php';
 
 <h2>About</h2>
 <p>You can send me an email at the following address:<br />webmaster -at- dicare.org</p>
+<p>The <a href="https://github.com/envlh/dicare-tools">source code</a> is available under AGPLv3 license.</p>
 
 <?php
 
