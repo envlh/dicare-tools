@@ -28,65 +28,65 @@ if (!empty($_POST['fallback'])) {
 if ($id != null) {
     
     $query = 'SELECT ?person
-(GROUP_CONCAT(DISTINCT ?modified ; separator = ",") AS ?modified)
-(GROUP_CONCAT(DISTINCT ?personLabel ; separator = ",") AS ?personLabel)
-(GROUP_CONCAT(DISTINCT ?personDescription ; separator = ",") AS ?personDescription)
-(GROUP_CONCAT(DISTINCT ?birthname ; separator = ",") AS ?birthname)
-(GROUP_CONCAT(DISTINCT ?pseudo ; separator = ",") AS ?pseudo)
-(GROUP_CONCAT(DISTINCT ?alias ; separator = ",") AS ?alias)
-(GROUP_CONCAT(DISTINCT ?gender ; separator = ",") AS ?gender)
-(GROUP_CONCAT(DISTINCT ?occupationLabel ; separator = ", ") AS ?occupationLabel)
-(GROUP_CONCAT(DISTINCT ?birthdate ; separator = ",") AS ?birthdate)
-(GROUP_CONCAT(DISTINCT ?birthdate_precision ; separator = ",") AS ?birthdate_precision)
-(GROUP_CONCAT(DISTINCT ?birthdate_quality ; separator = ",") AS ?birthdate_quality)
-(GROUP_CONCAT(DISTINCT ?deathdate ; separator = ",") AS ?deathdate)
-(GROUP_CONCAT(DISTINCT ?deathdate_precision ; separator = ",") AS ?deathdate_precision)
-(GROUP_CONCAT(DISTINCT ?deathdate_quality ; separator = ",") AS ?deathdate_quality)
-(GROUP_CONCAT(DISTINCT ?wikipedia_fr ; separator = ",") AS ?wikipedia_fr)';
+(GROUP_CONCAT(DISTINCT ?modified_ ; separator = ",") AS ?modified)
+(GROUP_CONCAT(DISTINCT ?personLabel_ ; separator = ",") AS ?personLabel)
+(GROUP_CONCAT(DISTINCT ?personDescription_ ; separator = ",") AS ?personDescription)
+(GROUP_CONCAT(DISTINCT ?birthname_ ; separator = ",") AS ?birthname)
+(GROUP_CONCAT(DISTINCT ?pseudo_ ; separator = ",") AS ?pseudo)
+(GROUP_CONCAT(DISTINCT ?alias_ ; separator = ",") AS ?alias)
+(GROUP_CONCAT(DISTINCT ?gender_ ; separator = ",") AS ?gender)
+(GROUP_CONCAT(DISTINCT ?occupationLabel_ ; separator = ", ") AS ?occupationLabel)
+(GROUP_CONCAT(DISTINCT ?birthdate_ ; separator = ",") AS ?birthdate)
+(GROUP_CONCAT(DISTINCT ?birthdate_precision_ ; separator = ",") AS ?birthdate_precision)
+(GROUP_CONCAT(DISTINCT ?birthdate_quality_ ; separator = ",") AS ?birthdate_quality)
+(GROUP_CONCAT(DISTINCT ?deathdate_ ; separator = ",") AS ?deathdate)
+(GROUP_CONCAT(DISTINCT ?deathdate_precision_ ; separator = ",") AS ?deathdate_precision)
+(GROUP_CONCAT(DISTINCT ?deathdate_quality_ ; separator = ",") AS ?deathdate_quality)
+(GROUP_CONCAT(DISTINCT ?wikipedia_fr_ ; separator = ",") AS ?wikipedia_fr)';
     foreach ($fallback as $lang) {
-        $query .= "\n".'(GROUP_CONCAT(DISTINCT ?wikipedia_'.$lang.' ; separator = ",") AS ?wikipedia_'.$lang.')';
+        $query .= "\n".'(GROUP_CONCAT(DISTINCT ?wikipedia_'.$lang.'_ ; separator = ",") AS ?wikipedia_'.$lang.')';
     }
     $query .= '
 WHERE {
-    ?person schema:dateModified ?modified .
+    ?person schema:dateModified ?modified_ .
     ?person wdt:P734 wd:'.$id.' .
-    OPTIONAL { ?person rdfs:label ?personLabel FILTER (LANG(?personLabel) = "fr") . }
-    OPTIONAL { ?person schema:description ?personDescription FILTER (LANG(?personDescription) = "fr") . }
-    OPTIONAL { ?person wdt:P1477 ?birthname . }
-    OPTIONAL { ?person wdt:P742 ?pseudo . }
-    OPTIONAL { ?person wdt:P1449 ?alias . }
-    OPTIONAL { ?person wdt:P21 ?gender . }
+    OPTIONAL { ?person rdfs:label ?personLabel_ FILTER (LANG(?personLabel_) = "fr") . }
+    OPTIONAL { ?person schema:description ?personDescription_ FILTER (LANG(?personDescription_) = "fr") . }
+    OPTIONAL { ?person wdt:P1477 ?birthname_ . }
+    OPTIONAL { ?person wdt:P742 ?pseudo_ . }
+    OPTIONAL { ?person wdt:P1449 ?alias_ . }
+    OPTIONAL { ?person wdt:P21 ?gender_ . }
     OPTIONAL {
         ?person wdt:P106 ?occupation .
-        ?occupation rdfs:label ?occupationLabel FILTER (LANG(?occupationLabel) = "fr") .
+        ?occupation rdfs:label ?occupationLabel_ FILTER (LANG(?occupationLabel) = "fr") .
     }
     OPTIONAL {
-        ?person wdt:P569 ?birthdate .
+        ?person wdt:P569 ?birthdate_ .
         ?person p:P569 ?birthdate_all .
         ?birthdate_all ps:P569 ?birthdate_all_value .
-        FILTER(?birthdate_all_value = ?birthdate) .
-        ?birthdate_all psv:P569/wikibase:timePrecision ?birthdate_precision .
-        OPTIONAL { ?birthdate_all pq:P1480 ?birthdate_quality . }
+        FILTER(?birthdate_all_value = ?birthdate_) .
+        ?birthdate_all psv:P569/wikibase:timePrecision ?birthdate_precision_ .
+        OPTIONAL { ?birthdate_all pq:P1480 ?birthdate_quality_ . }
     }
     OPTIONAL {
-        ?person wdt:P570 ?deathdate .
+        ?person wdt:P570 ?deathdate_ .
         ?person p:P570 ?deathdate_all .
         ?deathdate_all ps:P570 ?deathdate_all_value .
-        FILTER(?deathdate_all_value = ?deathdate) .
-        ?deathdate_all psv:P570/wikibase:timePrecision ?deathdate_precision .
-        OPTIONAL { ?deathdate_all pq:P1480 ?deathdate_quality . }
+        FILTER(?deathdate_all_value = ?deathdate_) .
+        ?deathdate_all psv:P570/wikibase:timePrecision ?deathdate_precision_ .
+        OPTIONAL { ?deathdate_all pq:P1480 ?deathdate_quality_ . }
     }
     OPTIONAL {
-        ?wikipedia_fr schema:about ?person .
-        ?wikipedia_fr schema:inLanguage "fr" .
-        FILTER (SUBSTR(STR(?wikipedia_fr), 1, 25) = "https://fr.wikipedia.org/")
+        ?wikipedia_fr_ schema:about ?person .
+        ?wikipedia_fr_ schema:inLanguage "fr" .
+        FILTER (SUBSTR(STR(?wikipedia_fr_), 1, 25) = "https://fr.wikipedia.org/")
     }
 ';
         foreach ($fallback as $lang) {
             $query .= '    OPTIONAL {
-        ?wikipedia_'.$lang.' schema:about ?person .
-        ?wikipedia_'.$lang.' schema:inLanguage "'.$lang.'" .
-        FILTER (SUBSTR(STR(?wikipedia_'.$lang.'), 1, 25) = "https://'.$lang.'.wikipedia.org/")
+        ?wikipedia_'.$lang.'_ schema:about ?person .
+        ?wikipedia_'.$lang.'_ schema:inLanguage "'.$lang.'" .
+        FILTER (SUBSTR(STR(?wikipedia_'.$lang.'_), 1, 25) = "https://'.$lang.'.wikipedia.org/")
     }
 ';
     }
