@@ -21,6 +21,7 @@ define('PAGE_TITLE', '<a href="'.SITE_DIR.BNF_SITE_DIR.'">BnF To Wikidata</a>');
 require '../../inc/header.inc.php';
 
 echo '<p>Given the URL of a notice in the catalog of the BnF (<em>Bibliothèque nationale de France</em>, French national Library), this tool produces QuickStatements commands to create a new Wikidata item about a person, with statements referenced by the BnF.</p>
+<p>See also: <a href="'.SITE_DIR.IDREF_SITE_DIR.'">IdRef To Wikidata</a>.</p>
 <form action="'.SITE_DIR.BNF_SITE_DIR.'" method="post"><p><label for="input">URL of the notice of a person in the <a href="https://catalogue.bnf.fr/">general catalog of the BnF</a> (the last part of the ARK id after <code>cb</code> is enough) or URL of the notice in <a href="https://data.bnf.fr/">data.bnf.fr</a>:</label><br /><input type="text" id="input" name="input" value="'.htmlentities(@$_POST['input']).'" style="width: 50%;" autofocus="autofocus" /> <input type="submit" value="Search" /></p></form>';
 
 // TODO handle more date formats

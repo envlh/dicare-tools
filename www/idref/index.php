@@ -15,6 +15,7 @@ define('PAGE_TITLE', '<a href="'.SITE_DIR.IDREF_SITE_DIR.'">IdRef To Wikidata</a
 require '../../inc/header.inc.php';
 
 echo '<p>Given the URL of a notice in IdRef, this tool produces QuickStatements commands to create a new Wikidata item about a person, with statements referenced by IdRef.</p>
+<p>See also: <a href="'.SITE_DIR.BNF_SITE_DIR.'">BnF To Wikidata</a>.</p>
 <form action="'.SITE_DIR.IDREF_SITE_DIR.'" method="post"><p><label for="input">URL of the notice of a person in <a href="https://www.idref.fr/">IdRef</a> (the id is enough):</label><br /><input type="text" id="input" name="input" value="'.htmlentities(@$_POST['input']).'" style="width: 50%;" autofocus="autofocus" /> <input type="submit" value="Search" /></p></form>';
 
 // TODO handle more date formats
