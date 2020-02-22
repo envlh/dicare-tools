@@ -24,20 +24,6 @@ echo '<p>Given the URL of a notice in the catalog of the BnF (<em>Bibliothèque 
 <p>See also: <a href="'.SITE_DIR.IDREF_SITE_DIR.'">IdRef To Wikidata</a>.</p>
 <form action="'.SITE_DIR.BNF_SITE_DIR.'" method="post"><p><label for="input">URL of the notice of a person in the <a href="https://catalogue.bnf.fr/">general catalog of the BnF</a> (the last part of the ARK id after <code>cb</code> is enough) or URL of the notice in <a href="https://data.bnf.fr/">data.bnf.fr</a>:</label><br /><input type="text" id="input" name="input" value="'.htmlentities(@$_POST['input']).'" style="width: 50%;" autofocus="autofocus" /> <input type="submit" value="Search" /></p></form>';
 
-// TODO handle more date formats
-function date2qs($date) {
-    if (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $date)) {
-        return '+'.$date.'T00:00:00Z/11';
-    }
-    elseif (preg_match('/^[0-9]{4}-[0-9]{2}$/', $date)) {
-        return '+'.$date.'-01T00:00:00Z/10';
-    }
-    elseif (preg_match('/^[0-9]{4}$/', $date)) {
-        return '+'.$date.'-01-01T00:00:00Z/9';
-    }
-    return null;
-}
-
 if (!empty($_POST['input'])) {
     
     if (preg_match('@(\d{8}[0-9bcdfghjkmnpqrstvwxz])@', $_POST['input'], $match)) {
@@ -84,8 +70,8 @@ WHERE {
             $label = @$res[0]->label->value;
             $type = @$res[0]->type->value;
             $gender = @$res[0]->gender->value;
-            $birth = date2qs(@$res[0]->birth->value);
-            $death = date2qs(@$res[0]->death->value);
+            $birth = utils::date2qs(@$res[0]->birth->value);
+            $death = utils::date2qs(@$res[0]->death->value);
             $country = @$res[0]->country->value;
         }
         
