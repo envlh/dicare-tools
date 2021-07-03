@@ -199,3 +199,10 @@ textarea {
     height: 2px;
     float: right;
 }
+
+#lexemes th, #lexemes td {
+    max-width: 200px;
+}
+#lexemes th.row {
+    text-align: left;
+}

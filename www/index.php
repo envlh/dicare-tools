@@ -19,6 +19,7 @@ require '../inc/header.inc.php';
 <li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.DD_SITE_DIR; ?>">Dedicated Dashboard</a></strong>: another tool to improve the data quality in Wikidata</li>
 <li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.BNF_SITE_DIR; ?>">BnF To Wikidata</a></strong>: import sourced data from BnF into Wikidata</li>
 <li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.IDREF_SITE_DIR; ?>">IdRef To Wikidata</a></strong>: import sourced data from IdRef into Wikidata</li>
+<li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.LEXEMES_SITE_DIR; ?>">Lexemes Party</a></strong>: explore lexemes linked to a group of Wikidata concepts</li>
 <li><span class="language">[fr]</span> <strong><a href="<?php echo SITE_DIR.DEPUTES_SITE_DIR; ?>">Députés</a></strong> : statistiques et listes de députés français de la 5<sup>e</sup> République</li>
 <li><span class="language">[fr]</span> <strong><a href="<?php echo SITE_DIR.NOMS_SITE_DIR; ?>">Noms</a></strong>
     <ul>
