@@ -202,7 +202,18 @@ textarea {
 
 #lexemes th, #lexemes td {
     max-width: 200px;
+    overflow-wrap: break-word;
 }
 #lexemes th.row {
     text-align: left;
+}
+#lexemes td.medal {
+    border-top: 1px solid #FFF;
+    border-bottom: 1px solid #FFF;
+}
+#lexemes td.medal img {
+    vertical-align: text-bottom;
+}
+img.medal {
+    vertical-align: text-bottom;
 }

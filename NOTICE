@@ -1,11 +1,13 @@
 Dicare Tools
-Copyright (c) 2016-2019 Envel Le Hir
+Copyright (c) 2016-2021 Envel Le Hir
 
 All files are available under the terms of the GNU Affero General Public License (AGPL). See LICENSE file for details for this license.
 
 This project includes work from third parties:
 
 Files in /www/static/sorttable/ are Copyright (c) 1997-date Stuart Langridge (MIT license)
+
+Files in /www/static/img/famfamfam/ are Copyright (c) Mark James http://www.famfamfam.com/lab/icons/silk/ (CC BY 2.5)
 
 Wikimedia logos:
 * /www/static/img/logo-commons.png
