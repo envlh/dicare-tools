@@ -207,13 +207,9 @@ textarea {
 #lexemes th.row {
     text-align: left;
 }
-#lexemes td.medal {
-    border-top: 1px solid #FFF;
-    border-bottom: 1px solid #FFF;
-}
-#lexemes td.medal img {
+#lexemes th img, img.medal {
     vertical-align: text-bottom;
 }
-img.medal {
-    vertical-align: text-bottom;
+#lexemes .score {
+    font-weight: normal;
 }
