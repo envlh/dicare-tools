@@ -204,12 +204,16 @@ textarea {
     max-width: 200px;
     overflow-wrap: break-word;
 }
-#lexemes th.row {
-    text-align: left;
+#lexemes img.logo {
+    width: 20px;
+    height: 20px;
 }
-#lexemes th img, img.medal {
+#lexemes th img, #lexemes td img, img.medal {
     vertical-align: text-bottom;
 }
 #lexemes .score {
     font-weight: normal;
+}
+#lexemes td.wikipedia {
+    text-align: center;
 }
