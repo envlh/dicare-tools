@@ -8,7 +8,7 @@ require '../inc/header.inc.php';
 
 ?>
 
-<p><strong>Dicare Tools</strong> are a set of tools for contributing and gather statistics about Wikimedia projects.</p>
+<p><strong>Dicare Tools</strong> are a set of tools to contribute to and to gather statistics about Wikimedia projects.</p>
 
 <h2>Tools list</h2>
 <ul>
