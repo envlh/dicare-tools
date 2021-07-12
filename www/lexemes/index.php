@@ -8,7 +8,7 @@ define('PAGE_TITLE', $title);
 require '../../inc/header.inc.php';
 
 define('WDQS_CACHE', 3600);
-define('LANGUAGE_REGEX', '[a-z]{2,3}(-[a-z]+){0,2}|simple');
+define('LANGUAGE_REGEX', '[a-z]+(-[a-z]+)*');
 $errors = array();
 
 // filters
@@ -81,6 +81,9 @@ if (!empty($_GET['query'])) {
         }
         else {
             
+            $senses_count = count($items);
+            $cells_count = 0;
+            
             // $languages initilization
             $languages = array();
             foreach ($items as $item) {
@@ -102,7 +105,15 @@ if (!empty($_GET['query'])) {
             
             // sort languages by label
             usort($languages, function($a, $b) {
-                return $a->label <=> $b->label;
+                $r = $a->label <=> $b->label;
+                if ($r != 0) {
+                    return $r;
+                }
+                $r = $a->code <=> $b->code;
+                if ($r != 0) {
+                    return $r;
+                }
+                return $a->qid <=> $b->qid;
             });
             
             // $senses initilization
@@ -121,9 +132,12 @@ if (!empty($_GET['query'])) {
             // sorting
             foreach ($languages as $language) {
                 foreach ($concepts as $concept) {
-                    usort($senses[$concept][$language->qid], function($a, $b) {
-                        return $a->lemma <=> $b->lemma;
-                    });
+                    if (!empty($senses[$concept][$language->qid])) {
+                        $cells_count++;
+                        usort($senses[$concept][$language->qid], function($a, $b) {
+                            return $a->lemma <=> $b->lemma;
+                        });
+                    }
                 }
             }
             
@@ -171,7 +185,7 @@ echo '<h2>Query</h2>
 
 // display main table
 if (!empty($senses)) {
-    echo '<h2>Results</h2>
+    echo '<h2>Results ('.count($concepts).' concept'.(count($concepts) > 1 ? 's' : '').', '.count($languages).' language'.(count($languages) > 1 ? 's' : '').', '.$senses_count.' sense'.($senses_count > 1 ? 's' : '').', '.floor(100 * $cells_count / (count($languages) * count($concepts))).'% completion)</h2>
 <table id="lexemes">';
     // TODO: clean this code ^^
     if ($languages_direction == 'rows') {
@@ -193,15 +207,20 @@ if (!empty($senses)) {
         }
         echo '</tr>';
         foreach ($languages as $language) {
-            echo '<tr><td title="'.round($language->score).'%">';
+            echo '<tr><td title="'.floor($language->score).'%">';
             if (!empty($language->medal)) {
                 echo ' <img src="'.SITE_STATIC_DIR.'img/famfamfam/medal_'.$language->medal.'_3.png" alt="" />';
             }
-            echo '</td><td title="'.round($language->score).'%"><a href="https://www.wikidata.org/wiki/'.$language->qid.'">';
+            echo '</td><td title="'.floor($language->score).'%"><a href="https://www.wikidata.org/wiki/'.$language->qid.'">';
             if ($language->code !== '∅') {
                 echo '<span class="language">['.htmlentities($language->code).']</span> ';
             }
-            echo htmlentities($language->label).'</a></td>';
+            if (!empty($language->label)) {
+                echo htmlentities($language->label);
+            } else {
+                echo $language->qid;
+            }
+            echo '</a></td>';
             foreach ($concepts as $concept) {
                 echo '<td>';
                 foreach ($senses[$concept][$language->qid] as $sense) {
@@ -219,11 +238,16 @@ if (!empty($senses)) {
             if ($language->code !== '∅') {
                 echo '<span class="language">['.htmlentities($language->code).']</span> ';
             }
-            echo htmlentities($language->label).'</a><br />';
+            if (!empty($language->label)) {
+                echo htmlentities($language->label);
+            } else {
+                echo $language->qid;
+            }
+            echo '</a><br />';
             if (!empty($language->medal)) {
                 echo '<img src="'.SITE_STATIC_DIR.'img/famfamfam/medal_'.$language->medal.'_3.png" alt="" /> ';
             }
-            echo '<span class="score">'.round($language->score).'%</span></th>';
+            echo '<span class="score">'.floor($language->score).'%</span></th>';
         }
         echo '</tr>';
         foreach ($concepts as $concept) {
