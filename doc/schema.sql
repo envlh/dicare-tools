@@ -75,3 +75,17 @@ CREATE TABLE `query` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `query_endpoint_uq` (`query_hash`,`endpoint_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `lexeme_challenge` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL,
+  `concepts` varchar(255) NOT NULL,
+  `date_scheduled` datetime NOT NULL,
+  `date_start` datetime DEFAULT NULL,
+  `date_end` datetime DEFAULT NULL,
+  `results_start` mediumblob,
+  `results_end` mediumblob,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `title_UNIQUE` (`title`),
+  KEY `dates` (`date_start`,`date_end`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

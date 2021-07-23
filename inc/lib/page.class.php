@@ -42,6 +42,9 @@ class page {
     
     public static function displayMenu() {
         switch (self::$menu) {
+            case 'lexemes':
+                echo '<div id="menu"><a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php">Lexemes Challenge</a> | <a href="'.SITE_DIR.LEXEMES_SITE_DIR.'party.php">Lexemes Party</a></div>';
+            break;
             case 'noms':
                 echo '<div id="menu"><a href="'.SITE_DIR.NOMS_SITE_DIR.'">Documentation</a> | <a href="'.SITE_DIR.NOMS_SITE_DIR.'homonymie.php">Génération d\'une page d\'homonymie</a> | <a href="'.SITE_DIR.NOMS_SITE_DIR.'nom-de-famille.php">Ajout en masse d\'un nom de famille</a> | <a href="'.SITE_DIR.NOMS_SITE_DIR.'prenom.php">Ajout en masse d\'un prénom</a> | <a href="'.SITE_DIR.NOMS_SITE_DIR.'suggestions.php">Suggestions de noms de famille manquants</a> | Statistiques : <a href="'.SITE_DIR.NOMS_SITE_DIR.'departements.php">par département français</a>, <a href="'.SITE_DIR.NOMS_SITE_DIR.'pays.php">par pays</a></div>';
             break;
