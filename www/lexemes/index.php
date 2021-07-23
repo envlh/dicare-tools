@@ -273,8 +273,8 @@ if (!empty($senses)) {
     echo '</table>
 <p>'.count($languages).' languages
 &nbsp;&nbsp;&nbsp;&nbsp; <img src="'.SITE_STATIC_DIR.'img/famfamfam/medal_gold_3.png" alt="" class="medal" title="100%" /> '.$medals['gold'].'
-&nbsp;&nbsp;&nbsp;&nbsp; <img src="'.SITE_STATIC_DIR.'img/famfamfam/medal_silver_3.png" alt="" class="medal" title="80%+" /> '.$medals['silver'].'
-&nbsp;&nbsp;&nbsp;&nbsp; <img src="'.SITE_STATIC_DIR.'img/famfamfam/medal_bronze_3.png" alt="" class="medal" title="50%+" /> '.$medals['bronze'].'
+&nbsp;&nbsp;&nbsp;&nbsp; <img src="'.SITE_STATIC_DIR.'img/famfamfam/medal_silver_3.png" alt="" class="medal" title="≥ 80%" /> '.$medals['silver'].'
+&nbsp;&nbsp;&nbsp;&nbsp; <img src="'.SITE_STATIC_DIR.'img/famfamfam/medal_bronze_3.png" alt="" class="medal" title="≥ 50%" /> '.$medals['bronze'].'
 &nbsp;&nbsp;&nbsp;&nbsp; &#8709; '.$medals[''];
     echo '</p>';
 }
