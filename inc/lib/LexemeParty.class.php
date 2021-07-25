@@ -71,7 +71,7 @@ class LexemeParty {
   OPTIONAL { ?url schema:about ?concept ; schema:inLanguage "'.$this->language_display.'" ; schema:name ?name ; schema:isPartOf [ wikibase:wikiGroup "wikipedia" ] ; schema:name ?title }
 }', WDQS_CACHE)->results->bindings;
         foreach ($items as $item) {
-            $this->concepts_meta[substr($item->concept->value, 31)] = (object) array('label' => $item->conceptLabel->value, 'wikipedia_url' => $item->url->value, 'wikipedia_title' => $item->title->value);
+            $this->concepts_meta[substr($item->concept->value, 31)] = (object) array('label' => @$item->conceptLabel->value, 'wikipedia_url' => @$item->url->value, 'wikipedia_title' => @$item->title->value);
         }
     }
     
