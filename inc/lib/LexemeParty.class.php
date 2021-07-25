@@ -50,8 +50,9 @@ class LexemeParty {
     
     public function fetchConcepts($query) {
         $results = wdqs::query($query, WDQS_CACHE);
-        if (count($results->results->bindings) === 0) {
-            $errors[] = 'The input query returned no result.';
+        if (empty($results) || count(@$results->results->bindings) === 0) {
+            $this->errors[] = 'The input query returned no result.';
+            return;
         }
         foreach ($results->results->bindings as $item) {
             $this->concepts[] = substr($item->concept->value, 31);
