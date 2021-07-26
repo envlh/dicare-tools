@@ -158,8 +158,11 @@ class LexemeParty {
             $language_qid = substr($item->language->value, 31);
             if (isset($this->items[$concept_qid][$language_qid])) {
                 $sense = substr($item->sense->value, 31);
+                if (!isset($this->items[$concept_qid][$language_qid][$sense])) {
+                    $this->items[$concept_qid][$language_qid][$sense] = array();
+                }
+                $this->items[$concept_qid][$language_qid][$sense][] = $item->lemma->value;
                 $lexeme = substr($sense, 0, strpos($sense, '-'));
-                $this->items[$concept_qid][$language_qid][] = (object) array('sense' => $sense, 'lemma' => $item->lemma->value);
                 if (!in_array($lexeme, $this->lexemes)) {
                     $this->lexemes[] = $lexeme;
                 }
@@ -170,9 +173,10 @@ class LexemeParty {
             foreach ($this->concepts as $concept) {
                 if (!empty($this->items[$concept][$language->qid])) {
                     $this->cells_count++;
-                    usort($this->items[$concept][$language->qid], function($a, $b) {
-                        return $a->lemma <=> $b->lemma;
-                    });
+                    ksort($this->items[$concept][$language->qid]);
+                    foreach ($this->items[$concept][$language->qid] as &$sense) {
+                        asort($sense);
+                    }
                 }
             }
         }
@@ -286,8 +290,8 @@ class LexemeParty {
                 echo '</a></td>';
                 foreach ($this->concepts as $concept) {
                     echo '<td>';
-                    foreach ($this->items[$concept][$language->qid] as $sense) {
-                        echo '<a href="https://www.wikidata.org/wiki/Lexeme:'.str_replace('-', '#', $sense->sense).'">'.htmlentities($sense->lemma).'</a> ('.$sense->sense.')<br />';
+                    foreach ($this->items[$concept][$language->qid] as $sense => $lemmas) {
+                        echo htmlentities(implode(' / ', $lemmas)).' (<a href="https://www.wikidata.org/wiki/Lexeme:'.str_replace('-', '#', $sense).'">'.$sense.'</a>)<br />';
                     }
                     echo '</td>';
                 }
@@ -325,8 +329,8 @@ class LexemeParty {
                 echo '</td>';
                 foreach ($this->languages as $language) {
                     echo '<td>';
-                    foreach ($this->items[$concept][$language->qid] as $sense) {
-                        echo '<a href="https://www.wikidata.org/wiki/Lexeme:'.str_replace('-', '#', $sense->sense).'">'.htmlentities($sense->lemma).'</a> ('.$sense->sense.')<br />';
+                    foreach ($this->items[$concept][$language->qid] as $sense => $lemmas) {
+                        echo htmlentities(implode(' / ', $lemmas)).' (<a href="https://www.wikidata.org/wiki/Lexeme:'.str_replace('-', '#', $sense).'">'.$sense.'</a>)<br />';
                     }
                     echo '</td>';
                 }
