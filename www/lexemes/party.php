@@ -10,6 +10,7 @@ require '../../inc/header.inc.php';
 
 $party = new LexemeParty();
 $party->init();
+$party->initLanguageDisplay();
 
 if (!empty($_GET['query'])) {
     $party->fetchConcepts($_GET['query']);
@@ -31,9 +32,13 @@ echo '<h2>Query</h2>
 <p>Display:
 <br /><input type="radio" id="languages_rows" name="languages_direction" value="rows" '.(($party->languages_direction === 'rows') ? 'checked="checked" ' : '').'/> <label for="languages_rows">languages in rows, concepts in columns (best for high number of languages)</label>
 <br /><input type="radio" id="languages_columns" name="languages_direction" value="columns" '.(($party->languages_direction === 'columns') ? 'checked="checked" ' : '').'/> <label for="languages_columns">languages in columns, concepts in rows (best for high number of concepts)</label></p>
-<p><label for="language_display">Language:</label><br /><input type="text" id="language_display" name="language_display" style="width: 100px;" value="'.htmlentities($party->language_display).'" /></p>
+<p><label for="language_display">Language:</label><br /><input type="text" id="language_display" name="language_display" style="width: 100px;" value="'.htmlentities($party->language_display_form).'" />';
+if ($party->language_display_form === 'auto') {
+    echo ' (detected: <span class="language">'.htmlentities($party->language_display).'</span>)';
+}
+echo '</p>
 <p><input type="submit" value="Search" /></p>
-<p>Examples: <a href="'.SITE_DIR.LEXEMES_SITE_DIR.'party.php?title=Colors+of+the+rainbow+flag&query=SELECT+%3Fconcept+{+wd%3AQ51401+p%3AP462+[+rdf%3Atype+wikibase%3ABestRank+%3B+ps%3AP462+%3Fconcept+%3B+pq%3AP1545+%3Frank+]+}+ORDER+BY+xsd%3Ainteger(%3Frank)&languages_filter_action=block&languages_filter=&languages_direction=rows">colors of the rainbow flag</a>, <a href="'.SITE_DIR.LEXEMES_SITE_DIR.'party.php?title=Planets+of+the+Solar+System&query=SELECT+%3Fconcept+{+VALUES+%3Fconcept+{+wd%3AQ308+wd%3AQ313+wd%3AQ2+wd%3AQ111+wd%3AQ319+wd%3AQ193+wd%3AQ324+wd%3AQ332+}+}&languages_filter_action=block&languages_filter=&languages_direction=rows">planets of the Solar System</a>, <a href="'.SITE_DIR.LEXEMES_SITE_DIR.'party.php?title=Animals&query=SELECT+DISTINCT+%3Fconcept+{+%3Fconcept+wdt%3AP31%3F%2Fwdt%3AP279*+wd%3AQ729+%3B+wikibase%3Asitelinks+%3Fsitelinks+}+ORDER+BY+DESC(%3Fsitelinks)+LIMIT+50&languages_filter_action=allow&languages_filter=de+en+fr&languages_direction=columns">animals</a>, <a href="'.SITE_DIR.LEXEMES_SITE_DIR.'party.php?title=Focus+languages&query=SELECT+%3Fconcept+{+VALUES+%3Fconcept+{+wd%3AQ9610+wd%3AQ36236+wd%3AQ56475+wd%3AQ33578+wd%3AQ32238+wd%3AQ1860+}+}&languages_filter_action=allow&languages_filter=bn+ml+ha+ig+dag+en&languages_direction=columns">focus languages</a>.</p>
+<p>Examples: <a href="'.SITE_DIR.LEXEMES_SITE_DIR.'party.php?title=Colors+of+the+rainbow+flag&amp;query=SELECT+%3Fconcept+{+wd%3AQ51401+p%3AP462+[+rdf%3Atype+wikibase%3ABestRank+%3B+ps%3AP462+%3Fconcept+%3B+pq%3AP1545+%3Frank+]+}+ORDER+BY+xsd%3Ainteger(%3Frank)&amp;languages_filter_action=block&amp;languages_filter=&amp;languages_direction=rows">colors of the rainbow flag</a>, <a href="'.SITE_DIR.LEXEMES_SITE_DIR.'party.php?title=Planets+of+the+Solar+System&amp;query=SELECT+%3Fconcept+{+VALUES+%3Fconcept+{+wd%3AQ308+wd%3AQ313+wd%3AQ2+wd%3AQ111+wd%3AQ319+wd%3AQ193+wd%3AQ324+wd%3AQ332+}+}&amp;languages_filter_action=block&amp;languages_filter=&amp;languages_direction=rows">planets of the Solar System</a>, <a href="'.SITE_DIR.LEXEMES_SITE_DIR.'party.php?title=Animals&amp;query=SELECT+DISTINCT+%3Fconcept+{+%3Fconcept+wdt%3AP31%3F%2Fwdt%3AP279*+wd%3AQ729+%3B+wikibase%3Asitelinks+%3Fsitelinks+}+ORDER+BY+DESC(%3Fsitelinks)+LIMIT+50&amp;languages_filter_action=allow&amp;languages_filter=de+en+fr&amp;languages_direction=columns">animals</a>, <a href="'.SITE_DIR.LEXEMES_SITE_DIR.'party.php?title=Focus+languages&amp;query=SELECT+%3Fconcept+{+VALUES+%3Fconcept+{+wd%3AQ9610+wd%3AQ36236+wd%3AQ56475+wd%3AQ33578+wd%3AQ32238+wd%3AQ1860+}+}&amp;languages_filter_action=allow&amp;languages_filter=bn+ml+ha+ig+dag+en&amp;languages_direction=columns">focus languages</a>.</p>
 </form>';
 
 // display main table

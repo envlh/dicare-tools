@@ -50,6 +50,7 @@ else {
     $party->computeItems($items);
     // current results
     $currentParty = new LexemeParty();
+    $currentParty->initLanguageDisplay();
     $currentParty->setConcepts(explode(' ', $challenge->concepts));
     $currentParty->fetchConceptsMeta();
     $items = $currentParty->queryItems();

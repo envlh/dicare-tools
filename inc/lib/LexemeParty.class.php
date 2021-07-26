@@ -6,6 +6,7 @@ define('LANGUAGE_REGEX', '[a-z]+(-[a-z]+)*');
 class LexemeParty {
     
     public $language_display = 'en';
+    public $language_display_form = 'auto';
     public $languages_filter_action = 'block';
     public $languages_filter = array();
     public $languages_direction = 'rows';
@@ -22,13 +23,6 @@ class LexemeParty {
     public $errors = array();
     
     public function init() {
-        
-        // language display
-        $this->language_display = 'en';
-        if (!empty($_GET['language_display']) && preg_match('/^'.LANGUAGE_REGEX.'$/', $_GET['language_display'])) {
-            $this->language_display = $_GET['language_display'];
-        }
-        
         // filters
         $this->languages_filter_action = 'block';
         if (!empty($_GET['languages_filter_action']) && ($_GET['languages_filter_action'] === 'allow')) {
@@ -39,13 +33,27 @@ class LexemeParty {
             preg_match_all('/'.LANGUAGE_REGEX.'/', $_GET['languages_filter'], $matches);
             $this->languages_filter = $matches[0];
         }
-
         // table direction
         $this->languages_direction = 'rows';
         if (!empty($_GET['languages_direction']) && ($_GET['languages_direction'] === 'columns')) {
             $this->languages_direction = 'columns';
         }
-
+    }
+    
+    public function initLanguageDisplay() {
+        $this->language_display = 'en';
+        $this->language_display_form = 'auto';
+        if (!empty($_GET['language_display']) && ($_GET['language_display'] !== 'auto') && preg_match('/^'.LANGUAGE_REGEX.'$/', $_GET['language_display'])) {
+            $this->language_display = $_GET['language_display'];
+            $this->language_display_form = $_GET['language_display'];
+        }
+        else {
+            $locale = Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+            $locale = substr($locale, 0, strpos($locale, '_'));
+            if (preg_match('/^'.LANGUAGE_REGEX.'$/', $locale)) {
+                $this->language_display = $locale;
+            }
+        }
     }
     
     public function fetchConcepts($query) {
@@ -203,7 +211,7 @@ class LexemeParty {
             return false;
         }
         $item = $items[0];
-        $r = (object) array('qid' => $qid, 'code' => @$item->code->value, 'label' => $item->label->value);
+        $r = (object) array('qid' => $qid, 'code' => @$item->code->value, 'label' => @$item->label->value);
         if ($r->code === null) {
             $r->code = '∅';
         }
@@ -228,7 +236,7 @@ class LexemeParty {
         }
         echo '</h2>
 <ul>
-    <li>You can help by <a href="https://www.wikidata.org/wiki/Special:MyLanguage/Wikidata:Lexicographical_data">creating new lexemes</a> and by linking existing senses to Wikidata concepts using <a href="https://www.wikidata.org/wiki/Property:P5137">P5137</a>. Usefull tool: <a href="https://lexeme-forms.toolforge.org/">Wikidata Lexeme Forms</a>.</li>';
+    <li>You can help by <a href="https://www.wikidata.org/wiki/Special:MyLanguage/Wikidata:Lexicographical_data">creating new lexemes</a> and linking senses to Wikidata items using <a href="https://www.wikidata.org/wiki/Property:P5137">P5137</a>. Usefull tool: <a href="https://lexeme-forms.toolforge.org/">Wikidata Lexeme Forms</a>.</li>';
         if (!empty($referenceParty)) {
             echo '<li>Current progress:<ul>
     <li><strong>'.count($this->languages).'</strong> language'.(count($this->languages) > 1 ? 's' : '').' ('.self::diff(count($referenceParty->languages), count($this->languages)).')</li>
@@ -248,7 +256,7 @@ class LexemeParty {
                 }
                 echo '(<a href="https://www.wikidata.org/wiki/'.$concept.'">'.$concept.'</a>)';
                 if (!empty($this->concepts_meta[$concept]->label)) {
-                    echo '<br /><a href="https://www.wikidata.org/w/index.php?search='.rawurlencode($this->concepts_meta[$concept]->label).'&title=Special%3ASearch&profile=advanced&fulltext=1&ns146=1"><img src="'.SITE_STATIC_DIR.'img/search.png" title="Search in Wikidata Lexemes" class="logo" /></a> <a href="https://'.$this->language_display.'.wiktionary.org/wiki/'.rawurlencode($this->concepts_meta[$concept]->label).'"><img src="'.SITE_STATIC_DIR.'img/logo-wiktionary.png" title="Search in Wiktionary" class="logo" /></a>';
+                    echo '<br /><a href="https://www.wikidata.org/w/index.php?search='.rawurlencode($this->concepts_meta[$concept]->label).'&amp;title=Special%3ASearch&amp;profile=advanced&amp;fulltext=1&amp;ns146=1"><img src="'.SITE_STATIC_DIR.'img/search.png" title="Search in Wikidata Lexemes" class="logo" /></a> <a href="https://'.$this->language_display.'.wiktionary.org/w/index.php?title=Special%3ASearch&amp;search='.rawurlencode($this->concepts_meta[$concept]->label).'"><img src="'.SITE_STATIC_DIR.'img/logo-wiktionary.png" title="Search in Wiktionary" class="logo" /></a>';
                 }
                 echo '</th>';
             }
@@ -308,7 +316,7 @@ class LexemeParty {
             foreach ($this->concepts as $concept) {
                 echo '<tr><td><a href="https://www.wikidata.org/wiki/'.$concept.'">'.$concept.'</a></td><td>'.htmlentities($this->concepts_meta[$concept]->label).'</td><td>';
                 if (!empty($this->concepts_meta[$concept]->label)) {
-                    echo '<a href="https://www.wikidata.org/w/index.php?search='.rawurlencode($this->concepts_meta[$concept]->label).'&title=Special%3ASearch&profile=advanced&fulltext=1&ns146=1"><img src="'.SITE_STATIC_DIR.'img/search.png" title="Search in Wikidata Lexemes" class="logo" /></a> <a href="https://'.$this->language_display.'.wiktionary.org/wiki/'.rawurlencode($this->concepts_meta[$concept]->label).'"><img src="'.SITE_STATIC_DIR.'img/logo-wiktionary.png" title="Search in Wiktionary" class="logo" /></a>';
+                    echo '<a href="https://www.wikidata.org/w/index.php?search='.rawurlencode($this->concepts_meta[$concept]->label).'&amp;title=Special%3ASearch&amp;profile=advanced&amp;fulltext=1&amp;ns146=1"><img src="'.SITE_STATIC_DIR.'img/search.png" title="Search in Wikidata Lexemes" class="logo" /></a> <a href="https://'.$this->language_display.'.wiktionary.org/w/index.php?title=Special%3ASearch&amp;search='.rawurlencode($this->concepts_meta[$concept]->label).'"><img src="'.SITE_STATIC_DIR.'img/logo-wiktionary.png" title="Search in Wiktionary" class="logo" /></a>';
                 }
                 echo '</td><td>';
                 if (!empty($this->concepts_meta[$concept]->wikipedia_url) && !empty($this->concepts_meta[$concept]->wikipedia_title)) {
