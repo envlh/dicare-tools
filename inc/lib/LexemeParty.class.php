@@ -247,7 +247,7 @@ class LexemeParty {
     }
     
     public function display($title = 'Results', $referenceParty = null) {
-        echo '<h2>'.htmlentities($title);
+        echo '<h2 id="results">'.htmlentities($title);
         if ($referenceParty === null) {
             echo ' ('.count($this->concepts).' concept'.(count($this->concepts) > 1 ? 's' : '').', '.count($this->languages).' language'.(count($this->languages) > 1 ? 's' : '').', '.count($this->lexemes).' lexeme'.(count($this->lexemes) > 1 ? 's' : '').', '.floor(100 * $this->cells_count / (count($this->languages) * count($this->concepts))).'% completion)';
         }

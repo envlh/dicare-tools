@@ -32,7 +32,7 @@ class page {
     
     public static function displayJs() {
         foreach (self::$js as $path) {
-            echo '<script type="text/javascript" src="'.SITE_STATIC_DIR.$path.'"></script>'."\n";
+            echo '<script type="text/javascript" src="'.SITE_STATIC_DIR.$path.'" defer="defer"></script>'."\n";
         }
     }
     
