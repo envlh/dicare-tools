@@ -252,17 +252,19 @@ class LexemeParty {
             echo ' ('.count($this->concepts).' concept'.(count($this->concepts) > 1 ? 's' : '').', '.count($this->languages).' language'.(count($this->languages) > 1 ? 's' : '').', '.count($this->lexemes).' lexeme'.(count($this->lexemes) > 1 ? 's' : '').', '.floor(100 * $this->cells_count / (count($this->languages) * count($this->concepts))).'% completion)';
         }
         echo '</h2>
-<ul>
-    <li>You can help by <a href="https://www.wikidata.org/wiki/Special:MyLanguage/Wikidata:Lexicographical_data">creating new lexemes</a> and linking senses to Wikidata items using <a href="https://www.wikidata.org/wiki/Property:P5137">P5137</a>. Usefull tool: <a href="https://lexeme-forms.toolforge.org/">Wikidata Lexeme Forms</a>.</li>';
+';
         if (!empty($referenceParty)) {
-            echo '<li>Current progress:<ul>
-    <li><strong>'.count($this->languages).'</strong> language'.(count($this->languages) > 1 ? 's' : '').' ('.self::diff(count($referenceParty->languages), count($this->languages)).')</li>
-    <li><strong>'.count($this->lexemes).'</strong> lexeme'.(count($this->lexemes) > 1 ? 's' : '').' ('.self::diff(count($referenceParty->lexemes), count($this->lexemes)).')</li>
-    <li><strong>'.$this->completion.'%</strong> completion ('.self::diff($referenceParty->completion, $this->completion).')</li>
-    <li><strong>'.($this->medals['gold'] * 3 + $this->medals['silver'] * 2 + $this->medals['bronze']).'</strong> medals ('.self::diff($referenceParty->medals['gold'] * 3 + $referenceParty->medals['silver'] * 2 + $referenceParty->medals['bronze'], $this->medals['gold'] * 3 + $this->medals['silver'] * 2 + $this->medals['bronze']).')</li>
-    </ul>';
+            echo '<ul>
+    <li>You can help by <a href="https://www.wikidata.org/wiki/Special:MyLanguage/Wikidata:Lexicographical_data">creating new lexemes</a> and linking senses to Wikidata items using <a href="https://www.wikidata.org/wiki/Property:P5137">P5137</a>. Usefull tool: <a href="https://lexeme-forms.toolforge.org/">Wikidata Lexeme Forms</a>.</li>
+    <li>Current progress:<ul>
+        <li><strong>'.count($this->languages).'</strong> language'.(count($this->languages) > 1 ? 's' : '').' ('.self::diff(count($referenceParty->languages), count($this->languages)).')</li>
+        <li><strong>'.count($this->lexemes).'</strong> lexeme'.(count($this->lexemes) > 1 ? 's' : '').' ('.self::diff(count($referenceParty->lexemes), count($this->lexemes)).')</li>
+        <li><strong>'.$this->completion.'%</strong> completion ('.self::diff($referenceParty->completion, $this->completion).')</li>
+        <li><strong>'.($this->medals['gold'] * 3 + $this->medals['silver'] * 2 + $this->medals['bronze']).'</strong> medals ('.self::diff($referenceParty->medals['gold'] * 3 + $referenceParty->medals['silver'] * 2 + $referenceParty->medals['bronze'], $this->medals['gold'] * 3 + $this->medals['silver'] * 2 + $this->medals['bronze']).')</li>
+    </ul>
+</ul>';
         }
-        echo '</ul><table id="lexemes">';
+        echo '<table id="lexemes">';
         // TODO: clean this code ^^
         if ($this->languages_direction == 'rows') {
             echo '<tr><th colspan="2">Wikidata</th>';
@@ -279,7 +281,7 @@ class LexemeParty {
             }
             echo '</tr><tr><th colspan="2">Wikipedia</th>';
             foreach ($this->concepts as $concept) {
-                echo '<td class="wikipedia">';
+                echo '<td>';
                 if (!empty($this->concepts_meta[$concept]->wikipedia_url)) {
                     echo '<a href="'.$this->concepts_meta[$concept]->wikipedia_url.'">'.htmlentities($this->concepts_meta[$concept]->wikipedia_title).'</a>';
                 }
@@ -291,7 +293,7 @@ class LexemeParty {
                 if (!empty($language->medal)) {
                     echo ' <img src="'.SITE_STATIC_DIR.'img/famfamfam/medal_'.$language->medal.'_3.png" alt="" />';
                 }
-                echo '</td><td title="'.floor($language->score).'%"><a href="https://www.wikidata.org/wiki/'.$language->qid.'">';
+                echo '</td><td title="'.floor($language->score).'%" class="left"><a href="https://www.wikidata.org/wiki/'.$language->qid.'">';
                 if ($language->code !== '∅') {
                     echo '<span class="language">['.htmlentities($language->code).']</span> ';
                 }
@@ -302,7 +304,7 @@ class LexemeParty {
                 }
                 echo '</a></td>';
                 foreach ($this->concepts as $concept) {
-                    echo '<td>'.$this->cell($this->items[$concept][$language->qid]).'</td>';
+                    echo '<td>'.$this->display_cell($this->items[$concept][$language->qid]).'</td>';
                 }
                 echo '</tr>'."\n";
             }
@@ -327,17 +329,17 @@ class LexemeParty {
             }
             echo '</tr>';
             foreach ($this->concepts as $concept) {
-                echo '<tr><td><a href="https://www.wikidata.org/wiki/'.$concept.'">'.$concept.'</a></td><td>'.htmlentities($this->concepts_meta[$concept]->label).'</td><td>';
+                echo '<tr><td class="left"><a href="https://www.wikidata.org/wiki/'.$concept.'">'.$concept.'</a></td><td class="left">'.htmlentities($this->concepts_meta[$concept]->label).'</td><td>';
                 if (!empty($this->concepts_meta[$concept]->label)) {
                     echo '<a href="https://www.wikidata.org/w/index.php?search='.rawurlencode($this->concepts_meta[$concept]->label).'&amp;title=Special%3ASearch&amp;profile=advanced&amp;fulltext=1&amp;ns146=1"><img src="'.SITE_STATIC_DIR.'img/search.png" title="Search in Wikidata Lexemes" class="logo" /></a> <a href="https://'.$this->language_display.'.wiktionary.org/w/index.php?title=Special%3ASearch&amp;search='.rawurlencode($this->concepts_meta[$concept]->label).'"><img src="'.SITE_STATIC_DIR.'img/logo-wiktionary.png" title="Search in Wiktionary" class="logo" /></a>';
                 }
-                echo '</td><td>';
+                echo '</td><td class="left">';
                 if (!empty($this->concepts_meta[$concept]->wikipedia_url) && !empty($this->concepts_meta[$concept]->wikipedia_title)) {
                     echo '<a href="'.$this->concepts_meta[$concept]->wikipedia_url.'">'.htmlentities($this->concepts_meta[$concept]->wikipedia_title).'</a>';
                 }
                 echo '</td>';
                 foreach ($this->languages as $language) {
-                    echo '<td>'.$this->cell($this->items[$concept][$language->qid]).'</td>';
+                    echo '<td>'.$this->display_cell($this->items[$concept][$language->qid]).'</td>';
                 }
                 echo '</tr>'."\n";
             }
@@ -351,7 +353,7 @@ class LexemeParty {
         echo '</p>';
     }
     
-    private function cell($items) {
+    private function display_cell($items) {
         $r = '';
         if ($this->display_mode === 'compact') {
             foreach ($items as $sense => $lemmas) {

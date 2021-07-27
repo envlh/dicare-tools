@@ -12,14 +12,14 @@ require '../inc/header.inc.php';
 
 <h2>Tools list</h2>
 <ul>
-<li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.TRANSLATHON_SITE_DIR; ?>">Transl-a-thon</a></strong>: find items needing to be translated in Wikidata</li>
-<!--<li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.PROPERTIES_SITE_DIR; ?>">[Wikidata] Related Properties</a></strong>: explore Wikidata properties and their related siblings</li>-->
-<!--<li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.PROJECTS_SITE_DIR; ?>">[Wikimedia] Related Projects</a></strong>: find which projects are the closest to each other, given their sitelinks usage</li>-->
-<li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.DIFF_SITE_DIR; ?>">Wikidata Diff</a></strong>: compare the properties of two Wikidata items</li>
-<!--<li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.DD_SITE_DIR; ?>">Dedicated Dashboard</a></strong>: another tool to improve the data quality in Wikidata</li>-->
 <li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.BNF_SITE_DIR; ?>">BnF To Wikidata</a></strong>: import sourced data from BnF into Wikidata</li>
 <li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.IDREF_SITE_DIR; ?>">IdRef To Wikidata</a></strong>: import sourced data from IdRef into Wikidata</li>
-<li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.LEXEMES_SITE_DIR; ?>">Lexemes Party</a></strong>: explore lexemes linked to a group of Wikidata concepts</li>
+<li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.LEXEMES_SITE_DIR; ?>party.php">Lexemes Party</a></strong>: explore lexemes linked to a group of Wikidata concepts</li>
+<li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.TRANSLATHON_SITE_DIR; ?>">Transl-a-thon</a></strong>: find Wikidata items needing to be translated</li>
+<li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.DIFF_SITE_DIR; ?>">Wikidata Diff</a></strong>: compare the properties of two Wikidata items</li>
+<!--<li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.PROPERTIES_SITE_DIR; ?>">[Wikidata] Related Properties</a></strong>: explore Wikidata properties and their related siblings</li>-->
+<!--<li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.PROJECTS_SITE_DIR; ?>">[Wikimedia] Related Projects</a></strong>: find which projects are the closest to each other, given their sitelinks usage</li>-->
+<!--<li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.DD_SITE_DIR; ?>">Dedicated Dashboard</a></strong>: another tool to improve the data quality in Wikidata</li>-->
 <!--<li><span class="language">[fr]</span> <strong><a href="<?php echo SITE_DIR.DEPUTES_SITE_DIR; ?>">Députés</a></strong> : statistiques et listes de députés français de la 5<sup>e</sup> République</li>-->
 <!--<li><span class="language">[fr]</span> <strong><a href="<?php echo SITE_DIR.NOMS_SITE_DIR; ?>">Noms</a></strong>
     <ul>
@@ -33,10 +33,6 @@ require '../inc/header.inc.php';
 </li>-->
 <!--<li><span class="language">[fr]</span> <strong><a href="<?php echo SITE_DIR.BATEAUX_SITE_DIR; ?>">Listes de bateaux</a></strong></li>-->
 </ul>
-
-<h2>About</h2>
-<p>You can send me an email at the following address:<br />webmaster -at- dicare.org</p>
-<p>The <a href="https://github.com/envlh/dicare-tools">source code</a> is available under AGPLv3 license.</p>
 
 <?php
 

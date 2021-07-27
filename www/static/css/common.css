@@ -214,6 +214,9 @@ textarea {
 #lexemes .score {
     font-weight: normal;
 }
-#lexemes td.wikipedia {
+#lexemes td {
     text-align: center;
+}
+#lexemes td.left {
+    text-align: left;
 }

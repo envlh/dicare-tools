@@ -33,11 +33,7 @@ echo '<h2 id="query">Query</h2>
 <p>Display:
 <br /><input type="radio" id="languages_rows" name="languages_direction" value="rows" '.(($party->languages_direction === 'rows') ? 'checked="checked" ' : '').'/> <label for="languages_rows">languages in rows, concepts in columns (best for high number of languages)</label>
 <br /><input type="radio" id="languages_columns" name="languages_direction" value="columns" '.(($party->languages_direction === 'columns') ? 'checked="checked" ' : '').'/> <label for="languages_columns">languages in columns, concepts in rows (best for high number of concepts)</label></p>
-<p><label for="language_display">Language:</label><br /><input type="text" id="language_display" name="language_display" style="width: 100px;" value="'.htmlentities($party->language_display_form).'" />';
-if ($party->language_display_form === 'auto') {
-    echo ' (detected: <span class="language">'.htmlentities($party->language_display).'</span>)';
-}
-echo '</p>
+<p><label for="language_display">Language:</label><br /><input type="text" id="language_display" name="language_display" style="width: 100px;" value="'.htmlentities($party->language_display_form).'" />'.(($party->language_display_form === 'auto') ? ' (detected: <span class="language">'.htmlentities($party->language_display).'</span>)' : '').'</p>
 <p>Mode: &nbsp; <input type="radio" id="display_mode_compact" name="display_mode" value="compact" '.(($party->display_mode === 'compact') ? 'checked="checked" ' : '').'/> <label for="display_mode_compact">compact</label> &nbsp; <input type="radio" id="display_mode_full" name="display_mode" value="full" '.(($party->display_mode === 'full') ? 'checked="checked" ' : '').'/> <label for="display_mode_full">full</label></p>
 <p><input type="submit" value="Search" /></p>
 </form>
@@ -45,6 +41,7 @@ echo '</p>
 
 // display main table
 if (!empty($party->items)) {
+    echo '<p>You can help by <a href="https://www.wikidata.org/wiki/Special:MyLanguage/Wikidata:Lexicographical_data">creating new lexemes</a> and linking senses to Wikidata items using <a href="https://www.wikidata.org/wiki/Property:P5137">P5137</a>. Usefull tool: <a href="https://lexeme-forms.toolforge.org/">Wikidata Lexeme Forms</a>.</p>';
     $party->display();
 }
 
