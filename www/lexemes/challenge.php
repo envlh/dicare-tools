@@ -55,6 +55,7 @@ else {
     $currentParty->fetchConceptsMeta();
     $items = $currentParty->queryItems();
     $currentParty->computeItems($items);
+    $currentParty->setDisplayMode('compact');
     $currentParty->display('Challenge started on '.$challenge->date_start, $party);
 }
 

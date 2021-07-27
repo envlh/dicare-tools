@@ -7,9 +7,13 @@ class LexemeParty {
     
     public $language_display = 'en';
     public $language_display_form = 'auto';
+    
     public $languages_filter_action = 'block';
     public $languages_filter = array();
+    
     public $languages_direction = 'rows';
+    
+    public $display_mode = 'compact';
     
     public $concepts = array();
     public $concepts_meta = array();
@@ -22,6 +26,10 @@ class LexemeParty {
     
     public $errors = array();
     
+    public function setDisplayMode($display_mode) {
+        $this->display_mode = $display_mode;
+    }
+
     public function init() {
         // filters
         $this->languages_filter_action = 'block';
@@ -37,6 +45,11 @@ class LexemeParty {
         $this->languages_direction = 'rows';
         if (!empty($_GET['languages_direction']) && ($_GET['languages_direction'] === 'columns')) {
             $this->languages_direction = 'columns';
+        }
+        // display mode
+        $this->display_mode = 'compact';
+        if (!empty($_GET['display_mode']) && ($_GET['display_mode'] === 'full')) {
+            $this->display_mode = 'full';
         }
     }
     
@@ -289,11 +302,7 @@ class LexemeParty {
                 }
                 echo '</a></td>';
                 foreach ($this->concepts as $concept) {
-                    echo '<td>';
-                    foreach ($this->items[$concept][$language->qid] as $sense => $lemmas) {
-                        echo htmlentities(implode(' / ', $lemmas)).' (<a href="https://www.wikidata.org/wiki/Lexeme:'.str_replace('-', '#', $sense).'">'.$sense.'</a>)<br />';
-                    }
-                    echo '</td>';
+                    echo '<td>'.$this->cell($this->items[$concept][$language->qid]).'</td>';
                 }
                 echo '</tr>'."\n";
             }
@@ -328,11 +337,7 @@ class LexemeParty {
                 }
                 echo '</td>';
                 foreach ($this->languages as $language) {
-                    echo '<td>';
-                    foreach ($this->items[$concept][$language->qid] as $sense => $lemmas) {
-                        echo htmlentities(implode(' / ', $lemmas)).' (<a href="https://www.wikidata.org/wiki/Lexeme:'.str_replace('-', '#', $sense).'">'.$sense.'</a>)<br />';
-                    }
-                    echo '</td>';
+                    echo '<td>'.$this->cell($this->items[$concept][$language->qid]).'</td>';
                 }
                 echo '</tr>'."\n";
             }
@@ -344,6 +349,20 @@ class LexemeParty {
     &nbsp;&nbsp;&nbsp;&nbsp; <img src="'.SITE_STATIC_DIR.'img/famfamfam/medal_bronze_3.png" alt="" class="medal" title="≥ 50%" /> '.$this->medals['bronze'].'
     &nbsp;&nbsp;&nbsp;&nbsp; &#8709; '.$this->medals[''];
         echo '</p>';
+    }
+    
+    private function cell($items) {
+        $r = '';
+        if ($this->display_mode === 'compact') {
+            foreach ($items as $sense => $lemmas) {
+                $r .= '<a href="https://www.wikidata.org/wiki/Lexeme:'.str_replace('-', '#', $sense).'">'.htmlentities(implode(' / ', $lemmas)).'</a><br />';
+            }
+        } else {
+            foreach ($items as $sense => $lemmas) {
+                $r .= htmlentities(implode(' / ', $lemmas)).' (<a href="https://www.wikidata.org/wiki/Lexeme:'.str_replace('-', '#', $sense).'">'.$sense.'</a>)<br />';
+            }
+        }
+        return $r;
     }
     
 }
