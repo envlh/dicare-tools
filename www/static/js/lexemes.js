@@ -3,7 +3,7 @@ function toggle() {
     var b = document.getElementById('toggle_form_query');
     if (f.style.display !== 'none') {
         f.style.display = 'none';
-        b.value = 'show';
+        b.value = 'edit';
     }
     else {
         f.style.display = 'block';
