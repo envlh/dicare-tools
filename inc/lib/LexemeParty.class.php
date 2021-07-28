@@ -187,8 +187,9 @@ class LexemeParty {
                 if (!empty($this->items[$concept][$language->qid])) {
                     $this->cells_count++;
                     ksort($this->items[$concept][$language->qid]);
-                    foreach ($this->items[$concept][$language->qid] as &$sense) {
-                        asort($sense);
+                    foreach ($this->items[$concept][$language->qid] as &$lemmas) {
+                        $lemmas = array_unique($lemmas);
+                        asort($lemmas);
                     }
                 }
             }
