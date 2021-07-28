@@ -62,7 +62,7 @@ class LexemeParty {
             $this->language_display = $_GET['language_display'];
             $this->language_display_form = $_GET['language_display'];
         }
-        else {
+        elseif (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
             $locale = Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']);
             $locale = substr($locale, 0, strpos($locale, '_'));
             if (preg_match('/^'.LANGUAGE_REGEX.'$/', $locale)) {
