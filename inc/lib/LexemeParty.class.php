@@ -15,6 +15,8 @@ class LexemeParty {
     
     public $display_mode = 'compact';
     
+    public $items_query_time = null;
+    
     public $concepts = array();
     public $concepts_meta = array();
     public $languages = array();
@@ -108,13 +110,16 @@ class LexemeParty {
         }
         
         // add check by code? => ?language wdt:P424 ?code . FILTER (LANG(?lemma) = ?code) .
-        $items = wdqs::query('SELECT * {
+        $query = 'SELECT * {
   hint:Query hint:optimizer "None" .
   ?sense wdt:P5137 ?concept .
   VALUES ?concept { wd:'.implode(' wd:', $this->concepts).' }
   [] ontolex:sense ?sense ; wikibase:lemma ?lemma ; dct:language ?language .
   '.$filter.'
-}', $cache)->results->bindings;
+}';
+        
+        $items = wdqs::query($query, $cache)->results->bindings;
+        $this->items_query_time = wdqs::getLastQueryTime();
     
         if (count($items) === 0) {
             $errors[] = 'No lexeme found :(';

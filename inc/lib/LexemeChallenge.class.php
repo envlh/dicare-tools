@@ -37,7 +37,7 @@ class LexemeChallenge {
         $party = new LexemeParty();
         $party->setConcepts(explode(' ', $this->concepts));
         $items = $party->queryItems(0);
-        $this->date_start = db::query('SELECT NOW()')->fetch_row()[0];
+        $this->date_start = $party->items_query_time;
         $this->results_start = serialize($items);
         db::query('UPDATE `lexeme_challenge` SET `date_start` = \''.$this->date_start.'\', `results_start` = \''.db::sec($this->results_start).'\' WHERE `id` = '.$this->id);
     }
@@ -46,7 +46,7 @@ class LexemeChallenge {
         $party = new LexemeParty();
         $party->setConcepts(explode(' ', $this->concepts));
         $items = $party->queryItems(0);
-        $this->date_end = db::query('SELECT NOW()')->fetch_row()[0];
+        $this->date_end = $party->items_query_time;
         $this->results_end = serialize($items);
         db::query('UPDATE `lexeme_challenge` SET `date_end` = \''.$this->date_end.'\', `results_end` = \''.db::sec($this->results_end).'\' WHERE `id` = '.$this->id);
     }
