@@ -9,7 +9,7 @@ page::setMenu('lexemes');
 require '../../inc/header.inc.php';
 
 echo '<ul>';
-$res = db::query('SELECT * FROM `lexeme_challenge` WHERE `date_end` IS NOT NULL ORDER BY `date_end`');
+$res = db::query('SELECT * FROM `lexeme_challenge` WHERE `date_start` IS NOT NULL ORDER BY `date_start` DESC');
 while ($challenge = $res->fetch_object('LexemeChallenge')) {
     echo '<li><a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php?id='.$challenge->id.'">'.htmlentities($challenge->title).'</a></li>';
 }

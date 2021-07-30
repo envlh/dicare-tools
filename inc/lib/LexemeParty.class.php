@@ -21,6 +21,7 @@ class LexemeParty {
     public $concepts_meta = array();
     public $languages = array();
     public $lexemes = array();
+    public $senses = array();
     
     public $cells_count = 0;
     public $completion = 0;
@@ -180,6 +181,9 @@ class LexemeParty {
                     $this->items[$concept_qid][$language_qid][$sense] = array();
                 }
                 $this->items[$concept_qid][$language_qid][$sense][] = $item->lemma->value;
+                if (!in_array($sense, $this->senses)) {
+                    $this->senses[] = $sense;
+                }
                 $lexeme = substr($sense, 0, strpos($sense, '-'));
                 if (!in_array($lexeme, $this->lexemes)) {
                     $this->lexemes[] = $lexeme;
@@ -244,12 +248,24 @@ class LexemeParty {
     private static function diff($reference, $current) {
         $diff = $current - $reference;
         if ($diff > 0) {
-            return '+'.$diff;
+            return '<span class="pos">+'.$diff.'</span>';
         } elseif ($diff == 0) {
             return '=';
         } elseif ($diff < 0) {
-            return $diff;
+            return '<span class="neg">'.$diff.'</span>';
         }
+    }
+    
+    private static function diff_array($reference, $current) {
+        $r = array();
+        $intersect = array_intersect($reference, $current);
+        if (count($intersect) < count($reference)) {
+            $r[] = '<span class="neg">'.(count($intersect) - count($reference)).'</span>';
+        }
+        if (count($intersect) < count($current)) {
+            $r[] = '<span class="pos">+'.(count($current) - count($intersect)).'</span>';
+        }
+        return implode(', ', $r);
     }
     
     public function display($title = 'Results', $referenceParty = null) {
@@ -263,8 +279,9 @@ class LexemeParty {
             echo '<ul>
     <li>You can help by <a href="https://www.wikidata.org/wiki/Special:MyLanguage/Wikidata:Lexicographical_data">creating new lexemes</a> and linking senses to Wikidata items using <a href="https://www.wikidata.org/wiki/Property:P5137">P5137</a>. Usefull tool: <a href="https://lexeme-forms.toolforge.org/">Wikidata Lexeme Forms</a>.</li>
     <li>Current progress:<ul>
-        <li><strong>'.count($this->languages).'</strong> language'.(count($this->languages) > 1 ? 's' : '').' ('.self::diff(count($referenceParty->languages), count($this->languages)).')</li>
-        <li><strong>'.count($this->lexemes).'</strong> lexeme'.(count($this->lexemes) > 1 ? 's' : '').' ('.self::diff(count($referenceParty->lexemes), count($this->lexemes)).')</li>
+        <li><strong>'.count($this->languages).'</strong> language'.(count($this->languages) > 1 ? 's' : '').' ('.self::diff_array(array_keys($referenceParty->languages), array_keys($this->languages)).')</li>
+        <li><strong>'.count($this->lexemes).'</strong> lexeme'.(count($this->lexemes) > 1 ? 's' : '').' ('.self::diff_array($referenceParty->lexemes, $this->lexemes).')</li>
+        <li><strong>'.count($this->senses).'</strong> sense'.(count($this->senses) > 1 ? 's' : '').' ('.self::diff_array($referenceParty->senses, $this->senses).')</li>
         <li><strong>'.$this->completion.'%</strong> completion ('.self::diff($referenceParty->completion, $this->completion).')</li>
         <li><strong>'.($this->medals['gold'] * 3 + $this->medals['silver'] * 2 + $this->medals['bronze']).'</strong> medals ('.self::diff($referenceParty->medals['gold'] * 3 + $referenceParty->medals['silver'] * 2 + $referenceParty->medals['bronze'], $this->medals['gold'] * 3 + $this->medals['silver'] * 2 + $this->medals['bronze']).')</li>
     </ul>
