@@ -67,7 +67,7 @@ else {
         <li><strong>'.($currentParty->medals['gold'] * 3 + $currentParty->medals['silver'] * 2 + $currentParty->medals['bronze']).'</strong> medals ('.LexemeParty::diff($referenceParty->medals['gold'] * 3 + $referenceParty->medals['silver'] * 2 + $referenceParty->medals['bronze'], $currentParty->medals['gold'] * 3 + $currentParty->medals['silver'] * 2 + $currentParty->medals['bronze']).')</li>
     </ul>
     <form action="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php" method="get">
-    <p><input type="hidden" name="id" value="'.$currentChallenge->id.'" /><label for="language_display">Display language:</label> <select name="language_display">
+    <p><input type="hidden" name="id" value="'.$challenge->id.'" /><label for="language_display">Display language:</label> <select name="language_display">
         <option value="auto">Automatic'.(($currentParty->language_display_form === 'auto') ? ' (detected: '.htmlentities($currentParty->language_display).')' : '').'</option>';
 $res = wdqs::query('SELECT DISTINCT ?code ?label WHERE { ?language wdt:P218 ?code ; rdfs:label ?label . FILTER (LANG(?label) = ?code) } ORDER BY ?code', 86400)->results->bindings;
 foreach ($res as $language) {
