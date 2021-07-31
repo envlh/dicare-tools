@@ -245,7 +245,7 @@ class LexemeParty {
         return $r;
     }
     
-    private static function diff($reference, $current) {
+    public static function diff($reference, $current) {
         $diff = $current - $reference;
         if ($diff > 0) {
             return '<span class="pos">+'.$diff.'</span>';
@@ -256,7 +256,7 @@ class LexemeParty {
         }
     }
     
-    private static function diff_array($reference, $current) {
+    public static function diff_array($reference, $current) {
         $r = array();
         $intersect = array_intersect($reference, $current);
         if (count($intersect) < count($reference)) {
@@ -269,24 +269,6 @@ class LexemeParty {
     }
     
     public function display($title = 'Results', $referenceParty = null) {
-        echo '<h2 id="results">'.htmlentities($title);
-        if ($referenceParty === null) {
-            echo ' ('.count($this->concepts).' concept'.(count($this->concepts) > 1 ? 's' : '').', '.count($this->languages).' language'.(count($this->languages) > 1 ? 's' : '').', '.count($this->lexemes).' lexeme'.(count($this->lexemes) > 1 ? 's' : '').', '.floor(100 * $this->cells_count / (count($this->languages) * count($this->concepts))).'% completion)';
-        }
-        echo '</h2>
-';
-        if (!empty($referenceParty)) {
-            echo '<ul>
-    <li>You can help by <a href="https://www.wikidata.org/wiki/Special:MyLanguage/Wikidata:Lexicographical_data">creating new lexemes</a> and linking senses to Wikidata items using <a href="https://www.wikidata.org/wiki/Property:P5137">P5137</a>. Usefull tool: <a href="https://lexeme-forms.toolforge.org/">Wikidata Lexeme Forms</a>.</li>
-    <li>Current progress:<ul>
-        <li><strong>'.count($this->languages).'</strong> language'.(count($this->languages) > 1 ? 's' : '').' ('.self::diff_array(array_keys($referenceParty->languages), array_keys($this->languages)).')</li>
-        <li><strong>'.count($this->lexemes).'</strong> lexeme'.(count($this->lexemes) > 1 ? 's' : '').' ('.self::diff_array($referenceParty->lexemes, $this->lexemes).')</li>
-        <li><strong>'.count($this->senses).'</strong> sense'.(count($this->senses) > 1 ? 's' : '').' ('.self::diff_array($referenceParty->senses, $this->senses).')</li>
-        <li><strong>'.$this->completion.'%</strong> completion ('.self::diff($referenceParty->completion, $this->completion).')</li>
-        <li><strong>'.($this->medals['gold'] * 3 + $this->medals['silver'] * 2 + $this->medals['bronze']).'</strong> medals ('.self::diff($referenceParty->medals['gold'] * 3 + $referenceParty->medals['silver'] * 2 + $referenceParty->medals['bronze'], $this->medals['gold'] * 3 + $this->medals['silver'] * 2 + $this->medals['bronze']).')</li>
-    </ul>
-</ul>';
-        }
         echo '<table id="lexemes">';
         // TODO: clean this code ^^
         if ($this->languages_direction == 'rows') {
