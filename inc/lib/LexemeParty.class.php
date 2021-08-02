@@ -123,7 +123,7 @@ class LexemeParty {
         $this->items_query_time = wdqs::getLastQueryTime();
     
         if (count($items) === 0) {
-            $errors[] = 'No lexeme found :(';
+            $this->errors[] = 'No lexeme found :(';
         }
         
         return $items;
@@ -148,7 +148,7 @@ class LexemeParty {
                 } else {
                     $sense = substr($item->sense->value, 31);
                     // TODO: group errors by language
-                    $errors[] = 'Multiple <a href="https://www.wikidata.org/wiki/Property:P424">P424</a> values for language <a href="https://www.wikidata.org/wiki/'.$language_qid.'">'.$language_qid.'</a> used in <a href="https://www.wikidata.org/wiki/Lexeme:'.str_replace('-', '#', $sense).'">'.$sense.'</a>.';
+                    $this->errors[] = 'Multiple <a href="https://www.wikidata.org/wiki/Property:P424">P424</a> values for language <a href="https://www.wikidata.org/wiki/'.$language_qid.'">'.$language_qid.'</a> used in <a href="https://www.wikidata.org/wiki/Lexeme:'.str_replace('-', '#', $sense).'">'.$sense.'</a>.';
                 }
             }
         }
