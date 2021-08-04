@@ -245,29 +245,6 @@ class LexemeParty {
         return $r;
     }
     
-    public static function diff($reference, $current) {
-        $diff = $current - $reference;
-        if ($diff > 0) {
-            return '<span class="pos">+'.$diff.'</span>';
-        } elseif ($diff == 0) {
-            return '=';
-        } elseif ($diff < 0) {
-            return '<span class="neg">'.$diff.'</span>';
-        }
-    }
-    
-    public static function diff_array($reference, $current) {
-        $r = array();
-        $intersect = array_intersect($reference, $current);
-        if (count($intersect) < count($reference)) {
-            $r[] = '<span class="neg">'.(count($intersect) - count($reference)).'</span>';
-        }
-        if (count($intersect) < count($current)) {
-            $r[] = '<span class="pos">+'.(count($current) - count($intersect)).'</span>';
-        }
-        return implode(', ', $r);
-    }
-    
     public function display($title = 'Results', $referenceParty = null) {
         echo '<table id="lexemes">';
         // TODO: clean this code ^^
@@ -370,6 +347,42 @@ class LexemeParty {
             }
         }
         return $r;
+    }
+    
+    public static function diff($reference, $current) {
+        $diff = $current - $reference;
+        if ($diff > 0) {
+            return '<span class="pos">+'.$diff.'</span>';
+        } elseif ($diff == 0) {
+            return '=';
+        } elseif ($diff < 0) {
+            return '<span class="neg">'.$diff.'</span>';
+        }
+    }
+    
+    public static function diff_array($reference, $current) {
+        $r = array();
+        $intersect = array_intersect($reference, $current);
+        if (count($intersect) < count($reference)) {
+            $r[] = '<span class="neg">'.(count($intersect) - count($reference)).'</span>';
+        }
+        if (count($intersect) < count($current)) {
+            $r[] = '<span class="pos">+'.(count($current) - count($intersect)).'</span>';
+        }
+        if (empty($r)) {
+            return '=';
+        }
+        return implode(', ', $r);
+    }
+    
+    public static function diff_party($referenceParty, $finalParty) {
+        return '<ul>
+        <li><strong>'.count($finalParty->languages).'</strong> language'.(count($finalParty->languages) > 1 ? 's' : '').' ('.self::diff_array(array_keys($referenceParty->languages), array_keys($finalParty->languages)).')</li>
+        <li><strong>'.count($finalParty->lexemes).'</strong> lexeme'.(count($finalParty->lexemes) > 1 ? 's' : '').' ('.self::diff_array($referenceParty->lexemes, $finalParty->lexemes).')</li>
+        <li><strong>'.count($finalParty->senses).'</strong> sense'.(count($finalParty->senses) > 1 ? 's' : '').' ('.self::diff_array($referenceParty->senses, $finalParty->senses).')</li>
+        <li><strong>'.$finalParty->completion.'%</strong> completion ('.self::diff($referenceParty->completion, $finalParty->completion).')</li>
+        <li><strong>'.($finalParty->medals['gold'] * 3 + $finalParty->medals['silver'] * 2 + $finalParty->medals['bronze']).'</strong> medals ('.self::diff($referenceParty->medals['gold'] * 3 + $referenceParty->medals['silver'] * 2 + $referenceParty->medals['bronze'], $finalParty->medals['gold'] * 3 + $finalParty->medals['silver'] * 2 + $finalParty->medals['bronze']).')</li>
+    </ul>';
     }
     
 }

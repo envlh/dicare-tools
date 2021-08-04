@@ -48,6 +48,18 @@ else {
     $referenceParty->setConcepts(explode(' ', $challenge->concepts));
     $items = unserialize($challenge->results_start);
     $referenceParty->computeItems($items);
+    echo '<h2>Challenge started on '.$challenge->date_start.(!empty($challenge->date_end) ? ' and ended on '.$challenge->date_end : '').'</h2>';
+    if (!empty($challenge->date_end)) {
+        // final results
+        $finalParty = new LexemeParty();
+        $finalParty->setConcepts(explode(' ', $challenge->concepts));
+        $items = unserialize($challenge->results_start);
+        $finalParty->computeItems($items);
+        echo '<p><strong><a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php">A new challenge is available!</a></strong></p><p>Progress at the end of the challenge:</p>'.LexemeParty::diff_party($referenceParty, $finalParty);
+    }
+    else {
+        echo '<p>You can help by <a href="https://www.wikidata.org/wiki/Special:MyLanguage/Wikidata:Lexicographical_data">creating new lexemes</a> and linking senses to Wikidata items using <a href="https://www.wikidata.org/wiki/Property:P5137">P5137</a>. Usefull tool: <a href="https://lexeme-forms.toolforge.org/">Wikidata Lexeme Forms</a>.</p>';
+    }
     // current results
     $currentParty = new LexemeParty();
     $currentParty->initLanguageDisplay();
@@ -56,17 +68,7 @@ else {
     $items = $currentParty->queryItems();
     $currentParty->computeItems($items);
     $currentParty->setDisplayMode('compact');
-    echo '<h2>Challenge started on '.$challenge->date_start.'</h2>
-    <p>You can help by <a href="https://www.wikidata.org/wiki/Special:MyLanguage/Wikidata:Lexicographical_data">creating new lexemes</a> and linking senses to Wikidata items using <a href="https://www.wikidata.org/wiki/Property:P5137">P5137</a>. Usefull tool: <a href="https://lexeme-forms.toolforge.org/">Wikidata Lexeme Forms</a>.</p>
-    <p>Current progress:</p>
-    <ul>
-        <li><strong>'.count($currentParty->languages).'</strong> language'.(count($currentParty->languages) > 1 ? 's' : '').' ('.LexemeParty::diff_array(array_keys($referenceParty->languages), array_keys($currentParty->languages)).')</li>
-        <li><strong>'.count($currentParty->lexemes).'</strong> lexeme'.(count($currentParty->lexemes) > 1 ? 's' : '').' ('.LexemeParty::diff_array($referenceParty->lexemes, $currentParty->lexemes).')</li>
-        <li><strong>'.count($currentParty->senses).'</strong> sense'.(count($currentParty->senses) > 1 ? 's' : '').' ('.LexemeParty::diff_array($referenceParty->senses, $currentParty->senses).')</li>
-        <li><strong>'.$currentParty->completion.'%</strong> completion ('.LexemeParty::diff($referenceParty->completion, $currentParty->completion).')</li>
-        <li><strong>'.($currentParty->medals['gold'] * 3 + $currentParty->medals['silver'] * 2 + $currentParty->medals['bronze']).'</strong> medals ('.LexemeParty::diff($referenceParty->medals['gold'] * 3 + $referenceParty->medals['silver'] * 2 + $referenceParty->medals['bronze'], $currentParty->medals['gold'] * 3 + $currentParty->medals['silver'] * 2 + $currentParty->medals['bronze']).')</li>
-    </ul>
-    <form action="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php" method="get">
+    echo '<p>Current progress:</p>'.LexemeParty::diff_party($referenceParty, $currentParty).'<form action="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php" method="get">
     <p><input type="hidden" name="id" value="'.$challenge->id.'" /><label for="language_display">Display language:</label> <select name="language_display">
         <option value="auto">Automatic'.(($currentParty->language_display_form === 'auto') ? ' (detected: '.htmlentities($currentParty->language_display).')' : '').'</option>';
 $res = wdqs::query('SELECT DISTINCT ?code ?label WHERE { ?language wdt:P218 ?code ; rdfs:label ?label . FILTER (LANG(?label) = ?code) } ORDER BY ?code', 86400)->results->bindings;
