@@ -64,10 +64,8 @@ else {
     $currentParty = new LexemeParty();
     $currentParty->initLanguageDisplay();
     $currentParty->setConcepts(explode(' ', $challenge->concepts));
-    $currentParty->fetchConceptsMeta();
     $items = $currentParty->queryItems();
     $currentParty->computeItems($items);
-    $currentParty->setDisplayMode('compact');
     echo '<div class="party_diff"><p>Current progress:</p>'.LexemeParty::diff_party($referenceParty, $currentParty).'</div>
     <form action="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php" method="get" class="party_diff_clear">
     <p><input type="hidden" name="id" value="'.$challenge->id.'" /><label for="language_display">Display language:</label> <select name="language_display">
@@ -78,7 +76,17 @@ foreach ($res as $language) {
 }
 echo '</select> <input type="submit" value="Change" /></p>
 </form>';
-    $currentParty->display();
+    $party = &$currentParty;
+    if (!empty($_GET['table'])) {
+        if ($_GET['table'] === 'reference') {
+            $party = &$referenceParty;
+        } elseif (($_GET['table'] === 'final') && (!empty($finalParty))) {
+            $party = &$finalParty;
+        }
+    }
+    $party->fetchConceptsMeta();
+    $party->setDisplayMode('compact');
+    $party->display();
 }
 
 require '../../inc/footer.inc.php';
