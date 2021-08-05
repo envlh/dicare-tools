@@ -83,8 +83,9 @@ CREATE TABLE `lexeme_challenge` (
   `date_scheduled` datetime NOT NULL,
   `date_start` datetime DEFAULT NULL,
   `date_end` datetime DEFAULT NULL,
-  `results_start` mediumblob,
-  `results_end` mediumblob,
+  `results_start` mediumtext,
+  `results_end` mediumtext,
+  `initial_tweet` bigint unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `title_UNIQUE` (`title`),
   KEY `dates` (`date_start`,`date_end`)
