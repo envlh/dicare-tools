@@ -55,7 +55,7 @@ else {
         $finalParty->setConcepts(explode(' ', $challenge->concepts));
         $items = unserialize($challenge->results_start);
         $finalParty->computeItems($items);
-        echo '<p><strong><a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php">A new challenge is available!</a></strong></p><p>Progress at the end of the challenge:</p>'.LexemeParty::diff_party($referenceParty, $finalParty);
+        echo '<p><strong><a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php">&rarr; A new challenge is available!</a></strong></p><div class="party_diff"><p>Progress at the end of the challenge:</p>'.LexemeParty::diff_party($referenceParty, $finalParty).'</div>';
     }
     else {
         echo '<p>You can help by <a href="https://www.wikidata.org/wiki/Special:MyLanguage/Wikidata:Lexicographical_data">creating new lexemes</a> and linking senses to Wikidata items using <a href="https://www.wikidata.org/wiki/Property:P5137">P5137</a>. Usefull tool: <a href="https://lexeme-forms.toolforge.org/">Wikidata Lexeme Forms</a>.</p>';
@@ -68,7 +68,8 @@ else {
     $items = $currentParty->queryItems();
     $currentParty->computeItems($items);
     $currentParty->setDisplayMode('compact');
-    echo '<p>Current progress:</p>'.LexemeParty::diff_party($referenceParty, $currentParty).'<form action="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php" method="get">
+    echo '<div class="party_diff"><p>Current progress:</p>'.LexemeParty::diff_party($referenceParty, $currentParty).'</div>
+    <form action="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php" method="get" class="party_diff_clear">
     <p><input type="hidden" name="id" value="'.$challenge->id.'" /><label for="language_display">Display language:</label> <select name="language_display">
         <option value="auto">Automatic'.(($currentParty->language_display_form === 'auto') ? ' (detected: '.htmlentities($currentParty->language_display).')' : '').'</option>';
 $res = wdqs::query('SELECT DISTINCT ?code ?label WHERE { ?language wdt:P218 ?code ; rdfs:label ?label . FILTER (LANG(?label) = ?code) } ORDER BY ?code', 86400)->results->bindings;
@@ -77,7 +78,7 @@ foreach ($res as $language) {
 }
 echo '</select> <input type="submit" value="Change" /></p>
 </form>';
-    $currentParty->display($referenceParty);
+    $currentParty->display();
 }
 
 require '../../inc/footer.inc.php';

@@ -245,7 +245,7 @@ class LexemeParty {
         return $r;
     }
     
-    public function display($title = 'Results', $referenceParty = null) {
+    public function display() {
         echo '<table id="lexemes">';
         // TODO: clean this code ^^
         if ($this->languages_direction == 'rows') {

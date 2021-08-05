@@ -217,6 +217,17 @@ textarea {
     text-align: left;
 }
 
+.party_diff {
+    float: left;
+    width: 400px;
+}
+.party_diff p {
+    margin-top: 0;
+}
+.party_diff_clear {
+    clear: both;
+}
+
 .pos {
     color: green;
 }
