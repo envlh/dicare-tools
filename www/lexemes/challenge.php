@@ -53,7 +53,7 @@ else {
         // final results
         $finalParty = new LexemeParty();
         $finalParty->setConcepts(explode(' ', $challenge->concepts));
-        $items = unserialize($challenge->results_start);
+        $items = unserialize($challenge->results_end);
         $finalParty->computeItems($items);
         echo '<p><strong><a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php">&rarr; A new challenge is available!</a></strong></p><div class="party_diff"><p>Progress at the end of the challenge:</p>'.LexemeParty::diff_party($referenceParty, $finalParty).'</div>';
     }
