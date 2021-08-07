@@ -349,7 +349,7 @@ class LexemeParty {
         return $r;
     }
     
-    public static function diff($reference, $current) {
+    public static function diff($current, $reference) {
         $diff = $current - $reference;
         if ($diff > 0) {
             return '<span class="pos">+'.$diff.'</span>';
@@ -360,7 +360,7 @@ class LexemeParty {
         }
     }
     
-    public static function diff_array($reference, $current) {
+    public static function diff_array($current, $reference) {
         $r = array();
         $intersect = array_intersect($reference, $current);
         if (count($intersect) < count($reference)) {
@@ -375,14 +375,29 @@ class LexemeParty {
         return implode(', ', $r);
     }
     
-    public static function diff_party($referenceParty, $finalParty) {
-        return '<ul>
-        <li><strong>'.count($finalParty->languages).'</strong> language'.(count($finalParty->languages) > 1 ? 's' : '').' ('.self::diff_array(array_keys($referenceParty->languages), array_keys($finalParty->languages)).')</li>
-        <li><strong>'.count($finalParty->lexemes).'</strong> lexeme'.(count($finalParty->lexemes) > 1 ? 's' : '').' ('.self::diff_array($referenceParty->lexemes, $finalParty->lexemes).')</li>
-        <li><strong>'.count($finalParty->senses).'</strong> sense'.(count($finalParty->senses) > 1 ? 's' : '').' ('.self::diff_array($referenceParty->senses, $finalParty->senses).')</li>
-        <li><strong>'.$finalParty->completion.'%</strong> completion ('.self::diff($referenceParty->completion, $finalParty->completion).')</li>
-        <li><strong>'.($finalParty->medals['gold'] * 3 + $finalParty->medals['silver'] * 2 + $finalParty->medals['bronze']).'</strong> medals ('.self::diff($referenceParty->medals['gold'] * 3 + $referenceParty->medals['silver'] * 2 + $referenceParty->medals['bronze'], $finalParty->medals['gold'] * 3 + $finalParty->medals['silver'] * 2 + $finalParty->medals['bronze']).')</li>
-    </ul>';
+    public static function diff_party($currentParty, $referenceParty = null) {
+        $r = '<ul><li><strong>'.count($currentParty->languages).'</strong> language'.(count($currentParty->languages) > 1 ? 's' : '');
+        if ($referenceParty !== null) {
+            $r .= ' ('.self::diff_array(array_keys($currentParty->languages), array_keys($referenceParty->languages)).')';
+        }
+        $r .= '</li><li><strong>'.count($currentParty->lexemes).'</strong> lexeme'.(count($currentParty->lexemes) > 1 ? 's' : '');
+        if ($referenceParty !== null) {
+            $r .= ' ('.self::diff_array($currentParty->lexemes, $referenceParty->lexemes).')';
+        }
+        $r .= '</li><li><strong>'.count($currentParty->senses).'</strong> sense'.(count($currentParty->senses) > 1 ? 's' : '');
+        if ($referenceParty !== null) {
+            $r .= ' ('.self::diff_array($currentParty->senses, $referenceParty->senses).')';
+        }
+        $r .= '</li><li><strong>'.$currentParty->completion.'%</strong> completion';
+        if ($referenceParty !== null) {
+            $r .= ' ('.self::diff($currentParty->completion, $referenceParty->completion).')';
+        }
+        $r .= '</li><li><strong>'.($currentParty->medals['gold'] * 3 + $currentParty->medals['silver'] * 2 + $currentParty->medals['bronze']).'</strong> medals';
+        if ($referenceParty !== null) {
+            $r .= ' ('.self::diff($currentParty->medals['gold'] * 3 + $currentParty->medals['silver'] * 2 + $currentParty->medals['bronze'], $referenceParty->medals['gold'] * 3 + $referenceParty->medals['silver'] * 2 + $referenceParty->medals['bronze']).')';
+        }
+        $r .= '</li></ul>';
+        return $r;
     }
     
 }
