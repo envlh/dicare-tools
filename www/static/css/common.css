@@ -217,6 +217,18 @@ textarea {
     text-align: left;
 }
 
+.lexemes_stats th, .lexemes_stats td {
+    width: 100px;
+    text-align: center;
+}
+.lexemes_stats td.lang {
+    text-align: left;
+}
+.lexemes_stats th.position, .lexemes_stats td.position {
+    width: unset;
+    text-align: right;
+}
+
 .party_diff {
     float: left;
     width: 330px;
