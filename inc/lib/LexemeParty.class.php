@@ -234,9 +234,10 @@ class LexemeParty {
       OPTIONAL { wd:'.$qid.' wdt:P424 ?code }
       OPTIONAL { wd:'.$qid.' rdfs:label ?label . FILTER(LANG(?label) = "'.$this->language_display.'") }
     }', WDQS_CACHE)->results->bindings;
-        if (count($items) > 1) {
+        // TODO properly handle languages codes
+        /*if (count($items) > 1) {
             return false;
-        }
+        }*/
         $item = $items[0];
         $r = (object) array('qid' => $qid, 'code' => @$item->code->value, 'label' => @$item->label->value);
         if ($r->code === null) {
