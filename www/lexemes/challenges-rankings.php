@@ -16,7 +16,7 @@ echo '<h2>Most complete languages at the end of challenges</h2>'.display_table($
 
 function display_table($res) {
     $r = '<table class="lexemes_stats">
-<tr><th class="position">Pos.</th><th>Language</th><th>Concepts linked by lexemes</th><th>Lexemes added</th><th>Lexemes removed</th><th>Lexemes improved</th></tr>';
+<tr><th class="position">Pos.</th><th>Language</th><th>Concepts linked</th><th>Lexemes linked</th><th>Lexemes unlinked</th><th>Lexemes improved</th></tr>';
     $pos = 1;
     $previousScore = '';
     while ($row = $res->fetch_object()) {

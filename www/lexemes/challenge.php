@@ -33,8 +33,6 @@ if ($challenge === null) {
     $error = 'No active challenge!';
 }
 
-$challenge->generateStatistics();
-
 $title = (!empty($challenge->title) ? htmlentities($challenge->title).' — ' : '').'<a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php">Lexemes Challenge</a>';
 define('PAGE_TITLE', $title);
 page::setMenu('lexemes');
