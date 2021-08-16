@@ -65,9 +65,15 @@ class LexemeChallenge {
         $this->date_end = $party->items_query_time;
         $this->results_end = serialize($items);
         db::query('UPDATE `lexemes_challenge` SET `date_end` = \''.$this->date_end.'\', `results_end` = \''.db::sec($this->results_end).'\' WHERE `id` = '.$this->id);
+        // rankings
+        $referenceParty = new LexemeParty();
+        $referenceParty->setConcepts(explode(' ', $this->concepts));
+        $items = unserialize($this->results_start);
+        $referenceParty->computeItems($items);
+        $rankings = LexemeParty::generateRankings($referenceParty, $party);
+        $this->saveRankings($rankings);
+        // commit
         db::commit();
-        // stats
-        $this->generateStatistics();
         // tweeting
         if (LEXEMES_CHALLENGE_TWEETS === true) {
             $tweet = '@'.TWITTER_ACCOUNT.' The challenge is over! There are now '.count($party->lexemes).' lexemes in '.count($party->languages).' languages linked to the items of this challenge.'."\n".SITE_DIR.LEXEMES_SITE_DIR.'challenge.php?id='.$this->id;
@@ -75,50 +81,14 @@ class LexemeChallenge {
         }
     }
     
-    public function generateStatistics() {
-        if (!empty($this->results_start) && !empty($this->results_end)) {
-            $concepts = explode(' ', $this->concepts);
-            $startParty = new LexemeParty();
-            $startParty->setConcepts($concepts);
-            $startParty->computeItems(unserialize($this->results_start));
-            $endParty = new LexemeParty();
-            $endParty->setConcepts($concepts);
-            $endParty->computeItems(unserialize($this->results_end));
-            $values = array();
-            foreach ($endParty->languages as $language) {
-                $language_qid = $language->qid;
-                $completion = 0; // concepts with at least one lexeme
-                $removed = 0;
-                $added = 0;
-                foreach ($concepts as $concept_qid) {
-                    if (isset($startParty->items[$concept_qid][$language_qid])) {
-                        $lexemes_start = array_keys($startParty->items[$concept_qid][$language_qid]);
-                    } else {
-                        $lexemes_start = array();
-                    }
-                    if (isset($endParty->items[$concept_qid][$language_qid])) {
-                        $lexemes_end = array_keys($endParty->items[$concept_qid][$language_qid]);
-                    } else {
-                        $lexemes_end = array();
-                    }
-                    if (!empty($lexemes_end)) {
-                        $completion++;
-                    }
-                    $intersect = array_intersect($lexemes_start, $lexemes_end);
-                    if (count($intersect) < count($lexemes_start)) {
-                        $removed += abs(count($intersect) - count($lexemes_start));
-                    }
-                    if (count($intersect) < count($lexemes_end)) {
-                        $added += count($lexemes_end) - count($intersect);
-                    }
-                }
-                $values[] = '('.$this->id.', '.substr($language_qid, 1).', '.$completion.', '.$removed.', '.$added.')';
-            }
-            if (!empty($values)) {
-                db::query('DELETE FROM `lexemes_challenge_statistics` WHERE `challenge_id` = '.$this->id);
-                db::query('INSERT INTO `lexemes_challenge_statistics` VALUES'.implode(',', $values));
-                db::commit();
-            }
+    public function saveRankings($rankings) {
+        $values = array();
+        foreach ($rankings as $ranking) {
+            $values[] = '('.$this->id.', '.substr($ranking->language_qid, 1).', '.$ranking->completion.', '.$ranking->removed.', '.$ranking->added.')';;
+        }
+        if (!empty($values)) {
+            db::query('DELETE FROM `lexemes_challenge_statistics` WHERE `challenge_id` = '.$this->id);
+            db::query('INSERT INTO `lexemes_challenge_statistics` VALUES'.implode(',', $values));
         }
     }
     

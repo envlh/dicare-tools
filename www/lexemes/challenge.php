@@ -43,6 +43,7 @@ if (!empty($error)) {
     echo '<h2>Error</h2><p>'.$error.'</p>';
 }
 else {
+    
     // initial results
     $referenceParty = new LexemeParty();
     $referenceParty->setConcepts(explode(' ', $challenge->concepts));
@@ -64,23 +65,24 @@ else {
         $finalParty->computeItems($items);
         echo '<div class="party_diff"><p>End of the challenge:</p>'.LexemeParty::diff_party($finalParty, $referenceParty).'</div>';
     }
-    else {
-    }
+    
     // current results
     $currentParty = new LexemeParty();
     $currentParty->initLanguageDisplay();
     $currentParty->setConcepts(explode(' ', $challenge->concepts));
     $items = $currentParty->queryItems();
     $currentParty->computeItems($items);
+    
+    // display
     echo '<div class="party_diff"><p>Current progress:</p>'.LexemeParty::diff_party($currentParty, $referenceParty).'</div>
     <form action="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php" method="get" class="party_diff_clear">
     <p><input type="hidden" name="id" value="'.$challenge->id.'" /><label for="language_display">Display language:</label> <select name="language_display">
         <option value="auto">Automatic'.(($currentParty->language_display_form === 'auto') ? ' (detected: '.htmlentities($currentParty->language_display).')' : '').'</option>';
-$res = wdqs::query('SELECT DISTINCT ?code ?label WHERE { ?language wdt:P218 ?code ; rdfs:label ?label . FILTER (LANG(?label) = ?code) } ORDER BY ?code', 86400)->results->bindings;
-foreach ($res as $language) {
-    echo '<option value="'.htmlentities($language->code->value).'"'.(($currentParty->language_display_form !== 'auto') && ($currentParty->language_display === $language->code->value) ? ' selected="selected"' : '').'>['.htmlentities($language->code->value).'] '.htmlentities($language->label->value).'</option>';
-}
-echo '</select> <input type="submit" value="Change" /></p>
+    $res = wdqs::query('SELECT DISTINCT ?code ?label WHERE { ?language wdt:P218 ?code ; rdfs:label ?label . FILTER (LANG(?label) = ?code) } ORDER BY ?code', 86400)->results->bindings;
+    foreach ($res as $language) {
+        echo '<option value="'.htmlentities($language->code->value).'"'.(($currentParty->language_display_form !== 'auto') && ($currentParty->language_display === $language->code->value) ? ' selected="selected"' : '').'>['.htmlentities($language->code->value).'] '.htmlentities($language->label->value).'</option>';
+    }
+    echo '</select> <input type="submit" value="Change" /></p>
 </form>';
     $party = &$currentParty;
     if (!empty($_GET['table'])) {
@@ -93,6 +95,27 @@ echo '</select> <input type="submit" value="Change" /></p>
     $party->fetchConceptsMeta();
     $party->setDisplayMode('compact');
     $party->display();
+    
+    // rankings
+    if (!empty($finalParty)) {
+        $rankings = LexemeParty::generateRankings($referenceParty, $finalParty);
+    }
+    else {
+        $rankings = LexemeParty::generateRankings($referenceParty, $currentParty);
+    }
+    $rankings = array_filter($rankings, function($var) { return ($var->added != 0) || ($var->removed != 0); });
+    usort($rankings, function($a, $b) {
+        $r = $b->removed + $b->added <=> $a->removed + $a->added;
+        if ($r !== 0) {
+            return $r;
+        }
+        return $b->completion <=> $a->completion;
+    });
+    if (count($rankings) >= 1) {
+        echo '<h2>Most improved languages during the challenge</h2>';
+        LexemeParty::displayRankings($rankings);
+    }
+    
 }
 
 require '../../inc/footer.inc.php';

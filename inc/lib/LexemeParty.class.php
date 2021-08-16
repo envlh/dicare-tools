@@ -246,6 +246,10 @@ class LexemeParty {
         return $r;
     }
     
+    private static function fetchLanguageLabel($qid) {
+        return wdqs::query('SELECT ?conceptLabel { VALUES ?concept { wd:'.$qid.' } . SERVICE wikibase:label { bd:serviceParam wikibase:language "en" . } }', 86400)->results->bindings[0]->conceptLabel->value;
+    }
+
     public function display() {
         echo '<table id="lexemes">';
         // TODO: clean this code ^^
@@ -350,7 +354,7 @@ class LexemeParty {
         return $r;
     }
     
-    public static function diff($current, $reference) {
+    private static function diff($current, $reference) {
         $diff = $current - $reference;
         if ($diff > 0) {
             return '<span class="pos">+'.$diff.'</span>';
@@ -361,7 +365,7 @@ class LexemeParty {
         }
     }
     
-    public static function diff_array($current, $reference) {
+    private static function diff_array($current, $reference) {
         $r = array();
         $intersect = array_intersect($reference, $current);
         if (count($intersect) < count($reference)) {
@@ -399,6 +403,55 @@ class LexemeParty {
         }
         $r .= '</li></ul>';
         return $r;
+    }
+
+    public static function generateRankings($startParty, $endParty) {
+        $rankings = array();
+        foreach ($endParty->languages as $language) {
+            $ranking = new stdClass();
+            $ranking->language_qid = $language->qid;
+            $ranking->completion = 0; // concepts with at least one lexeme at the end of the challenge
+            $ranking->removed = 0; // lexemes removed during the challenge
+            $ranking->added = 0; // lexemes added during the challene
+            foreach ($startParty->concepts as $concept_qid) {
+                if (isset($startParty->items[$concept_qid][$ranking->language_qid])) {
+                    $lexemes_start = array_keys($startParty->items[$concept_qid][$ranking->language_qid]);
+                } else {
+                    $lexemes_start = array();
+                }
+                if (isset($endParty->items[$concept_qid][$ranking->language_qid])) {
+                    $lexemes_end = array_keys($endParty->items[$concept_qid][$ranking->language_qid]);
+                } else {
+                    $lexemes_end = array();
+                }
+                if (!empty($lexemes_end)) {
+                    $ranking->completion++;
+                }
+                $intersect = array_intersect($lexemes_start, $lexemes_end);
+                if (count($intersect) < count($lexemes_start)) {
+                    $ranking->removed += abs(count($intersect) - count($lexemes_start));
+                }
+                if (count($intersect) < count($lexemes_end)) {
+                    $ranking->added += count($lexemes_end) - count($intersect);
+                }
+            }
+            $rankings[] = $ranking;
+        }
+        return $rankings;
+    }
+    
+    public static function displayRankings($rankings) {
+        echo '<table class="lexemes_stats">
+    <tr><th class="position">Pos.</th><th>Language</th><th>Lexemes linked</th><th>Lexemes unlinked</th><th>Lexemes improved</th><th>Concepts linked</th></tr>';
+        $pos = 1;
+        $previousScore = '';
+        foreach ($rankings as $ranking) {
+            $score = $ranking->completion.'#'.$ranking->removed.'#'.$ranking->added;
+            echo '<tr><td class="position">'.(($score !== $previousScore) ? $pos.'.' : '').'</td><td class="lang"><a href="https://www.wikidata.org/wiki/Q'.$ranking->language_qid.'">'.htmlentities(self::fetchLanguageLabel($ranking->language_qid)).'</a></td><td>'.($ranking->added > 0 ? '<span class="pos">+'.$ranking->added.'</span>' : '').'</td><td>'.($ranking->removed > 0 ? '<span class="neg">-'.$ranking->removed.'</span>' : '').'</td><td>'.($ranking->removed + $ranking->added).'</td><td>'.$ranking->completion.'</td></tr>';
+            $pos++;
+            $previousScore = $score;
+        }
+        echo '</table>';
     }
     
 }
