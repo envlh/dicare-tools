@@ -44,11 +44,7 @@ if (!empty($error)) {
 }
 else {
     
-    // initial results
-    $referenceParty = new LexemeParty();
-    $referenceParty->setConcepts(explode(' ', $challenge->concepts));
-    $items = unserialize($challenge->results_start);
-    $referenceParty->computeItems($items);
+    // title and intro
     echo '<h2>Challenge started on '.$challenge->date_start.(!empty($challenge->date_end) ? ' and ended on '.$challenge->date_end : '').'</h2>';
     if (!empty($challenge->date_end)) {
         echo '<p><strong><a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php">&rarr; A new challenge is available!</a></strong></p>';
@@ -56,9 +52,16 @@ else {
     else {
         echo '<p>You can help by <a href="https://www.wikidata.org/wiki/Special:MyLanguage/Wikidata:Lexicographical_data">creating new lexemes</a> and linking senses to Wikidata items using <a href="https://www.wikidata.org/wiki/Property:P5137">P5137</a>. Usefull tool: <a href="https://lexeme-forms.toolforge.org/">Wikidata Lexeme Forms</a>.</p>';
     }
+    
+    // initial results
+    $referenceParty = new LexemeParty();
+    $referenceParty->setConcepts(explode(' ', $challenge->concepts));
+    $items = unserialize($challenge->results_start);
+    $referenceParty->computeItems($items);
     echo '<div class="party_diff"><p>Start of the challenge:</p>'.LexemeParty::diff_party($referenceParty, null).'</div>';
+    
+    // final results
     if (!empty($challenge->date_end)) {
-        // final results
         $finalParty = new LexemeParty();
         $finalParty->setConcepts(explode(' ', $challenge->concepts));
         $items = unserialize($challenge->results_end);
@@ -112,7 +115,7 @@ else {
         return $b->completion <=> $a->completion;
     });
     if (count($rankings) >= 1) {
-        echo '<h2>Most improved languages during the challenge</h2>';
+        echo '<h2 id="rankings">Most improved languages during the challenge</h2>';
         LexemeParty::displayRankings($rankings);
     }
     
