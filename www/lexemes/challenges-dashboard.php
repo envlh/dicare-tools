@@ -2,7 +2,7 @@
 
 require '../../inc/load.inc.php';
 
-$title = '<a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenges-rankings.php">Lexemes Challenges Rankings</a>';
+$title = '<a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenges-dashboard.php">Lexemes Challenges Dashboard</a>';
 define('PAGE_TITLE', $title);
 page::setMenu('lexemes');
 

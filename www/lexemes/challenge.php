@@ -53,9 +53,11 @@ else {
         echo '<p>You can help by <a href="https://www.wikidata.org/wiki/Special:MyLanguage/Wikidata:Lexicographical_data">creating new lexemes</a> and linking senses to Wikidata items using <a href="https://www.wikidata.org/wiki/Property:P5137">P5137</a>. Usefull tool: <a href="https://lexeme-forms.toolforge.org/">Wikidata Lexeme Forms</a>.</p>';
     }
     
+    $concepts = explode(' ', $challenge->concepts);
+    
     // initial results
     $referenceParty = new LexemeParty();
-    $referenceParty->setConcepts(explode(' ', $challenge->concepts));
+    $referenceParty->setConcepts($concepts);
     $items = unserialize($challenge->results_start);
     $referenceParty->computeItems($items);
     echo '<div class="party_diff"><p>Start of the challenge:</p>'.LexemeParty::diff_party($referenceParty, null).'</div>';
@@ -63,7 +65,7 @@ else {
     // final results
     if (!empty($challenge->date_end)) {
         $finalParty = new LexemeParty();
-        $finalParty->setConcepts(explode(' ', $challenge->concepts));
+        $finalParty->setConcepts($concepts);
         $items = unserialize($challenge->results_end);
         $finalParty->computeItems($items);
         echo '<div class="party_diff"><p>End of the challenge:</p>'.LexemeParty::diff_party($finalParty, $referenceParty).'</div>';
@@ -72,7 +74,7 @@ else {
     // current results
     $currentParty = new LexemeParty();
     $currentParty->initLanguageDisplay();
-    $currentParty->setConcepts(explode(' ', $challenge->concepts));
+    $currentParty->setConcepts($concepts);
     $items = $currentParty->queryItems();
     $currentParty->computeItems($items);
     
@@ -115,8 +117,8 @@ else {
         return $b->completion <=> $a->completion;
     });
     if (count($rankings) >= 1) {
-        echo '<h2 id="rankings">Most improved languages during the challenge</h2>';
-        LexemeParty::displayRankings($rankings);
+        echo '<h2 id="dashboard">Most improved languages during the challenge</h2>';
+        LexemeParty::displayRankings($rankings, count($concepts));
     }
     
 }
