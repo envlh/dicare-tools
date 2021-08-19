@@ -80,6 +80,7 @@ CREATE TABLE `lexemes_challenge` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(100) NOT NULL,
   `concepts` varchar(255) NOT NULL,
+  `concepts_count` int unsigned NOT NULL,
   `date_scheduled` datetime NOT NULL,
   `date_start` datetime DEFAULT NULL,
   `date_end` datetime DEFAULT NULL,
