@@ -415,18 +415,30 @@ class LexemeParty {
             $ranking->added = 0; // lexemes added during the challene
             foreach ($startParty->concepts as $concept_qid) {
                 if (isset($startParty->items[$concept_qid][$ranking->language_qid])) {
-                    $lexemes_start = array_keys($startParty->items[$concept_qid][$ranking->language_qid]);
+                    $senses_start = array_keys($startParty->items[$concept_qid][$ranking->language_qid]);
                 } else {
-                    $lexemes_start = array();
+                    $senses_start = array();
                 }
                 if (isset($endParty->items[$concept_qid][$ranking->language_qid])) {
-                    $lexemes_end = array_keys($endParty->items[$concept_qid][$ranking->language_qid]);
+                    $senses_end = array_keys($endParty->items[$concept_qid][$ranking->language_qid]);
                 } else {
-                    $lexemes_end = array();
+                    $senses_end = array();
                 }
-                if (!empty($lexemes_end)) {
+                if (!empty($senses_end)) {
                     $ranking->completion++;
                 }
+                // senses -> lexemes
+                $lexemes_start = array();
+                foreach ($senses_start as $sense) {
+                    $lexemes_start[] = substr($sense, 0, strpos($sense, '-'));
+                }
+                $lexemes_start = array_unique($lexemes_start);
+                $lexemes_end = array();
+                foreach ($senses_end as $sense) {
+                    $lexemes_end[] = substr($sense, 0, strpos($sense, '-'));
+                }
+                $lexemes_end = array_unique($lexemes_end);
+                // stats
                 $intersect = array_intersect($lexemes_start, $lexemes_end);
                 if (count($intersect) < count($lexemes_start)) {
                     $ranking->removed += abs(count($intersect) - count($lexemes_start));
