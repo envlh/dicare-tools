@@ -104,6 +104,8 @@ else {
     // rankings
     if (!empty($finalParty)) {
         $rankings = LexemeParty::generateRankings($referenceParty, $finalParty);
+        $challenge->saveRankings($rankings);
+        db::commit();
     }
     else {
         $rankings = LexemeParty::generateRankings($referenceParty, $currentParty);

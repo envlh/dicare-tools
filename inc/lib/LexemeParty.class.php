@@ -22,6 +22,7 @@ class LexemeParty {
     public $languages = array();
     public $lexemes = array();
     public $senses = array();
+    public $lexicalCategories = array();
     
     public $cells_count = 0;
     public $completion = 0;
@@ -99,6 +100,21 @@ class LexemeParty {
         }
     }
     
+    private function fetchLexicalCategories() {
+        if (count($this->lexicalCategories) >= 1) {
+            asort($this->lexicalCategories);
+            $items = wdqs::query('SELECT ?lexicalCategory ?lexicalCategoryLabel {
+      VALUES ?lexicalCategory { wd:'.implode(' wd:', $this->lexicalCategories).' } .
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "'.$this->language_display.'" }
+    }', 86400)->results->bindings;
+            foreach ($items as $item) {
+                if (isset($item->lexicalCategoryLabel->value)) {
+                    $this->lexicalCategories[substr($item->lexicalCategory->value, 31)] = $item->lexicalCategoryLabel->value;
+                }
+            }
+        }
+    }
+    
     public function queryItems($cache = WDQS_CACHE) {
         
         // filters query optimization (languages are also filtered later)
@@ -115,7 +131,7 @@ class LexemeParty {
   hint:Query hint:optimizer "None" .
   ?sense wdt:P5137 ?concept .
   VALUES ?concept { wd:'.implode(' wd:', $this->concepts).' }
-  [] ontolex:sense ?sense ; wikibase:lemma ?lemma ; dct:language ?language .
+  ?lexeme ontolex:sense ?sense ; wikibase:lemma ?lemma ; dct:language ?language ; wikibase:lexicalCategory ?lexicalCategory .
   '.$filter.'
 }';
         
@@ -176,17 +192,24 @@ class LexemeParty {
             $concept_qid = substr($item->concept->value, 31);
             $language_qid = substr($item->language->value, 31);
             if (isset($this->items[$concept_qid][$language_qid])) {
+                $lexicalCategory_qid = null;
+                if (isset($item->lexicalCategory->value)) {
+                    $lexicalCategory_qid = substr($item->lexicalCategory->value, 31);
+                    if (!isset($this->lexicalCategories[$lexicalCategory_qid])) {
+                        $this->lexicalCategories[$lexicalCategory_qid] = $lexicalCategory_qid;
+                    }
+                }
                 $sense = substr($item->sense->value, 31);
                 if (!isset($this->items[$concept_qid][$language_qid][$sense])) {
                     $this->items[$concept_qid][$language_qid][$sense] = array();
                 }
                 $this->items[$concept_qid][$language_qid][$sense][] = $item->lemma->value;
-                if (!in_array($sense, $this->senses)) {
-                    $this->senses[] = $sense;
+                if (!isset($this->senses[$sense])) {
+                    $this->senses[$sense] = $lexicalCategory_qid;
                 }
                 $lexeme = substr($sense, 0, strpos($sense, '-'));
-                if (!in_array($lexeme, $this->lexemes)) {
-                    $this->lexemes[] = $lexeme;
+                if (!isset($this->lexemes[$lexeme])) {
+                    $this->lexemes[$lexeme] = null;
                 }
             }
         }
@@ -251,6 +274,7 @@ class LexemeParty {
     }
 
     public function display() {
+        $this->fetchLexicalCategories();
         echo '<table id="lexemes">';
         // TODO: clean this code ^^
         if ($this->languages_direction == 'rows') {
@@ -344,7 +368,7 @@ class LexemeParty {
         $r = '';
         if ($this->display_mode === 'compact') {
             foreach ($items as $sense => $lemmas) {
-                $r .= '<a href="https://www.wikidata.org/wiki/Lexeme:'.str_replace('-', '#', $sense).'">'.htmlentities(implode(' / ', $lemmas)).'</a><br />';
+                $r .= '<a href="https://www.wikidata.org/wiki/Lexeme:'.str_replace('-', '#', $sense).'" title="'.htmlentities($this->lexicalCategories[$this->senses[$sense]]).' ('.$this->senses[$sense].')">'.htmlentities(implode(' / ', $lemmas)).'</a><br />';
             }
         } else {
             foreach ($items as $sense => $lemmas) {
@@ -367,7 +391,7 @@ class LexemeParty {
     
     private static function diff_array($current, $reference) {
         $r = array();
-        $intersect = array_intersect($reference, $current);
+        $intersect = array_intersect(array_keys($reference), array_keys($current));
         if (count($intersect) < count($reference)) {
             $r[] = '<span class="neg">'.(count($intersect) - count($reference)).'</span>';
         }
