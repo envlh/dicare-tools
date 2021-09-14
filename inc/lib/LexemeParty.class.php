@@ -1,6 +1,7 @@
 <?php
 
-define('WDQS_CACHE', 3600);
+define('LEXEMES_WDQS_CACHE', 3600);
+define('LEXEMES_META_WDQS_CACHE', 86400);
 define('LANGUAGE_REGEX', '[a-z]+(-[a-z]+)*');
 
 class LexemeParty {
@@ -42,8 +43,11 @@ class LexemeParty {
         }
         $this->languages_filter = array();
         if (!empty($_GET['languages_filter'])) {
-            preg_match_all('/'.LANGUAGE_REGEX.'/', $_GET['languages_filter'], $matches);
-            $this->languages_filter = $matches[0];
+            foreach (explode(' ', $_GET['languages_filter']) as $filter) {
+                if (($filter === 'auto') || preg_match('/^'.LANGUAGE_REGEX.'$/', $filter) || preg_match('/^Q[1-9][0-9]*$/', $filter)) {
+                    $this->languages_filter[] = $filter;
+                }
+            }
         }
         // table direction
         $this->languages_direction = 'rows';
@@ -58,23 +62,28 @@ class LexemeParty {
     }
     
     public function initLanguageDisplay() {
-        $this->language_display = 'en';
+        $this->language_display = $this->parseHttpAcceptLanguage();
         $this->language_display_form = 'auto';
         if (!empty($_GET['language_display']) && ($_GET['language_display'] !== 'auto') && preg_match('/^'.LANGUAGE_REGEX.'$/', $_GET['language_display'])) {
             $this->language_display = $_GET['language_display'];
             $this->language_display_form = $_GET['language_display'];
         }
-        elseif (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+    }
+    
+    private function parseHttpAcceptLanguage() {
+        $r = 'en';
+        if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
             $locale = Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']);
             $locale = substr($locale, 0, strpos($locale, '_'));
             if (preg_match('/^'.LANGUAGE_REGEX.'$/', $locale)) {
-                $this->language_display = $locale;
+                $r = $locale;
             }
         }
+        return $r;
     }
     
     public function fetchConcepts($query) {
-        $results = wdqs::query($query, WDQS_CACHE);
+        $results = wdqs::query($query, LEXEMES_WDQS_CACHE);
         if (empty($results) || count(@$results->results->bindings) === 0) {
             $this->errors[] = 'The input query returned no result.';
             return;
@@ -94,7 +103,7 @@ class LexemeParty {
   VALUES ?concept { wd:'.implode(' wd:', $this->concepts).' } .
   OPTIONAL { ?concept rdfs:label ?conceptLabel . FILTER(LANG(?conceptLabel) = "'.$this->language_display.'") }
   OPTIONAL { ?url schema:about ?concept ; schema:inLanguage "'.$this->language_display.'" ; schema:name ?name ; schema:isPartOf [ wikibase:wikiGroup "wikipedia" ] ; schema:name ?title }
-}', WDQS_CACHE)->results->bindings;
+}', LEXEMES_META_WDQS_CACHE)->results->bindings;
         foreach ($items as $item) {
             $this->concepts_meta[substr($item->concept->value, 31)] = (object) array('label' => @$item->conceptLabel->value, 'wikipedia_url' => @$item->url->value, 'wikipedia_title' => @$item->title->value);
         }
@@ -106,7 +115,7 @@ class LexemeParty {
             $items = wdqs::query('SELECT ?lexicalCategory ?lexicalCategoryLabel {
       VALUES ?lexicalCategory { wd:'.implode(' wd:', $this->lexicalCategories).' } .
       SERVICE wikibase:label { bd:serviceParam wikibase:language "'.$this->language_display.'" }
-    }', 86400)->results->bindings;
+    }', LEXEMES_META_WDQS_CACHE)->results->bindings;
             foreach ($items as $item) {
                 if (isset($item->lexicalCategoryLabel->value)) {
                     $this->lexicalCategories[substr($item->lexicalCategory->value, 31)] = $item->lexicalCategoryLabel->value;
@@ -115,18 +124,24 @@ class LexemeParty {
         }
     }
     
-    public function queryItems($cache = WDQS_CACHE) {
+    public function queryItems($cache = LEXEMES_WDQS_CACHE) {
         
-        // filters query optimization (languages are also filtered later)
-        // TODO: handle languages without codes
+        $filters = array();
+        foreach ($this->languages_filter as $filter) {
+            $qid = $this->findLanguageQid($filter);
+            if (!empty($qid)) {
+                $filters[] = $qid;
+            }
+        }
         $filter = '';
-        if (($this->languages_filter_action == 'allow') && (!empty($this->languages_filter))) {
-            $filter = '?language wdt:P424 ?code . VALUES ?code { "'.implode('" "', $this->languages_filter).'" }';
-        } elseif (($this->languages_filter_action == 'block') && (!empty($this->languages_filter))) {
-            $filter = 'FILTER NOT EXISTS { ?language wdt:P424 ?code . VALUES ?code { "'.implode('" "', $this->languages_filter).'" } }';
+        if (!empty($filters)) {
+            if ($this->languages_filter_action == 'allow') {
+                $filter = 'FILTER (?language IN (wd:'.implode(', wd:', $filters).'))';
+            } elseif ($this->languages_filter_action == 'block') {
+                $filter = 'FILTER (?language NOT IN (wd:'.implode(', wd:', $filters).'))';
+            }
         }
         
-        // add check by code? => ?language wdt:P424 ?code . FILTER (LANG(?lemma) = ?code) .
         $query = 'SELECT * {
   hint:Query hint:optimizer "None" .
   ?sense wdt:P5137 ?concept .
@@ -155,17 +170,7 @@ class LexemeParty {
         foreach ($items as $item) {
             $language_qid = substr($item->language->value, 31);
             if (!isset($this->languages[$language_qid])) {
-                $l = $this->fetchLanguage($language_qid);
-                if ($l !== false) {
-                    if ((($this->languages_filter_action === 'allow') && in_array($l->code, $this->languages_filter))
-                        || (($this->languages_filter_action === 'block') && !in_array($l->code, $this->languages_filter))) {
-                        $this->languages[$language_qid] = $l;
-                    }
-                } else {
-                    $sense = substr($item->sense->value, 31);
-                    // TODO: group errors by language
-                    $this->errors[] = 'Multiple <a href="https://www.wikidata.org/wiki/Property:P424">P424</a> values for language <a href="https://www.wikidata.org/wiki/'.$language_qid.'">'.$language_qid.'</a> used in <a href="https://www.wikidata.org/wiki/Lexeme:'.str_replace('-', '#', $sense).'">'.$sense.'</a>.';
-                }
+                $this->languages[$language_qid] = $this->fetchLanguage($language_qid);
             }
         }
         
@@ -252,25 +257,85 @@ class LexemeParty {
         
     }
     
-    private function fetchLanguage($qid) {
-        $items = wdqs::query('SELECT ?code ?label {
-      OPTIONAL { wd:'.$qid.' wdt:P424 ?code }
-      OPTIONAL { wd:'.$qid.' rdfs:label ?label . FILTER(LANG(?label) = "'.$this->language_display.'") }
-    }', WDQS_CACHE)->results->bindings;
-        // TODO properly handle languages codes
-        /*if (count($items) > 1) {
-            return false;
-        }*/
-        $item = $items[0];
-        $r = (object) array('qid' => $qid, 'code' => @$item->code->value, 'label' => @$item->label->value);
-        if ($r->code === null) {
-            $r->code = '∅';
+    private function findLanguageQid($code) {
+        // QID
+        if (preg_match('/^Q[1-9][0-9]*$/', $code)) {
+            return $code;
         }
-        return $r;
+        // auto
+        $parsed_code = $code;
+        if ($code === 'auto') {
+            $parsed_code = $this->parseHttpAcceptLanguage();
+        }
+        // P218
+        $items = wdqs::query('SELECT DISTINCT ?language { ?language wdt:P218 "'.$parsed_code.'" }', LEXEMES_META_WDQS_CACHE)->results->bindings;
+        if (count($items) === 1) {
+            return substr($items[0]->language->value, 31);
+        }
+        elseif (count($items) > 1) {
+            $this->errors[] = 'Several languages found for P218 / ISO 639-1 = "'.$parsed_code.'".';
+        }
+        // P220
+        $items = wdqs::query('SELECT DISTINCT ?language { ?language wdt:P220 "'.$parsed_code.'" }', LEXEMES_META_WDQS_CACHE)->results->bindings;
+        if (count($items) === 1) {
+            return substr($items[0]->language->value, 31);
+        }
+        elseif (count($items) > 1) {
+            $this->errors[] = 'Several languages found for P220 / ISO 639-3 = "'.$parsed_code.'".';
+        }
+        // error
+        $this->errors[] = 'No language found for code "'.$code.'".';
+        return null;
     }
     
+    private function fetchLanguage($qid) {
+        $language = new stdClass;
+        $language->qid = $qid;
+        // P218 / ISO 639-1
+        $items = wdqs::query('SELECT DISTINCT ?code { wd:'.$qid.' wdt:P218 ?code }', LEXEMES_META_WDQS_CACHE)->results->bindings;
+        if (count($items) === 1) {
+            $language->code = $items[0]->code->value;
+            $language->iso_639_1 = $items[0]->code->value;
+        }
+        elseif (count($items) > 1) {
+            $this->errors[] = 'Multiple P218 / ISO 639-1 for '.$qid.'.';
+        }
+        // P220 / ISO 639-3
+        if (!isset($language->code)) {
+            $items = wdqs::query('SELECT DISTINCT ?code { wd:'.$qid.' wdt:P220 ?code }', LEXEMES_META_WDQS_CACHE)->results->bindings;
+            if (count($items) === 1) {
+                $language->code = $items[0]->code->value;
+                $language->iso_639_3 = $items[0]->code->value;
+            }
+            elseif (count($items) > 1) {
+                $this->errors[] = 'Multiple P220 / ISO 639-3 for '.$qid.'.';
+            }
+        }
+        // default code
+        if (empty($language->code)) {
+            $language->code = '∅';
+        }
+        // P424 / Wikimedia language code
+        if (!isset($language->code)) {
+            $items = wdqs::query('SELECT DISTINCT ?code { wd:'.$qid.' wdt:P424 ?code }', LEXEMES_META_WDQS_CACHE)->results->bindings;
+            if (count($items) === 1) {
+                $language->wikimedia = $items[0]->code->value;
+            }
+            elseif (count($items) > 1) {
+                $this->errors[] = 'Multiple P424 / Wikimedia language codes for '.$qid.'.';
+            }
+        }
+        // label
+        $items = wdqs::query('SELECT DISTINCT ?label { wd:'.$qid.' rdfs:label ?label . FILTER(LANG(?label) = "'.$this->language_display.'") }', LEXEMES_META_WDQS_CACHE)->results->bindings;
+        if (count($items) === 1) {
+            $language->label = $items[0]->label->value;
+        }
+        return $language;
+    }
+    
+    // used for rankings
     private static function fetchLanguageLabel($qid) {
-        return wdqs::query('SELECT ?conceptLabel { VALUES ?concept { wd:'.$qid.' } . SERVICE wikibase:label { bd:serviceParam wikibase:language "en" . } }', 86400)->results->bindings[0]->conceptLabel->value;
+        return wdqs::query('SELECT ?conceptLabel { VALUES ?concept { wd:'.$qid.' } . SERVICE wikibase:label { bd:serviceParam wikibase:language "en" . } }', LEXEMES_META_WDQS_CACHE)->results->bindings[0]->conceptLabel->value;
     }
 
     public function display() {
