@@ -92,7 +92,7 @@ In that case, the JSON dump must be already present on the server.
 
 ## Copyright
 
-This project is under AGPLv3 license. See LICENSE and NOTICE files for complete credits.
+This project is under AGPLv3 license. See LICENSE, NOTICE, and CONTRIBUTORS files for complete credits.
 
 ## See also
 
