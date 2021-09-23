@@ -218,21 +218,15 @@ class LexemeParty {
                 }
             }
         }
-        // sorting
+        
+        // scores
         foreach ($this->languages as $language) {
             foreach ($this->concepts as $concept) {
                 if (!empty($this->items[$concept][$language->qid])) {
                     $this->cells_count++;
-                    ksort($this->items[$concept][$language->qid]);
-                    foreach ($this->items[$concept][$language->qid] as &$lemmas) {
-                        $lemmas = array_unique($lemmas);
-                        asort($lemmas);
-                    }
                 }
             }
         }
-        
-        // scores
         $this->completion = floor(100 * $this->cells_count / (count($this->languages) * count($this->concepts)));
         $this->medals = array('gold' => 0, 'silver' => 0, 'bronze' => 0, '' => 0);
         foreach ($this->languages as $language) {
@@ -340,6 +334,37 @@ class LexemeParty {
 
     public function display() {
         $this->fetchLexicalCategories();
+        // sorting
+        foreach ($this->languages as $language) {
+            foreach ($this->concepts as $concept) {
+                if (!empty($this->items[$concept][$language->qid])) {
+                    // alphabetical order of lemmas
+                    foreach ($this->items[$concept][$language->qid] as &$lemmas) {
+                        $lemmas = array_unique($lemmas);
+                        asort($lemmas);
+                    }
+                    $l = $this->items[$concept][$language->qid];
+                    $s = $this->senses;
+                    $lc = $this->lexicalCategories;
+                    uksort($this->items[$concept][$language->qid], function ($a, $b) use ($l, $s, $lc) {
+                        // alphabetical order of group of lemmas
+                        $str_a = implode(' / ', $l[$a]);
+                        $str_b = implode(' / ', $l[$b]);
+                        $r = strcmp($str_a, $str_b);
+                        if ($r !== 0) {
+                            return $r;
+                        }
+                        // alphabetical order of lexical categories
+                        $r = strcmp($lc[$s[$a]], $lc[$s[$b]]);
+                        if ($r !== 0) {
+                            return $r;
+                        }
+                        // alphabetical order of senses ids
+                        return strcmp($a, $b);
+                    });
+                }
+            }
+        }
         echo '<table id="lexemes">';
         // TODO: clean this code ^^
         if ($this->languages_direction == 'rows') {
