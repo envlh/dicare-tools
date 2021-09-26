@@ -50,8 +50,7 @@ class LexemeChallenge {
         // tweeting
         if (LEXEMES_CHALLENGE_TWEETS === true) {
             $tweet = 'New Wikidata Lexemes Challenge! This week\'s theme: '.$this->title."\n".'Help improving lexicographical data on Wikidata. At the moment, there are '.count($party->lexemes).' lexemes in '.count($party->languages).' languages linked to the items of this challenge.'."\n".SITE_DIR.LEXEMES_SITE_DIR.'challenge.php?id='.$this->id;
-            $r = twitterapi::postTweet($tweet);
-            $tweet_data = json_decode(substr($r, strpos($r, "\r\n\r\n")));
+            $tweet_data = json_decode(twitterapi::postTweet($tweet));
             db::query('UPDATE `lexemes_challenge` SET `initial_tweet` = \''.db::sec($tweet_data->id_str).'\' WHERE `id` = '.$this->id);
             db::commit();
         }
@@ -64,15 +63,17 @@ class LexemeChallenge {
         $party->computeItems($items);
         $this->date_end = $party->items_query_time;
         $this->results_end = serialize($items);
-        db::query('UPDATE `lexemes_challenge` SET `date_end` = \''.$this->date_end.'\', `results_end` = \''.db::sec($this->results_end).'\' WHERE `id` = '.$this->id);
         // rankings
         $referenceParty = new LexemeParty();
         $referenceParty->setConcepts(explode(' ', $this->concepts));
         $items = unserialize($this->results_start);
         $referenceParty->computeItems($items);
         $rankings = LexemeParty::generateRankings($referenceParty, $party);
+        // statistics
+        $statistics = $this->generateStatistics($referenceParty, $party);
+        // db
+        db::query('UPDATE `lexemes_challenge` SET `date_end` = \''.$this->date_end.'\', `results_end` = \''.db::sec($this->results_end).'\', `lexemes_improved` = '.$statistics->lexemes_improved.', `languages_improved` = '.$statistics->languages_improved.', `distinct_editors` = '.$statistics->distinct_editors.' WHERE `id` = '.$this->id);
         $this->saveRankings($rankings);
-        // commit
         db::commit();
         // tweeting
         if (LEXEMES_CHALLENGE_TWEETS === true) {
@@ -90,6 +91,34 @@ class LexemeChallenge {
             db::query('DELETE FROM `lexemes_challenge_statistics` WHERE `challenge_id` = '.$this->id);
             db::query('INSERT INTO `lexemes_challenge_statistics` VALUES'.implode(',', $values));
         }
+    }
+    
+    public function generateStatistics($startParty, $endParty) {
+        $users = array();
+        $languages = array();
+        $edited_lexemes = 0;
+        $lexemes = array_unique(array_merge(array_keys($startParty->lexemes), array_keys($endParty->lexemes)));
+        foreach ($lexemes as $lexeme) {
+            $data = json_decode(http::request('GET', 'https://www.wikidata.org/w/api.php?action=query&prop=revisions&titles=Lexeme:'.$lexeme.'&rvprop=timestamp|user|userid&rvlimit=500&rvdir=newer&rvstart='.str_replace(' ', 'T', $this->date_start).'Z&rvend='.str_replace(' ', 'T', $this->date_end).'Z&format=json'));
+            $pageId = key($data->query->pages);
+            if (isset($data->query->pages->$pageId->revisions)) {
+                $revisions = $data->query->pages->$pageId->revisions;
+                if (count($revisions) >= 1) {
+                    $edited_lexemes++;
+                    if (isset($endParty->lexemes[$lexeme]) && !in_array($endParty->lexemes[$lexeme], $languages)) {
+                        $languages[] = $endParty->lexemes[$lexeme];
+                    } elseif (isset($startParty->lexemes[$lexeme]) && !in_array($startParty->lexemes[$lexeme], $languages)) {
+                        $languages[] = $startParty->lexemes[$lexeme];
+                    }
+                    foreach ($revisions as $revision) {
+                        if (!isset($users[$revision->user])) {
+                            $users[$revision->user] = $revision->userid;
+                        }
+                    }
+                }
+            }
+        }
+        return (object) ['lexemes_improved' => $edited_lexemes, 'languages_improved' => count($languages), 'distinct_editors' => count($users)];
     }
     
 }

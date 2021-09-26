@@ -9,6 +9,8 @@ define('DB_USER', '');
 define('DB_PASSWORD', '');
 define('DB_NAME', '');
 
+define('DICARE_USER_AGENT', 'Dicare/3.1 2021-09-26 tools');
+
 define('SITE_DIR', 'https://dicare.toolforge.org/');
 define('SITE_STATIC_DIR', 'https://dicare.toolforge.org/static/');
 

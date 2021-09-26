@@ -218,7 +218,7 @@ textarea {
 }
 
 .lexemes_stats th, .lexemes_stats td {
-    width: 100px;
+    width: 120px;
     text-align: center;
 }
 .lexemes_stats td.lang {
@@ -227,6 +227,16 @@ textarea {
 .lexemes_stats th.position, .lexemes_stats td.position {
     width: unset;
     text-align: right;
+}
+
+#lexemes_challenge_archive th, #lexemes_challenge_archive td {
+    text-align: center;
+}
+#lexemes_challenge_archive th.stat {
+    width: 120px;
+}
+#lexemes_challenge_archive td.challenge {
+    text-align: left;
 }
 
 .party_diff {

@@ -6,31 +6,21 @@ $challenge = null;
 $error = null;
 
 // specific challenge
-if (!empty($_GET['id']) && preg_match('/^[1-9][0-9]*$/', $_GET['id'])) {
-    $id = $_GET['id'];
-    $challenge = LexemeChallenge::getChallenge($id);
+if (!empty($_GET['id'])) {
+    if (preg_match('/^[1-9][0-9]*$/', $_GET['id'])) {
+        $challenge = LexemeChallenge::getChallenge($_GET['id']);
+    }
     if (($challenge === null) || ($challenge->date_start === null)) {
         $error = 'Challenge not found!';
     }
 }
-
-// current challenge, starting a new one if necessary
-if ($challenge === null) {
-    $currentChallenge = LexemeChallenge::getCurrentChallenge();
-    $nextChallenge = LexemeChallenge::findNewChallenge();
-    if ($nextChallenge !== null) {
-        if ($currentChallenge !== null) {
-            $currentChallenge->close();
-        }
-        $nextChallenge->open();
-        $challenge = $nextChallenge;
-        db::commit();
-    } else {
-        $challenge = $currentChallenge;
-    }
+// current challenge
+else {
+    $challenge = LexemeChallenge::getCurrentChallenge();
 }
+
 if ($challenge === null) {
-    $error = 'No active challenge!';
+    $error = 'No active challenge found!';
 }
 
 $title = (!empty($challenge->title) ? htmlentities($challenge->title).' — ' : '').'<a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php">Lexemes Challenge</a>';
@@ -50,7 +40,7 @@ else {
         echo '<p><strong><a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php">&rarr; A new challenge is available!</a></strong></p>';
     }
     else {
-        echo '<p>You can help by <a href="https://www.wikidata.org/wiki/Special:MyLanguage/Wikidata:Lexicographical_data">creating new lexemes</a> and linking senses to Wikidata items using <a href="https://www.wikidata.org/wiki/Property:P5137">P5137</a>. Useful tool: <a href="https://lexeme-forms.toolforge.org/">Wikidata Lexeme Forms</a>.</p>';
+        echo '<p>You can help by <a href="https://www.wikidata.org/wiki/Special:MyLanguage/Wikidata:Lexicographical_data">creating new lexemes</a> and linking senses to Wikidata items using the property <a href="https://www.wikidata.org/wiki/Property:P5137"><em>item for this sense</em> (P5137)</a>. Useful tool: <a href="https://lexeme-forms.toolforge.org/">Wikidata Lexeme Forms</a>.</p>';
     }
     
     $concepts = explode(' ', $challenge->concepts);
@@ -104,8 +94,6 @@ else {
     // rankings
     if (!empty($finalParty)) {
         $rankings = LexemeParty::generateRankings($referenceParty, $finalParty);
-        $challenge->saveRankings($rankings);
-        db::commit();
     }
     else {
         $rankings = LexemeParty::generateRankings($referenceParty, $currentParty);
@@ -119,7 +107,8 @@ else {
         return $b->completion <=> $a->completion;
     });
     if (count($rankings) >= 1) {
-        echo '<h2 id="dashboard">Most improved languages during the challenge</h2>';
+        echo '<h2 id="dashboard">Most improved languages during the challenge</h2>
+<p>This table counts only lexemes for which the property <a href="https://www.wikidata.org/wiki/Property:P5137"><em>item for this sense</em> (P5137)</a> was added or removed during the challenge.</p>';
         LexemeParty::displayRankings($rankings, count($concepts));
     }
     

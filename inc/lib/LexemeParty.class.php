@@ -214,7 +214,7 @@ class LexemeParty {
                 }
                 $lexeme = substr($sense, 0, strpos($sense, '-'));
                 if (!isset($this->lexemes[$lexeme])) {
-                    $this->lexemes[$lexeme] = null;
+                    $this->lexemes[$lexeme] = $language_qid;
                 }
             }
         }

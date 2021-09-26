@@ -41,7 +41,7 @@ echo '<h2 id="query">Query</h2>
 
 // display results
 if (!empty($party->items)) {
-    echo '<p>You can help by <a href="https://www.wikidata.org/wiki/Special:MyLanguage/Wikidata:Lexicographical_data">creating new lexemes</a> and linking senses to Wikidata items using <a href="https://www.wikidata.org/wiki/Property:P5137">P5137</a>. Useful tool: <a href="https://lexeme-forms.toolforge.org/">Wikidata Lexeme Forms</a>.</p>
+    echo '<p>You can help by <a href="https://www.wikidata.org/wiki/Special:MyLanguage/Wikidata:Lexicographical_data">creating new lexemes</a> and linking senses to Wikidata items using the property <a href="https://www.wikidata.org/wiki/Property:P5137"><em>item for this sense</em> (P5137)</a>. Useful tool: <a href="https://lexeme-forms.toolforge.org/">Wikidata Lexeme Forms</a>.</p>
 <h2 id="results">Results ('.count($party->concepts).' concept'.(count($party->concepts) > 1 ? 's' : '').', '.count($party->languages).' language'.(count($party->languages) > 1 ? 's' : '').', '.count($party->lexemes).' lexeme'.(count($party->lexemes) > 1 ? 's' : '').', '.count($party->senses).' sense'.(count($party->senses) > 1 ? 's' : '').', '.floor(100 * $party->cells_count / (count($party->languages) * count($party->concepts))).'% completion)</h2>';
     $party->display();
 }

@@ -23,7 +23,7 @@ abstract class sparql {
                 throw new Exception('Server is busy, try again later.');
             }
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_USERAGENT, 'Dicare/3.0 2021-07-25 tools');
+            curl_setopt($ch, CURLOPT_USERAGENT, DICARE_USER_AGENT);
             curl_setopt($ch, CURLOPT_URL, $endpoint_url);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, 'query='.urlencode($query).'&format=json');

@@ -87,6 +87,9 @@ CREATE TABLE `lexemes_challenge` (
   `results_start` mediumtext,
   `results_end` mediumtext,
   `initial_tweet` bigint unsigned DEFAULT NULL,
+  `lexemes_improved` int unsigned DEFAULT NULL,
+  `languages_improved` int unsigned DEFAULT NULL,
+  `distinct_editors` int unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `title_UNIQUE` (`title`),
   KEY `dates` (`date_start`,`date_end`)
