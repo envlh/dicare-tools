@@ -77,7 +77,7 @@ class LexemeChallenge {
         db::commit();
         // tweeting
         if (LEXEMES_CHALLENGE_TWEETS === true) {
-            $tweet = '@'.TWITTER_ACCOUNT.' The challenge is over! There are now '.count($party->lexemes).' lexemes in '.count($party->languages).' languages linked to the items of this challenge.'."\n".SITE_DIR.LEXEMES_SITE_DIR.'challenge.php?id='.$this->id;
+            $tweet = '@'.TWITTER_ACCOUNT.' This challenge is now over! '.$statistics->distinct_editors.' editors improved '.$statistics->lexemes_improved.' lexemes in '.$statistics->languages_improved.' languages.'."\n".SITE_DIR.LEXEMES_SITE_DIR.'challenge.php?id='.$this->id;
             twitterapi::postTweet($tweet, $this->initial_tweet);
         }
     }

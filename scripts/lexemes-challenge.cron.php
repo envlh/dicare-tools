@@ -4,19 +4,19 @@ require '../inc/load.inc.php';
 
 $nextChallenge = LexemeChallenge::findNewChallenge();
 if ($nextChallenge === null) {
-    echo 'No new challenge to start.'."\n";
+    echo date('Y-m-d H:i:s').' No new challenge to start.'."\n";
 } else {
-    echo 'Starting challenge #'.$nextChallenge->id.'...'."\n";
+    echo date('Y-m-d H:i:s').' Starting challenge #'.$nextChallenge->id.'...'."\n";
     $currentChallenge = LexemeChallenge::getCurrentChallenge();
     if ($currentChallenge !== null) {
-        echo 'Closing challenge #'.$currentChallenge->id.'...'."\n";
+        echo date('Y-m-d H:i:s').' Closing challenge #'.$currentChallenge->id.'...'."\n";
         $currentChallenge->close();
-        echo 'Challenge #'.$currentChallenge->id.' closed.'."\n";
+        echo date('Y-m-d H:i:s').' Challenge #'.$currentChallenge->id.' closed.'."\n";
     }
     $nextChallenge->open();
-    echo 'Challenge #'.$nextChallenge->id.' started.'."\n";
+    echo date('Y-m-d H:i:s').' Challenge #'.$nextChallenge->id.' started.'."\n";
     db::commit();
-    echo 'Commited.'."\n";
+    echo date('Y-m-d H:i:s').' Commited.'."\n";
 }
 
 ?>
