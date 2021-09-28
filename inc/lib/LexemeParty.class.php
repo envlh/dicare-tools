@@ -74,9 +74,8 @@ class LexemeParty {
         $r = 'en';
         if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
             $locale = Locale::acceptFromHttp($_SERVER['HTTP_ACCEPT_LANGUAGE']);
-            $locale = substr($locale, 0, strpos($locale, '_'));
-            if (preg_match('/^'.LANGUAGE_REGEX.'$/', $locale)) {
-                $r = $locale;
+            if (preg_match('/^([a-z]+)/', $locale, $match)) {
+                $r = $match[1];
             }
         }
         return $r;
