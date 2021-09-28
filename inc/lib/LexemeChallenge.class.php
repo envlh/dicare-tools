@@ -49,7 +49,7 @@ class LexemeChallenge {
         db::commit();
         // tweeting
         if (LEXEMES_CHALLENGE_TWEETS === true) {
-            $tweet = 'New Wikidata Lexemes Challenge! This week\'s theme: '.$this->title."\n".'Help improving lexicographical data on Wikidata. At the moment, there are '.count($party->lexemes).' lexemes in '.count($party->languages).' languages linked to the items of this challenge.'."\n".SITE_DIR.LEXEMES_SITE_DIR.'challenge.php?id='.$this->id;
+            $tweet = 'New #Wikidata #Lexemes Challenge! This week\'s theme: '.$this->title."\n".'Help improving lexicographical data on @wikidata. At the moment, there are '.count($party->lexemes).' lexemes in '.count($party->languages).' languages linked to the items of this challenge:'."\n".SITE_DIR.LEXEMES_SITE_DIR.'challenge.php?id='.$this->id;
             $tweet_data = json_decode(twitterapi::postTweet($tweet));
             db::query('UPDATE `lexemes_challenge` SET `initial_tweet` = \''.db::sec($tweet_data->id_str).'\' WHERE `id` = '.$this->id);
             db::commit();
@@ -77,7 +77,7 @@ class LexemeChallenge {
         db::commit();
         // tweeting
         if (LEXEMES_CHALLENGE_TWEETS === true) {
-            $tweet = '@'.TWITTER_ACCOUNT.' This challenge is now over! '.$statistics->distinct_editors.' editors improved '.$statistics->lexemes_improved.' lexemes in '.$statistics->languages_improved.' languages.'."\n".SITE_DIR.LEXEMES_SITE_DIR.'challenge.php?id='.$this->id;
+            $tweet = '@'.TWITTER_ACCOUNT.' This challenge is now over, with '.$statistics->distinct_editors.' editors improving '.$statistics->lexemes_improved.' lexemes in '.$statistics->languages_improved.' languages:'."\n".SITE_DIR.LEXEMES_SITE_DIR.'challenge.php?id='.$this->id;
             twitterapi::postTweet($tweet, $this->initial_tweet);
         }
     }
