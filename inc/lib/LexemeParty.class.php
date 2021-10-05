@@ -175,9 +175,17 @@ class LexemeParty {
         
         // sort languages by label
         usort($this->languages, function($a, $b) {
-            $r = $a->label <=> $b->label;
-            if ($r != 0) {
-                return $r;
+            if (isset($a->label) && isset($b->label)) {
+                $r = $a->label <=> $b->label;
+                if ($r != 0) {
+                    return $r;
+                }
+            }
+            elseif (isset($a->label)) {
+                return -1;
+            }
+            elseif (isset($b->label)) {
+                return 1;
             }
             $r = $a->code <=> $b->code;
             if ($r != 0) {
