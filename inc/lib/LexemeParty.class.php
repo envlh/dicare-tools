@@ -308,16 +308,6 @@ class LexemeParty {
         if (empty($language->code)) {
             $language->code = '∅';
         }
-        // P424 / Wikimedia language code
-        if (!isset($language->code)) {
-            $items = wdqs::query('SELECT DISTINCT ?code { wd:'.$qid.' wdt:P424 ?code }', LEXEMES_META_WDQS_CACHE)->results->bindings;
-            if (count($items) === 1) {
-                $language->wikimedia = $items[0]->code->value;
-            }
-            elseif (count($items) > 1) {
-                $this->errors[] = 'Multiple P424 / Wikimedia language codes for '.$qid.'.';
-            }
-        }
         // label
         $items = wdqs::query('SELECT DISTINCT ?label { wd:'.$qid.' rdfs:label ?label . FILTER(LANG(?label) = "'.$this->language_display.'") }', LEXEMES_META_WDQS_CACHE)->results->bindings;
         if (count($items) === 1) {
