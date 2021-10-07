@@ -6,6 +6,8 @@ define('LANGUAGE_REGEX', '[a-z]+(-[a-z]+)*');
 
 class LexemeParty {
     
+    public $property = 'P5137';
+    
     public $language_display = 'en';
     public $language_display_form = 'auto';
     
@@ -36,6 +38,11 @@ class LexemeParty {
     }
 
     public function init() {
+        // property
+        $this->property = 'P5137';
+        if (!empty($_GET['property']) && preg_match('/^P[1-9][0-9]*$/', $_GET['property'])) {
+            $this->property = $_GET['property'];
+        }
         // filters
         $this->languages_filter_action = 'block';
         if (!empty($_GET['languages_filter_action']) && ($_GET['languages_filter_action'] === 'allow')) {
@@ -143,7 +150,7 @@ class LexemeParty {
         
         $query = 'SELECT * {
   hint:Query hint:optimizer "None" .
-  ?sense wdt:P5137 ?concept .
+  ?sense wdt:'.$this->property.' ?concept .
   VALUES ?concept { wd:'.implode(' wd:', $this->concepts).' }
   ?lexeme ontolex:sense ?sense ; wikibase:lemma ?lemma ; dct:language ?language ; wikibase:lexicalCategory ?lexicalCategory .
   '.$filter.'
