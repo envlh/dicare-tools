@@ -34,7 +34,7 @@ while ($challenge = $res->fetch_object('LexemeChallenge')) {
     }
     echo '</tr>';
 }
-echo '<tr><td><strong>'.$challenges_count.' challenges completed</strong></td><td>sum = '.$lexemes_count.'<br />mean = '.round($lexemes_count / $challenges_count).'</td><td>mean = '.round($languages_count / $challenges_count).'</td><td>mean = '.round($editors_count / $challenges_count).'</td></tr>
+echo '<tr><td><strong>'.$challenges_count.' challenges completed</strong></td><td>sum = '.$lexemes_count.'<br />average = '.round($lexemes_count / $challenges_count).'</td><td>average = '.round($languages_count / $challenges_count).'</td><td>average = '.round($editors_count / $challenges_count).'</td></tr>
 </table>';
 
 require '../../inc/footer.inc.php';

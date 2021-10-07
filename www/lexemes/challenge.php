@@ -111,6 +111,7 @@ else {
 <p>This table counts only lexemes for which the property <a href="https://www.wikidata.org/wiki/Property:P5137"><em>item for this sense</em> (P5137)</a> was added or removed during the challenge.</p>';
         LexemeParty::displayRankings($rankings, count($concepts));
     }
+    echo '&rarr; <a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenges-dashboard.php">Challenges Dashboard</a>';
     
 }
 
