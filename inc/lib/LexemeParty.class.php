@@ -462,7 +462,7 @@ class LexemeParty {
         $r = '';
         if ($this->display_mode === 'compact') {
             foreach ($items as $sense => $lemmas) {
-                $r .= '<a href="https://www.wikidata.org/wiki/Lexeme:'.str_replace('-', '#', $sense).'" title="'.htmlentities($this->lexicalCategories[$this->senses[$sense]]).' ('.$this->senses[$sense].')">'.htmlentities(implode(' / ', $lemmas)).'</a><br />';
+                $r .= '<span class="lp_item"><a href="https://www.wikidata.org/wiki/Lexeme:'.str_replace('-', '#', $sense).'">'.htmlentities(implode(' / ', $lemmas)).'</a><div class="hovercard"><div class="hovercard-container"><div class="hovercard-box"><div class="hovercard-body">'.($this->lexicalCategories[$this->senses[$sense]] != $this->senses[$sense] ? htmlentities($this->lexicalCategories[$this->senses[$sense]]). ' ('.$this->senses[$sense].')' : $this->senses[$sense]).'</div></div></div></div></span><br />';
             }
         } else {
             foreach ($items as $sense => $lemmas) {

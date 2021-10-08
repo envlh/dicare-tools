@@ -256,3 +256,50 @@ textarea {
 .neg {
     color: red;
 }
+
+.lp_item {
+    position: relative;
+    cursor: pointer;
+}
+.lp_item .hovercard {
+    visibility: hidden;
+}
+.lp_item .hovercard:hover {
+    visibility: visible;
+}
+.lp_item:hover .hovercard, .lp_item .name:hover .hovercard {
+    visibility: visible;
+}
+.hovercard {
+    display: block;
+    position: absolute;
+    left: 30px;
+    top: 30px;
+    z-index: 500;
+}
+.hovercard .hovercard-container {
+    position: relative;
+    z-index: 450;
+}
+.hovercard .hovercard-container:before {
+    display: block;
+    position: absolute;
+    content: " ";
+    background: white;
+}
+.hovercard .hovercard-box {
+    position: relative;
+    z-index: 470;
+    border: 1px solid #CCC;
+    background: white;
+}
+.hovercard .hovercard-box .hovercard-body {
+    display: block;
+    width: 200px;
+    z-index: 500;
+    background: white;
+}
+.hovercard-box {
+    padding: 4px 8px;
+    text-align: left;
+}
