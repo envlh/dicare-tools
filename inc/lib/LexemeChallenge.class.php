@@ -1,5 +1,7 @@
 <?php
 
+define('LEXEMES_CHALLENGE_PATH', 'wdt:P5137|wdt:P9970');
+
 class LexemeChallenge {
     
     public $id;
@@ -40,6 +42,7 @@ class LexemeChallenge {
     
     public function open() {
         $party = new LexemeParty();
+        $party->setPath(LEXEMES_CHALLENGE_PATH);
         $party->setConcepts(explode(' ', $this->concepts));
         $items = $party->queryItems(0);
         $party->computeItems($items);
@@ -58,6 +61,7 @@ class LexemeChallenge {
     
     public function close() {
         $party = new LexemeParty();
+        $party->setPath(LEXEMES_CHALLENGE_PATH);
         $party->setConcepts(explode(' ', $this->concepts));
         $items = $party->queryItems(0);
         $party->computeItems($items);
@@ -65,6 +69,7 @@ class LexemeChallenge {
         $this->results_end = serialize($items);
         // rankings
         $referenceParty = new LexemeParty();
+        $referenceParty->setPath(LEXEMES_CHALLENGE_PATH);
         $referenceParty->setConcepts(explode(' ', $this->concepts));
         $items = unserialize($this->results_start);
         $referenceParty->computeItems($items);

@@ -6,7 +6,8 @@ define('LANGUAGE_REGEX', '[a-z]+(-[a-z]+)*');
 
 class LexemeParty {
     
-    public $property = 'P5137';
+    public $path = 'wdt:P5137';
+    public $property_form = 'P5137';
     
     public $language_display = 'en';
     public $language_display_form = 'auto';
@@ -38,10 +39,12 @@ class LexemeParty {
     }
 
     public function init() {
-        // property
-        $this->property = 'P5137';
+        // path
+        $this->path = 'wdt:P5137';
+        $this->property_form = 'P5137';
         if (!empty($_GET['property']) && preg_match('/^P[1-9][0-9]*$/', $_GET['property'])) {
-            $this->property = $_GET['property'];
+            $this->path = 'wdt:'.$_GET['property'];
+            $this->property_form = $_GET['property'];
         }
         // filters
         $this->languages_filter_action = 'block';
@@ -103,6 +106,10 @@ class LexemeParty {
         $this->concepts = $concepts;
     }
 
+    public function setPath($path) {
+        $this->path = $path;
+    }
+
     public function fetchConceptsMeta() {
         $items = wdqs::query('SELECT ?concept ?conceptLabel ?url ?title {
   hint:Query hint:optimizer "None" .
@@ -148,9 +155,9 @@ class LexemeParty {
             }
         }
         
-        $query = 'SELECT * {
+        $query = 'SELECT DISTINCT ?sense ?concept ?lexeme ?lemma ?language ?lexicalCategory {
   hint:Query hint:optimizer "None" .
-  ?sense wdt:'.$this->property.' ?concept .
+  ?sense '.$this->path.' ?concept .
   VALUES ?concept { wd:'.implode(' wd:', $this->concepts).' }
   ?lexeme ontolex:sense ?sense ; wikibase:lemma ?lemma ; dct:language ?language ; wikibase:lexicalCategory ?lexicalCategory .
   '.$filter.'
