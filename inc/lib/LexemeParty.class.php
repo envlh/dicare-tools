@@ -501,7 +501,7 @@ class LexemeParty {
     public static function diff_party($currentParty, $referenceParty = null) {
         $r = '<ul><li><strong>'.count($currentParty->languages).'</strong> language'.(count($currentParty->languages) > 1 ? 's' : '');
         if ($referenceParty !== null) {
-            $r .= ' ('.self::diff_array(array_keys($currentParty->languages), array_keys($referenceParty->languages)).')';
+            $r .= ' ('.self::diff_array($currentParty->languages, $referenceParty->languages).')';
         }
         $r .= '</li><li><strong>'.count($currentParty->lexemes).'</strong> lexeme'.(count($currentParty->lexemes) > 1 ? 's' : '');
         if ($referenceParty !== null) {
