@@ -48,9 +48,9 @@ class LexemeParty {
             $this->property_form = $_GET['property'];
         }
         // filters
-        $this->languages_filter_action = 'block';
-        if (!empty($_GET['languages_filter_action']) && ($_GET['languages_filter_action'] === 'allow')) {
-            $this->languages_filter_action = 'allow';
+        $this->languages_filter_action = 'allow';
+        if (!empty($_GET['languages_filter_action']) && ($_GET['languages_filter_action'] === 'block')) {
+            $this->languages_filter_action = 'block';
         }
         $this->languages_filter = array();
         if (!empty($_GET['languages_filter'])) {
