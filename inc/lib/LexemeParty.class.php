@@ -525,9 +525,17 @@ class LexemeParty {
 
     public static function generateRankings($startParty, $endParty) {
         $rankings = array();
+        $languages = array();
+        foreach ($startParty->languages as $language) {
+            $languages[] = $language->qid;
+        }
         foreach ($endParty->languages as $language) {
+            $languages[] = $language->qid;
+        }
+        $languages = array_unique($languages);
+        foreach ($languages as $language) {
             $ranking = new stdClass();
-            $ranking->language_qid = $language->qid;
+            $ranking->language_qid = $language;
             $ranking->completion = 0; // concepts with at least one lexeme at the end of the challenge
             $ranking->removed = 0; // lexemes removed during the challenge
             $ranking->added = 0; // lexemes added during the challene
