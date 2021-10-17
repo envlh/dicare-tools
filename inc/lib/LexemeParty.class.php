@@ -42,8 +42,9 @@ class LexemeParty {
         // path
         $this->path = 'wdt:P5137';
         $this->property_form = 'P5137';
-        if (!empty($_GET['property']) && preg_match('/^P[1-9][0-9]*$/', $_GET['property'])) {
-            $this->path = 'wdt:'.$_GET['property'];
+        if (!empty($_GET['property'])) {
+            preg_match_all('/(P[1-9][0-9]*)/', $_GET['property'], $matches);
+            $this->path = 'wdt:'.implode('|wdt:', $matches[1]);
             $this->property_form = $_GET['property'];
         }
         // filters
