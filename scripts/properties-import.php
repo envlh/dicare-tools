@@ -5,12 +5,12 @@ require '../inc/load.inc.php';
 # data from dump
 
 db::query('TRUNCATE TABLE `import_property`');
-db::query('LOAD DATA LOCAL INFILE \'/tmp/property.csv\' INTO TABLE `import_property` FIELDS TERMINATED BY \',\'');
+db::query('LOAD DATA LOCAL INFILE \''.DICARE_TMP_DIR.'property.csv\' INTO TABLE `import_property` FIELDS TERMINATED BY \',\'');
 
 db::query('TRUNCATE TABLE `import_properties`');
-db::query('LOAD DATA LOCAL INFILE \'/tmp/properties.csv\' INTO TABLE `import_properties` FIELDS TERMINATED BY \',\'');
+db::query('LOAD DATA LOCAL INFILE \''.DICARE_TMP_DIR.'properties.csv\' INTO TABLE `import_properties` FIELDS TERMINATED BY \',\'');
 
-$dump = file_get_contents('/tmp/dump.csv');
+$dump = file_get_contents(DICARE_TMP_DIR.'dump.csv');
 parameter::set('properties_dump', $dump);
 
 # data processing

@@ -7,5 +7,14 @@ set -e
 cd "$(dirname "$0")"
 
 # execute scripts
-java -jar wdtk-import.jar "$@"
+
+echo 'Parsing dump...'
+java -jar wdtk-import.jar `readlink -f /public/dumps/public/wikidatawiki/entities/latest-all.json.gz`
+
+echo 'Properties...'
 php -f properties-import.php
+
+echo 'Projects...'
+php -f projects-import.php
+
+echo 'Finished!'

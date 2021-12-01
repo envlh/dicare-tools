@@ -56,12 +56,12 @@ function guessProjectType($project) {
 # data from dump
 
 db::query('TRUNCATE TABLE `import_project`');
-db::query('LOAD DATA LOCAL INFILE \'/tmp/project.csv\' INTO TABLE `import_project` FIELDS TERMINATED BY \',\'');
+db::query('LOAD DATA LOCAL INFILE \''.DICARE_TMP_DIR.'project.csv\' INTO TABLE `import_project` FIELDS TERMINATED BY \',\'');
 
 db::query('TRUNCATE TABLE `import_projects`');
-db::query('LOAD DATA LOCAL INFILE \'/tmp/projects.csv\' INTO TABLE `import_projects` FIELDS TERMINATED BY \',\'');
+db::query('LOAD DATA LOCAL INFILE \''.DICARE_TMP_DIR.'projects.csv\' INTO TABLE `import_projects` FIELDS TERMINATED BY \',\'');
 
-$dump = file_get_contents('/tmp/dump.csv');
+$dump = file_get_contents(DICARE_TMP_DIR.'dump.csv');
 parameter::set('projects_dump', $dump);
 
 # data processing

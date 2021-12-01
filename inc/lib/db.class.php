@@ -17,6 +17,7 @@ class db {
 			}
 			self::$mysqli->set_charset('utf8mb4');
 			self::$mysqli->autocommit(false);
+			self::$mysqli->options(MYSQLI_OPT_LOCAL_INFILE, true);
 			self::$connected = true;
 		}
 	}
