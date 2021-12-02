@@ -50,7 +50,7 @@ function guessProjectType($project) {
     if (strpos($project->instanceOf->value, 'http://www.wikidata.org/entity/Q22001389') !== false) {
         return 'wiktionary';
     }
-    throw new Exception('Unknown project type for "'.$project->code->value.'".');
+    return 'unknown';
 }
 
 # data from dump
