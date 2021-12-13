@@ -59,6 +59,9 @@ td {
 tr:hover {
     background: #F9F9F9;
 }
+tr:target {
+    background: #EEF;
+}
 
 a {
     text-decoration: none;
@@ -227,6 +230,14 @@ textarea {
 .lexemes_stats th.position, .lexemes_stats td.position {
     width: unset;
     text-align: right;
+}
+a.anchorlink {
+	display: block;
+	float: right;
+	font-weight: bold;
+}
+a.anchorlink:hover {
+    text-decoration: none;
 }
 
 #lexemes_challenge_archive th, #lexemes_challenge_archive td {
