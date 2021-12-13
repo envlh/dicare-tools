@@ -3,6 +3,10 @@
     padding: 0;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body, input, select {
     font-family: "Open Sans", sans-serif;
     font-size: 14px;
@@ -58,6 +62,9 @@ td {
 }
 tr:hover {
     background: #F9F9F9;
+}
+tr:target {
+    background: #EEE;
 }
 
 a {

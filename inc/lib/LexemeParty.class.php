@@ -402,7 +402,7 @@ class LexemeParty {
             }
             echo '</tr>';
             foreach ($this->languages as $language) {
-                echo '<tr><td title="'.floor($language->score).'%">';
+                echo '<tr id="' . $language->qid . '"><td title="'.floor($language->score).'%">';
                 if (!empty($language->medal)) {
                     echo ' <img src="'.SITE_STATIC_DIR.'img/famfamfam/medal_'.$language->medal.'_3.png" alt="" />';
                 }
@@ -593,7 +593,7 @@ class LexemeParty {
         $previousScore = '';
         foreach ($rankings as $ranking) {
             $score = $ranking->completion.'#'.$ranking->removed.'#'.$ranking->added;
-            echo '<tr><td class="position">'.(($score !== $previousScore) ? $pos.'.' : '').'</td><td class="lang"><a href="https://www.wikidata.org/wiki/'.$ranking->language_qid.'">'.htmlentities(self::fetchLanguageLabel($ranking->language_qid)).'</a></td><td>'.($ranking->added > 0 ? '<span class="pos">+'.$ranking->added.'</span>' : '').'</td><td>'.($ranking->removed > 0 ? '<span class="neg">-'.$ranking->removed.'</span>' : '').'</td><td>'.($ranking->removed + $ranking->added).'</td><td>'.$ranking->completion.($numberOfConcepts != null ? ' / '.$numberOfConcepts : '').'</td></tr>';
+            echo '<tr><td class="position">'.(($score !== $previousScore) ? $pos.'.' : '').'</td><td class="lang"><a href="#'.$ranking->language_qid.'">'.htmlentities(self::fetchLanguageLabel($ranking->language_qid)).'</a></td><td>'.($ranking->added > 0 ? '<span class="pos">+'.$ranking->added.'</span>' : '').'</td><td>'.($ranking->removed > 0 ? '<span class="neg">-'.$ranking->removed.'</span>' : '').'</td><td>'.($ranking->removed + $ranking->added).'</td><td>'.$ranking->completion.($numberOfConcepts != null ? ' / '.$numberOfConcepts : '').'</td></tr>';
             $pos++;
             $previousScore = $score;
         }
