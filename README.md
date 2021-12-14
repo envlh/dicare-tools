@@ -11,8 +11,8 @@ This documentation covers the installation of Dicare Tools under a Linux system,
 ### Requirements
 
 * a web server (seems OK with Apache and nginx)
-* PHP 7+, with packages `php-mysql` and `php-curl`
-* MySQL 5.7+ (compatibility with MariaDB has not been tested)
+* PHP 7+, with [`curl`](https://www.php.net/manual/en/book.curl.php), [`intl`](https://www.php.net/manual/en/book.intl.php) (only for *Lexemes Party* and *Lexemes Challenge*), and [`mysqli`](https://www.php.net/manual/en/book.mysqli.php)
+* MySQL 5.7+ (seems OK with MariaDB)
 * Java 8+ (only for *Related Properties* and *Related Projects*)
 
 ### Web server

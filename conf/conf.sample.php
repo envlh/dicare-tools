@@ -28,7 +28,7 @@ define('DD_SITE_DIR', 'dedicated-dashboard/');
 define('DIFF_SITE_DIR', 'wikidata-diff/');
 
 define('LEXEMES_SITE_DIR', 'lexemes/');
-define('LEXEMES_CHALLENGE_TWEETS', true);
+define('LEXEMES_CHALLENGE_TWEETS', false);
 
 define('NOMS_SITE_DIR', 'noms/');
 define('NOMS_LANG_FALLBACK', 'en de es it nl br ca');
