@@ -224,6 +224,9 @@ textarea {
     width: 120px;
     text-align: center;
 }
+.lexemes_stats th.lang {
+	width: 200px;
+}
 .lexemes_stats td.lang {
     text-align: left;
 }
@@ -231,13 +234,19 @@ textarea {
     width: unset;
     text-align: right;
 }
-a.anchorlink {
-	display: block;
-	float: right;
-	font-weight: bold;
+
+th.anchorlink, td.anchorlink {
+	margin: 0;
+	padding: 0;
+	width: 20px;
 }
-a.anchorlink:hover {
-    text-decoration: none;
+@media (hover: hover) {
+	td.anchorlink a {
+		display: none;
+	}
+}
+tr:hover td.anchorlink a {
+	display: block;
 }
 
 #lexemes_challenge_archive th, #lexemes_challenge_archive td {

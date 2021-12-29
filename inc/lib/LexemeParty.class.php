@@ -380,7 +380,7 @@ class LexemeParty {
         echo '<table id="lexemes">';
         // TODO: clean this code ^^
         if ($this->languages_direction == 'rows') {
-            echo '<tr><th colspan="2">Wikidata</th>';
+            echo '<tr><th colspan="3">Wikidata</th>';
             foreach ($this->concepts as $concept) {
                 echo '<th>';
                 if (!empty($this->concepts_meta[$concept]->label)) {
@@ -392,7 +392,7 @@ class LexemeParty {
                 }
                 echo '</th>';
             }
-            echo '</tr><tr><th colspan="2">Wikipedia</th>';
+            echo '</tr><tr><th colspan="3">Wikipedia</th>';
             foreach ($this->concepts as $concept) {
                 echo '<td>';
                 if (!empty($this->concepts_meta[$concept]->wikipedia_url)) {
@@ -402,7 +402,7 @@ class LexemeParty {
             }
             echo '</tr>';
             foreach ($this->languages as $language) {
-                echo '<tr id="' . $language->qid . '"><td title="'.floor($language->score).'%">';
+                echo '<tr id="'.$language->qid.'"><td class="anchorlink"><a href="#'.$language->qid.'">#</a></td><td title="'.floor($language->score).'%">';
                 if (!empty($language->medal)) {
                     echo ' <img src="'.SITE_STATIC_DIR.'img/famfamfam/medal_'.$language->medal.'_3.png" alt="" />';
                 }
@@ -589,12 +589,12 @@ class LexemeParty {
     
     public static function displayRankings($rankings, $numberOfConcepts, $anchorLinks = false) {
         echo '<table class="lexemes_stats">
-    <tr><th class="position">Pos.</th><th>Language</th><th>Lexemes linked</th><th>Lexemes unlinked</th><th>Lexemes improved</th><th>Completion</th></tr>';
+    <tr>'.($anchorLinks ? '<th class="anchorlink"></th>' : '').'<th class="position">Pos.</th><th class="lang">Language</th><th>Lexemes linked</th><th>Lexemes unlinked</th><th>Lexemes improved</th><th>Completion</th></tr>';
         $pos = 1;
         $previousScore = '';
         foreach ($rankings as $ranking) {
             $score = $ranking->completion.'#'.$ranking->removed.'#'.$ranking->added;
-            echo '<tr><td class="position">'.(($score !== $previousScore) ? $pos.'.' : '').'</td><td class="lang"><a href="https://www.wikidata.org/wiki/'.$ranking->language_qid.'">'.htmlentities(self::fetchLanguageLabel($ranking->language_qid)).'</a>'.($anchorLinks ? ' <a href="#'.$ranking->language_qid.'" class="anchorlink">&nbsp;&uarr;&nbsp;</a>' : '').'</td><td>'.($ranking->added > 0 ? '<span class="pos">+'.$ranking->added.'</span>' : '').'</td><td>'.($ranking->removed > 0 ? '<span class="neg">-'.$ranking->removed.'</span>' : '').'</td><td>'.($ranking->removed + $ranking->added).'</td><td>'.$ranking->completion.' / '.$numberOfConcepts.'</td></tr>';
+            echo '<tr>'.($anchorLinks ? '<td class="anchorlink"><a href="#'.$ranking->language_qid.'">&uarr;</a></td>' : '').'<td class="position">'.(($score !== $previousScore) ? $pos.'.' : '').'</td><td class="lang"><a href="https://www.wikidata.org/wiki/'.$ranking->language_qid.'">'.htmlentities(self::fetchLanguageLabel($ranking->language_qid)).'</a></td><td>'.($ranking->added > 0 ? '<span class="pos">+'.$ranking->added.'</span>' : '').'</td><td>'.($ranking->removed > 0 ? '<span class="neg">-'.$ranking->removed.'</span>' : '').'</td><td>'.($ranking->removed + $ranking->added).'</td><td>'.$ranking->completion.' / '.$numberOfConcepts.'</td></tr>';
             $pos++;
             $previousScore = $score;
         }
