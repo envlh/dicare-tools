@@ -5,6 +5,7 @@ class page {
     private static $css = array();
     private static $js = array();
     private static $menu = null;
+	private static $card = null;
     
     public static function getParameter($name, $default = null) {
         if (!empty($_POST[$name])) {
@@ -52,7 +53,24 @@ class page {
                 // none
         }
     }
+	
+    public static function setCard($title, $description, $image) {
+        self::$card = (object) array('title' => $title, 'description' => $description, 'image' => $image);
+    }
     
+    public static function displayCard($title) {
+        if (empty(self::$card)) {
+			self::setCard($title, 'Some Dicare tool that does something.', SITE_STATIC_DIR.'img/logo.png');
+		}
+		echo '<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="'.htmlentities(self::$card->title).'" />
+	<meta name="twitter:description" content="'.htmlentities(self::$card->description).'" />
+	<meta name="twitter:image" content="'.htmlentities(self::$card->image).'" />
+	<meta property="og:title" content="'.htmlentities(self::$card->title).'" />
+	<meta property="og:description" content="'.htmlentities(self::$card->description).'" />
+	<meta property="og:image" content="'.htmlentities(self::$card->image).'" />'."\n";
+    }
+	
 }
 
 ?>

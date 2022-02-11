@@ -5,6 +5,7 @@ require '../../inc/load.inc.php';
 $title = '<a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenges-dashboard.php">Lexemes Challenges Dashboard</a>';
 define('PAGE_TITLE', $title);
 page::setMenu('lexemes');
+page::setCard('Lexemes Challenges Dashboard', 'Language statistics about Lexemes Challenges', SITE_STATIC_DIR.'img/lexemes-challenge.png');
 
 require '../../inc/header.inc.php';
 

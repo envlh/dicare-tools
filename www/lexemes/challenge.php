@@ -26,6 +26,9 @@ if ($challenge === null) {
 $title = (!empty($challenge->title) ? htmlentities($challenge->title).' — ' : '').'<a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php">Lexemes Challenge</a>';
 define('PAGE_TITLE', $title);
 page::setMenu('lexemes');
+if (!empty($challenge)) {
+    page::setCard($challenge->title, 'Lexemes Challenge #'.$challenge->id, SITE_STATIC_DIR.'img/lexemes-challenge.png');
+}
 
 require '../../inc/header.inc.php';
 
