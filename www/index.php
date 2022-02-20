@@ -31,7 +31,6 @@ require '../inc/header.inc.php';
         <li><a href="<?php echo SITE_DIR.NOMS_SITE_DIR; ?>departements.php">Statistiques par département français sur les noms de famille et les prénoms</a></li>
     </ul>
 </li>-->
-<!--<li><span class="language">[fr]</span> <strong><a href="<?php echo SITE_DIR.BATEAUX_SITE_DIR; ?>">Listes de bateaux</a></strong></li>-->
 </ul>
 
 <?php

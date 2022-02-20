@@ -164,16 +164,6 @@ textarea {
     text-align: left;
 }
 
-.ships tr {
-    border-top: 1px solid #CCC;
-}
-.ships th {
-    background: #F9F9F9;
-}
-.ships td.label {
-    font-weight: bold;
-}
-
 .blob {
     float: left;
     max-width: 750px;
