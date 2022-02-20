@@ -57,6 +57,8 @@ By default, Wikidata JSON dumps are stored in `/home/wikidata/dumpfiles` (see th
 
 ## Configuration
 
+### Main configuration
+
 Create the file `conf/conf.inc.php`, using the example `conf/conf.example.php`.
 
 Most important variables are:
@@ -67,6 +69,13 @@ Most important variables are:
 * `DB_NAME`: name of the MySQL schema
 * `SITE_DIR`: URL of Dicare Tools
 * `SITE_STATIC_DIR`: URL of the directory with static web resources of Dicare Tools
+
+### Crontab
+
+Example on [Wikimedia Toolforge](https://admin.toolforge.org/):
+
+    4 4 * * * jsub -N maintenance -once bash /data/project/dicare/dicare-tools/scripts/maintenance.cron.sh
+    1 * * * * jsub -N lexemes-challenge -once bash /data/project/dicare/dicare-tools/scripts/lexemes-challenge.cron.sh
 
 ## Imports
 
