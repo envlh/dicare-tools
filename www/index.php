@@ -20,7 +20,6 @@ require '../inc/header.inc.php';
 <li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.PROJECTS_SITE_DIR; ?>">Wikimedia Related Projects</a></strong>: find which projects are the closest to each other, given their sitelinks usage</li>
 <li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.TRANSLATHON_SITE_DIR; ?>">Transl-a-thon</a></strong>: find Wikidata items needing to be translated</li>
 <li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.DIFF_SITE_DIR; ?>">Wikidata Diff</a></strong>: compare the properties of two Wikidata items</li>
-<!--<li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.DD_SITE_DIR; ?>">Dedicated Dashboard</a></strong>: another tool to improve the data quality in Wikidata</li>-->
 <!--<li><span class="language">[fr]</span> <strong><a href="<?php echo SITE_DIR.DEPUTES_SITE_DIR; ?>">Députés</a></strong> : statistiques et listes de députés français de la 5<sup>e</sup> République</li>-->
 <!--<li><span class="language">[fr]</span> <strong><a href="<?php echo SITE_DIR.NOMS_SITE_DIR; ?>">Noms</a></strong>
     <ul>
