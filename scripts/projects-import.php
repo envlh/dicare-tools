@@ -103,4 +103,9 @@ file_put_contents('../www/projects/data/projects_relations_'.$dump.'.csv', $data
 
 db::commit();
 
+# cache
+
+db::query('DELETE FROM `query` WHERE endpoint_id = \'proj\'');
+db::commit();
+
 ?>

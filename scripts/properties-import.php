@@ -52,4 +52,9 @@ file_put_contents('../www/properties/data/properties_relations_'.$dump.'.csv', $
 
 db::commit();
 
+# cache
+
+db::query('DELETE FROM `query` WHERE endpoint_id = \'prop\'');
+db::commit();
+
 ?>
