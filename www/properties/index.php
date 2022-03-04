@@ -132,8 +132,8 @@ elseif (empty($_GET['property'])) {
 	$max = null;
 	echo '<h2 id="intersection_cardinality">Closest properties by cardinality of intersection</h2>
 	<table class="p"><tr><th class="data">ID</th><th>Label</th><th class="data">ID</th><th>Label</th><th class="data">Intersection cardinality</th><th class="data">Jaccard index</th></tr>';
-	$res = db::query('SELECT `properties`.`propertyA`, `pA`.`label` AS `labelA`, `properties`.`propertyB`, `pB`.`label` AS `labelB`, `properties`.`intersection_cardinality`, `properties`.`jaccard_index` FROM `properties`, `property` `pA`, `property` `pB` WHERE `properties`.`propertyA` = `pA`.`id` AND `properties`.`propertyB` = `pB`.`id` AND `properties`.`propertyA` < `properties`.`propertyB`'.(!empty($selectionSQL) ? ' AND `pA`.`type` '.$selectionSQL.' AND `pB`.`type` '.$selectionSQL : '').' ORDER BY `properties`.`intersection_cardinality` DESC, `properties`.`jaccard_index` DESC, `properties`.`propertyA` ASC, `properties`.`propertyB` ASC LIMIT 50');
-	while ($row = $res->fetch_object()) {
+	$res = db::cachedQuery('SELECT `properties`.`propertyA`, `pA`.`label` AS `labelA`, `properties`.`propertyB`, `pB`.`label` AS `labelB`, `properties`.`intersection_cardinality`, `properties`.`jaccard_index` FROM `properties`, `property` `pA`, `property` `pB` WHERE `properties`.`propertyA` = `pA`.`id` AND `properties`.`propertyB` = `pB`.`id` AND `properties`.`propertyA` < `properties`.`propertyB`'.(!empty($selectionSQL) ? ' AND `pA`.`type` '.$selectionSQL.' AND `pB`.`type` '.$selectionSQL : '').' ORDER BY `properties`.`intersection_cardinality` DESC, `properties`.`jaccard_index` DESC, `properties`.`propertyA` ASC, `properties`.`propertyB` ASC LIMIT 50', 'prop');
+	foreach ($res as &$row) {
 		if ($max === null): $max = $row->intersection_cardinality; endif;
 		echo '<tr>
 			<td class="data"><a href="https://www.wikidata.org/wiki/Property:P'.$row->propertyA.'">P'.$row->propertyA.'</a></td>
@@ -149,8 +149,8 @@ elseif (empty($_GET['property'])) {
 	// $max from previous table
 	echo '<h2 id="jaccard_index">Closest properties by Jaccard index</h2>
 	<table class="p"><tr><th class="data">ID</th><th>Label</th><th class="data">ID</th><th>Label</th><th class="data">Intersection cardinality</th><th class="data">Jaccard index</th></tr>';
-	$res = db::query('SELECT `properties`.`propertyA`, `pA`.`label` AS `labelA`, `properties`.`propertyB`, `pB`.`label` AS `labelB`, `properties`.`intersection_cardinality`, `properties`.`jaccard_index` FROM `properties`, `property` `pA`, `property` `pB` WHERE `properties`.`propertyA` = `pA`.`id` AND `properties`.`propertyB` = `pB`.`id` AND `properties`.`propertyA` < `properties`.`propertyB`'.(!empty($selectionSQL) ? ' AND `pA`.`type` '.$selectionSQL.' AND `pB`.`type` '.$selectionSQL : '').' ORDER BY `properties`.`jaccard_index` DESC, `properties`.`intersection_cardinality` DESC, `properties`.`propertyA` ASC, `properties`.`propertyB` ASC LIMIT 50');
-	while ($row = $res->fetch_object()) {
+	$res = db::cachedQuery('SELECT `properties`.`propertyA`, `pA`.`label` AS `labelA`, `properties`.`propertyB`, `pB`.`label` AS `labelB`, `properties`.`intersection_cardinality`, `properties`.`jaccard_index` FROM `properties`, `property` `pA`, `property` `pB` WHERE `properties`.`propertyA` = `pA`.`id` AND `properties`.`propertyB` = `pB`.`id` AND `properties`.`propertyA` < `properties`.`propertyB`'.(!empty($selectionSQL) ? ' AND `pA`.`type` '.$selectionSQL.' AND `pB`.`type` '.$selectionSQL : '').' ORDER BY `properties`.`jaccard_index` DESC, `properties`.`intersection_cardinality` DESC, `properties`.`propertyA` ASC, `properties`.`propertyB` ASC LIMIT 50', 'prop');
+	foreach ($res as &$row) {
 		echo '<tr>
 			<td class="data"><a href="https://www.wikidata.org/wiki/Property:P'.$row->propertyA.'">P'.$row->propertyA.'</a></td>
 			<td class="label"><a href="'.SITE_DIR.PROPERTIES_SITE_DIR.'?property='.$row->propertyA.$selectionURL.'">'.htmlentities($row->labelA).'</a></td>
