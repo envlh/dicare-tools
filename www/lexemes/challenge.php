@@ -43,7 +43,7 @@ else {
         echo '<p><strong><a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php">&rarr; A new challenge is available!</a></strong></p>';
     }
     else {
-        echo '<p>You can help by <a href="https://www.wikidata.org/wiki/Special:MyLanguage/Wikidata:Lexicographical_data">creating new lexemes</a> and linking senses to Wikidata items using the properties <a href="https://www.wikidata.org/wiki/Property:P5137"><em>item for this sense</em> (P5137)</a> or <a href="https://www.wikidata.org/wiki/Property:P9970"><em>predicate for</em> (P9970)</a>. Useful tool: <a href="https://lexeme-forms.toolforge.org/">Wikidata Lexeme Forms</a>.</p>';
+        echo '<p>You can help by <a href="https://www.wikidata.org/wiki/Special:MyLanguage/Wikidata:Lexicographical_data">creating new lexemes</a> (for instance with <a href="https://lexeme-forms.toolforge.org/">Wikidata Lexeme Forms</a>) and linking senses to Wikidata items using the following properties: <a href="https://www.wikidata.org/wiki/Property:P5137"><em>item for this sense</em> (P5137)</a>, <a href="https://www.wikidata.org/wiki/Property:P9970"><em>predicate for</em> (P9970)</a>, <a href="https://www.wikidata.org/wiki/Property:P6271"><em>demonym of</em> (P6271)</a>.</p>';
     }
     
     $concepts = explode(' ', $challenge->concepts);

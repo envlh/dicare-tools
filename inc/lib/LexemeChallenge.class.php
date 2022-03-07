@@ -1,6 +1,6 @@
 <?php
 
-define('LEXEMES_CHALLENGE_PATH', 'wdt:P5137|wdt:P9970');
+define('LEXEMES_CHALLENGE_PATH', 'wdt:P5137|wdt:P6271|wdt:P9970');
 
 class LexemeChallenge {
     
