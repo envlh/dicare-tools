@@ -114,7 +114,7 @@ else {
     });
     if (count($rankings) >= 1) {
         echo '<h2 id="dashboard">Most improved languages during the challenge</h2>
-<p>This table counts only lexemes for which the properties <a href="https://www.wikidata.org/wiki/Property:P5137"><em>item for this sense</em> (P5137)</a> or <a href="https://www.wikidata.org/wiki/Property:P9970"><em>predicate for</em> (P9970)</a> were added or removed during the challenge.</p>';
+<p>This table counts only lexemes for which the properties <a href="https://www.wikidata.org/wiki/Property:P5137"><em>item for this sense</em> (P5137)</a>, <a href="https://www.wikidata.org/wiki/Property:P9970"><em>predicate for</em> (P9970)</a>, or <a href="https://www.wikidata.org/wiki/Property:P6271"><em>demonym of</em> (P6271)</a> were added or removed during the challenge.</p>';
         LexemeParty::displayRankings($rankings, count($concepts), true);
     }
     echo '&rarr; <a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenges-dashboard.php">Challenges Dashboard</a>';
