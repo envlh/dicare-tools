@@ -33,7 +33,7 @@ abstract class sparql {
             if ($data === false) {
                 throw new Exception('Error while querying SPARQL endpoint ('.$endpoint_id.')'."\n".$query);
             }
-            db::query('INSERT INTO `query`(`query_hash`, `endpoint_id`, `last_update`, `query`, `response`) VALUES(0x'.$query_hash.', \''.db::sec($endpoint_id).'\', NOW(), \''.db::sec($query).'\', \''.db::sec(gzencode($data)).'\') ON DUPLICATE KEY UPDATE `last_update` = NOW(), `response` = \''.db::sec(gzencode($data)).'\'');
+            db::query('INSERT INTO `query`(`query_hash`, `endpoint_id`, `last_update`, `query`, `response`) VALUES(0x'.$query_hash.', \''.db::sec($endpoint_id).'\', NOW(), \''.db::sec($query).'\', 0x'.bin2hex(gzencode($data)).') ON DUPLICATE KEY UPDATE `last_update` = NOW(), `response` = 0x'.bin2hex(gzencode($data)));
             self::$last_query_time = db::query('SELECT `last_update` FROM `query` WHERE `query_hash` = 0x'.$query_hash.' AND `endpoint_id` = \''.db::sec($endpoint_id).'\'')->fetch_row()[0];
             db::commit();
             db::query('SELECT RELEASE_LOCK(\''.$endpoint_id.'_sparql_lock\')');
