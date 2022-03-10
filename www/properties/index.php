@@ -71,7 +71,7 @@ require '../../inc/header.inc.php';
 
 if (!empty($property)) {
 
-	echo '<p>As of <strong>'.htmlentities(parameter::get('properties_dump')).'</strong>, the Wikidata property <strong><em>'.htmlentities($property->label).'</em></strong> (<a href="https://www.wikidata.org/wiki/Property:P'.$property->id.'">P'.$property->id.'</a>) is used on '.number_format($property->cardinality).' items.</p>';
+	echo '<p>As of <strong>'.htmlentities(parameter::get('properties_dump')).'</strong>, the Wikidata property <strong><em>'.htmlentities($property->label).'</em></strong> (<a href="https://www.wikidata.org/wiki/Property:P'.$property->id.'">P'.$property->id.'</a>) is used on '.number_format($property->cardinality).' items as main value on statements (not counting qualifiers) of the Q and P namespaces.</p>';
 
 	echo '<p>Closest properties: <a href="#intersection_cardinality">by cardinality of intersection</a>, <a href="#jaccard_index">by Jaccard index</a>.</p>';
 
@@ -109,7 +109,7 @@ if (!empty($property)) {
 }
 elseif (empty($_GET['property'])) {
 
-	echo '<p>The tool <strong><em>Wikidata Related Properties</em></strong> provides statistics about the usage of properties in Wikidata items, as main properties of statements (not as qualifiers or in references), and the relations between them.</p><p>As of <strong>'.htmlentities(parameter::get('properties_dump')).'</strong>, Wikidata counts <strong>'.number_format(db::query('SELECT COUNT(*) AS `count` FROM `property`')->fetch_object()->count).'</strong> properties in use on statements (not counting qualifiers) of the main namespace.</p>';
+	echo '<p>The tool <strong><em>Wikidata Related Properties</em></strong> provides statistics about the usage of properties in Wikidata items, as main properties of statements (not as qualifiers or in references), and the relations between them.</p><p>As of <strong>'.htmlentities(parameter::get('properties_dump')).'</strong>, Wikidata counts <strong>'.number_format(db::query('SELECT COUNT(*) AS `count` FROM `property`')->fetch_object()->count).'</strong> properties in use as main value on statements (not counting qualifiers) of the Q and P namespaces.</p>';
 
 	echo '<p><a href="#most_used">Most used properties</a> | Closest properties: <a href="#intersection_cardinality">by cardinality of intersection</a>, <a href="#jaccard_index">by Jaccard index</a> | <a href="#download">Downloads</a></p>';
 
