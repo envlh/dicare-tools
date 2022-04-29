@@ -18,7 +18,7 @@ if (!empty($_GET['query'])) {
     if (count($party->concepts) >= 1) {
         $party->fetchConceptsMeta();
         $items = $party->queryItems();
-        if (count($items) >= 1) {
+        if (is_array($items) && (count($items) >= 1)) {
             $party->computeItems($items);
         }
     }

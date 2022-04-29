@@ -94,12 +94,23 @@ class LexemeParty {
     
     public function fetchConcepts($query) {
         $results = wdqs::query($query, LEXEMES_WDQS_CACHE);
-        if (empty($results) || count(@$results->results->bindings) === 0) {
-            $this->errors[] = 'The input query returned no result.';
-            return;
-        }
-        foreach ($results->results->bindings as $item) {
-            $this->concepts[] = substr($item->concept->value, 31);
+        try {
+            if (empty($results) || count(@$results->results->bindings) === 0) {
+                throw new Exception('The input query returned no result.');
+            }
+            foreach ($results->results->bindings as $item) {
+                if (isset($item->concept)) {
+                    $str = $item->concept->value;
+                    if (preg_match('/^http\:\/\/www\.wikidata\.org\/wiki\/Q[0-9]+$/', $str) === 0) {
+                        $this->concepts[] = substr($str, 31);
+                    }
+                }
+            }
+            if (empty($this->concepts)) {
+                throw new Exception('No concept found in input query results. Check that you filled the variable <code>?concept</code>.');
+            }
+        } catch (Exception $e) {
+            $this->errors[] = $e->getMessage();
         }
     }
     
@@ -167,7 +178,7 @@ class LexemeParty {
         $items = wdqs::query($query, $cache)->results->bindings;
         $this->items_query_time = wdqs::getLastQueryTime();
     
-        if (count($items) === 0) {
+        if (!is_array($items) || (count($items) === 0)) {
             $this->errors[] = 'No lexeme found :(';
         }
         
