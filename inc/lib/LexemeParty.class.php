@@ -475,7 +475,7 @@ class LexemeParty {
     &nbsp;&nbsp;&nbsp;&nbsp; <img src="'.SITE_STATIC_DIR.'img/famfamfam/medal_silver_3.png" alt="" class="medal" title="≥ 80%" /> '.$this->medals['silver'].'
     &nbsp;&nbsp;&nbsp;&nbsp; <img src="'.SITE_STATIC_DIR.'img/famfamfam/medal_bronze_3.png" alt="" class="medal" title="≥ 50%" /> '.$this->medals['bronze'].'
     &nbsp;&nbsp;&nbsp;&nbsp; &#8709; '.$this->medals[''].'</p>
-	<p>Last data update: '.$this->items_query_time.' ('.($minutesElapsed > 0 ? $minutesElapsed.' minute'.($minutesElapsed > 1 ? 's' : '').' ago' : 'now').').</p>';
+	<p>Last data update: '.$this->items_query_time.' UTC ('.($minutesElapsed > 0 ? $minutesElapsed.' minute'.($minutesElapsed > 1 ? 's' : '').' ago' : 'now').').</p>';
     }
     
     private function display_cell($items) {
