@@ -86,7 +86,7 @@ foreach ($lists as $key =>  $list) {
     echo '<tr><td class="label">'.htmlentities($list->label).'</td>';
     foreach ($legislatures as $legislature) {
         $count = dptListCount($list, $legislature);
-        echo '<td><a href="'.SITE_DIR.DEPUTES_SITE_DIR.'?list='.$key.'&amp;legislature='.$legislature->number.'#liste">';
+        echo '<td'.((($key == @$_GET['list']) && ($legislature->number == @$_GET['legislature'])) ? ' class="highlight"' : '').'><a href="'.SITE_DIR.DEPUTES_SITE_DIR.'?list='.$key.'&amp;legislature='.$legislature->number.'#liste">';
         if ($count == 0) {
             echo '&mdash;';
         } else {

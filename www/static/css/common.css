@@ -62,6 +62,10 @@ tr:hover {
 tr:target {
     background: #EEF;
 }
+td.highlight {
+    background: #EEF;
+    font-weight: bold;
+}
 
 a {
     text-decoration: none;
