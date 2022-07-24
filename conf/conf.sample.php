@@ -16,14 +16,10 @@ define('DICARE_USER_AGENT', 'Dicare/3.1 2021-09-26 tools');
 define('SITE_DIR', 'https://dicare.toolforge.org/');
 define('SITE_STATIC_DIR', 'https://dicare.toolforge.org/static/');
 
-define('BATEAUX_SITE_DIR', 'bateaux/');
-
 define('BNF_SITE_DIR', 'bnf/');
 define('IDREF_SITE_DIR', 'idref/');
 
 define('DEPUTES_SITE_DIR', 'deputes/');
-
-define('DD_SITE_DIR', 'dedicated-dashboard/');
 
 define('DIFF_SITE_DIR', 'wikidata-diff/');
 
