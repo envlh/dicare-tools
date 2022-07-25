@@ -25,6 +25,11 @@ define('DIFF_SITE_DIR', 'wikidata-diff/');
 
 define('LEXEMES_SITE_DIR', 'lexemes/');
 define('LEXEMES_CHALLENGE_TWEETS', false);
+define('LEXEMES_CHALLENGE_PROPERTIES', array(
+    'P5137' => 'item for this sense',
+    'P6271' => 'predicate for',
+    'P9970' => 'demonym of',
+));
 
 define('NOMS_SITE_DIR', 'noms/');
 define('NOMS_LANG_FALLBACK', 'en de es it nl br ca');

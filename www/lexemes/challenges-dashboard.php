@@ -11,7 +11,7 @@ require '../../inc/header.inc.php';
 
 $concepts_count = db::query('SELECT SUM(`concepts_count`) FROM `lexemes_challenge` WHERE `date_start` IS NOT NULL AND `date_end` IS NOT NULL')->fetch_row()[0];
 
-echo '<p>These tables count only lexemes for which the properties <a href="https://www.wikidata.org/wiki/Property:P5137"><em>item for this sense</em> (P5137)</a>, <a href="https://www.wikidata.org/wiki/Property:P9970"><em>predicate for</em> (P9970)</a>, or <a href="https://www.wikidata.org/wiki/Property:P6271"><em>demonym of</em> (P6271)</a> were added or removed during the challenges.</p>';
+echo '<p>These tables count only lexemes for which at least one of the following properties was added or removed during the challenges: '.LexemeChallenge::getPropertiesList().'.</p>';
 
 $res = db::query('SELECT `language_id`, SUM(`completion`) AS `completion`, SUM(`removed`) AS `removed`, SUM(`added`) AS `added` FROM `lexemes_challenge_statistics` GROUP BY `language_id` ORDER BY SUM(`removed` + `added`) DESC, `completion` DESC LIMIT 10');
 echo '<h2>Most improved languages during challenges</h2>';

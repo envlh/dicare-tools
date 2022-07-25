@@ -12,7 +12,7 @@ require '../../inc/header.inc.php';
 echo '<h2>Lexemes Challenges History</h2>
 <p>This table counts all lexemes which were:</p>
 <ul>
-<li>linked to the items of the challenge with the properties <a href="https://www.wikidata.org/wiki/Property:P5137"><em>item for this sense</em> (P5137)</a>, <a href="https://www.wikidata.org/wiki/Property:P9970"><em>predicate for</em> (P9970)</a>, or <a href="https://www.wikidata.org/wiki/Property:P6271"><em>demonym of</em> (P6271)</a> at the start or at the end of the challenge,</li>
+<li>linked to the items of the challenge with at least one of the following properties at the start or at the end of the challenge: '.LexemeChallenge::getPropertiesList().',</li>
 <li>edited during the challenge.</li>
 </ul>
 <table id="lexemes_challenge_archive">

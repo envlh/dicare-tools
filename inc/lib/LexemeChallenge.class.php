@@ -1,7 +1,5 @@
 <?php
 
-define('LEXEMES_CHALLENGE_PATH', 'wdt:P5137|wdt:P6271|wdt:P9970');
-
 class LexemeChallenge {
     
     public $id;
@@ -42,7 +40,7 @@ class LexemeChallenge {
     
     public function open() {
         $party = new LexemeParty();
-        $party->setPath(LEXEMES_CHALLENGE_PATH);
+        $party->setPath(self::getPath());
         $party->setConcepts(explode(' ', $this->concepts));
         $items = $party->queryItems(0);
         $party->computeItems($items);
@@ -61,7 +59,7 @@ class LexemeChallenge {
     
     public function close() {
         $party = new LexemeParty();
-        $party->setPath(LEXEMES_CHALLENGE_PATH);
+        $party->setPath(self::getPath());
         $party->setConcepts(explode(' ', $this->concepts));
         $items = $party->queryItems(0);
         $party->computeItems($items);
@@ -69,7 +67,7 @@ class LexemeChallenge {
         $this->results_end = serialize($items);
         // rankings
         $referenceParty = new LexemeParty();
-        $referenceParty->setPath(LEXEMES_CHALLENGE_PATH);
+        $referenceParty->setPath(self::getPath());
         $referenceParty->setConcepts(explode(' ', $this->concepts));
         $items = unserialize($this->results_start);
         $referenceParty->computeItems($items);
@@ -124,6 +122,18 @@ class LexemeChallenge {
             }
         }
         return (object) ['lexemes_improved' => $edited_lexemes, 'languages_improved' => count($languages), 'distinct_editors' => count($users)];
+    }
+    
+    public static function getPath() {
+        return 'wdt:'.implode('|wdt:', array_keys(LEXEMES_CHALLENGE_PROPERTIES));
+    }
+    
+    public static function getPropertiesList() {
+        $properties = array();
+        foreach (LEXEMES_CHALLENGE_PROPERTIES as $pid => $label) {
+            $properties[] = '<a href="https://www.wikidata.org/wiki/Property:'.$pid.'"><em>'.htmlentities($label).'</em> ('.$pid.')</a>';
+        }
+        return implode(', ', $properties);
     }
     
 }

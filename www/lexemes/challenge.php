@@ -43,14 +43,14 @@ else {
         echo '<p><strong><a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php">&rarr; A new challenge is available!</a></strong></p>';
     }
     else {
-        echo '<p>You can help by <a href="https://www.wikidata.org/wiki/Special:MyLanguage/Wikidata:Lexicographical_data">creating new lexemes</a> (for instance with <a href="https://lexeme-forms.toolforge.org/">Wikidata Lexeme Forms</a>) and linking senses to Wikidata items using the following properties: <a href="https://www.wikidata.org/wiki/Property:P5137"><em>item for this sense</em> (P5137)</a>, <a href="https://www.wikidata.org/wiki/Property:P9970"><em>predicate for</em> (P9970)</a>, <a href="https://www.wikidata.org/wiki/Property:P6271"><em>demonym of</em> (P6271)</a>.</p>';
+        echo '<p>You can help by <a href="https://www.wikidata.org/wiki/Special:MyLanguage/Wikidata:Lexicographical_data">creating new lexemes</a> (for instance with <a href="https://lexeme-forms.toolforge.org/">Wikidata Lexeme Forms</a>) and linking senses to Wikidata items using the following properties: '.LexemeChallenge::getPropertiesList().'.</p>';
     }
     
     $concepts = explode(' ', $challenge->concepts);
     
     // initial results
     $referenceParty = new LexemeParty();
-    $referenceParty->setPath(LEXEMES_CHALLENGE_PATH);
+    $referenceParty->setPath(LexemeChallenge::getPath());
     $referenceParty->setConcepts($concepts);
     $items = unserialize($challenge->results_start);
     $referenceParty->computeItems($items);
@@ -59,7 +59,7 @@ else {
     // final results
     if (!empty($challenge->date_end)) {
         $finalParty = new LexemeParty();
-        $finalParty->setPath(LEXEMES_CHALLENGE_PATH);
+        $finalParty->setPath(LexemeChallenge::getPath());
         $finalParty->setConcepts($concepts);
         $items = unserialize($challenge->results_end);
         $finalParty->computeItems($items);
@@ -68,7 +68,7 @@ else {
     
     // current results
     $currentParty = new LexemeParty();
-    $currentParty->setPath(LEXEMES_CHALLENGE_PATH);
+    $currentParty->setPath(LexemeChallenge::getPath());
     $currentParty->initLanguageDisplay();
     $currentParty->setConcepts($concepts);
     $items = $currentParty->queryItems();
@@ -114,7 +114,7 @@ else {
     });
     if (count($rankings) >= 1) {
         echo '<h2 id="dashboard">Most improved languages during the challenge</h2>
-<p>This table counts only lexemes for which the properties <a href="https://www.wikidata.org/wiki/Property:P5137"><em>item for this sense</em> (P5137)</a>, <a href="https://www.wikidata.org/wiki/Property:P9970"><em>predicate for</em> (P9970)</a>, or <a href="https://www.wikidata.org/wiki/Property:P6271"><em>demonym of</em> (P6271)</a> were added or removed during the challenge.</p>';
+<p>This table counts only lexemes for which at least one of the following properties was added or removed during the challenge: '.LexemeChallenge::getPropertiesList().'.</p>';
         LexemeParty::displayRankings($rankings, count($concepts), true);
     }
     echo '&rarr; <a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenges-dashboard.php">Challenges Dashboard</a>';
