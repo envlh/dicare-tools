@@ -16,6 +16,8 @@ define('DICARE_USER_AGENT', 'Dicare/3.1 2021-09-26 tools');
 define('SITE_DIR', 'https://dicare.toolforge.org/');
 define('SITE_STATIC_DIR', 'https://dicare.toolforge.org/static/');
 
+define('CWIKIDAYS_SITE_DIR', '100wikidays/');
+
 define('BNF_SITE_DIR', 'bnf/');
 define('IDREF_SITE_DIR', 'idref/');
 

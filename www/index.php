@@ -8,10 +8,11 @@ require '../inc/header.inc.php';
 
 ?>
 
-<p><strong>Dicare Tools</strong> are a set of tools to contribute to and to gather statistics about Wikimedia projects.</p>
+<p><strong>Dicare Tools</strong> are a set of tools to gather statistics about and to contribute to Wikimedia projects.</p>
 
 <h2>Tools list</h2>
 <ul>
+<li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.CWIKIDAYS_SITE_DIR; ?>">100 wiki days</a></strong>: check your progress on the #100wikidays challenge</li>
 <li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.BNF_SITE_DIR; ?>">BnF To Wikidata</a></strong>: import sourced data from BnF into Wikidata</li>
 <li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.IDREF_SITE_DIR; ?>">IdRef To Wikidata</a></strong>: import sourced data from IdRef into Wikidata</li>
 <li><span class="language">[en]</span> <strong><a href="<?php echo SITE_DIR.LEXEMES_SITE_DIR; ?>party.php">Lexemes Party</a></strong>: explore lexemes linked to a list of Wikidata concepts</li>
