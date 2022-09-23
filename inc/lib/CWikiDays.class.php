@@ -6,6 +6,9 @@ class CWikiDays {
     private $prefix = 0;
     private $project = 0;
     private $namespace = 0;
+    private $timezone = 'utc';
+    private $timeoffset = 0;
+    private $timelabel = 'UTC';
     private $limit = 500;
     
     private $data = array();
@@ -13,15 +16,43 @@ class CWikiDays {
     private $longest_streak_count = 0;
     private $longest_streak_date = null;
     
-    public function __construct($username, $prefix, $project, $namespace, $limit) {
+    public function __construct($username, $prefix, $project, $namespace, $timezone, $limit) {
         $this->username = $username;
         $this->prefix = $prefix;
         $this->project = $project;
         $this->namespace = $namespace;
+        $this->timezone = $timezone;
         $this->limit = $limit;
     }
     
+    private function retrieveTimezoneConfiguration() {
+        $results = http::request('GET', 'https://'.$this->prefix.'.'.$this->project.'.org/w/api.php?action=query&format=json&meta=siteinfo');
+        if ($results === false) {
+            throw new Exception('Unable to retrieve configuration (HTTP query, check that this wiki <code>'.$this->prefix.'.'.$this->project.'.org</code> exists).');
+        }
+        $json = json_decode($results);
+        if (isset($json->error)) {
+            throw new Exception('Error from Wikimedia server: <code>'.htmlentities($json->error->code).'</code>.');
+        }
+        if (!isset($json->query->general->timeoffset)) {
+            throw new Exception('Unable to retrieve configuration (invalid response, check that the wiki <code>'.$this->prefix.'.'.$this->project.'.org</code> exists).');
+        }
+        $this->timeoffset = $json->query->general->timeoffset;
+        if ($this->timeoffset < 0) {
+            $this->timelabel = 'UTC'.($this->timeoffset / 60);
+        }
+        elseif ($this->timeoffset > 0) {
+            $this->timelabel = 'UTC+'.($this->timeoffset / 60);
+        }
+        else {
+            $this->timelabel = 'UTC';
+        }
+    }
+    
     public function retrieveData() {
+        if ($this->timezone == 'wiki') {
+            $this->retrieveTimezoneConfiguration();
+        }
         $results = http::request('GET', 'https://'.$this->prefix.'.'.$this->project.'.org/w/api.php?action=query&format=json&list=usercontribs&ucuser='.urlencode($this->username).'&ucshow=new&ucnamespace='.$this->namespace.'&uclimit='.$this->limit);
         if ($results === false) {
             throw new Exception('Unable to retrieve data (HTTP query, check that this wiki <code>'.$this->prefix.'.'.$this->project.'.org</code> exists).');
@@ -36,8 +67,12 @@ class CWikiDays {
         $loop_date = null;
         $streak = 0;
         $this->count = count($json->query->usercontribs);
-        foreach (array_reverse($json->query->usercontribs) as $row) {
+        foreach (array_reverse($json->query->usercontribs) as &$row) {
             $date = new DateTimeImmutable($row->timestamp);
+            if ($this->timeoffset != 0) {
+                $date = $date->add(new DateInterval('PT'.$this->timeoffset.'M'));
+            }
+            $row->timestamp_local = $date->format('Y-m-d\\TH:i:s\\Z');
             $date = $date->setTime(0, 0, 0, 0);
             $date_str = $date->format('Y-m-d');
             if (!isset($this->data[$date_str])) {
@@ -103,6 +138,7 @@ class CWikiDays {
         }
         echo '</select></p>
         <p><label for="namespace">Namespace:</label> <input type="text" name="namespace" id="namespace" value="'.$this->namespace.'" size="3" /> (Main: 0, File: 6, Property: 120, Lexeme: 146)</p>
+        <p><label for="timezone">Timezone:</label> <select name="timezone" id="timezone"><option value="wiki"'.(($this->timezone == 'wiki') ? ' selected="selected"' : '').'>Wiki</option><option value="utc"'.(($this->timezone == 'utc') ? ' selected="selected"' : '').'>UTC</option></select></p>
         <p><label for="limit">Limit:</label> <input type="text" name="limit" id="limit" value="'.$this->limit.'" size="3" /></p>
         <p><input type="submit" value="Search" /></p>
         </form>';
@@ -123,7 +159,7 @@ class CWikiDays {
                     if (($this->project == 'wikidata') && (($this->namespace == 120) || ($this->namespace == 146))) {
                         $title = preg_replace('/^.*?:/', '', $title);
                     }
-                    $item = '<a href="https://'.$this->prefix.'.'.$this->project.'.org/wiki/'.htmlentities($row->title).'">';
+                    $item = '<a href="https://'.$this->prefix.'.'.$this->project.'.org/wiki/'.htmlentities($row->title).'" title="'.substr($row->timestamp_local, 11, 8).' '.$this->timelabel.'">';
                     if (isset($labels[$title])) {
                         $item .= htmlentities($labels[$title]).' ('.htmlentities($title).')';
                     } else {
