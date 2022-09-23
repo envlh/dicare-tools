@@ -159,7 +159,7 @@ class CWikiDays {
                     if (($this->project == 'wikidata') && (($this->namespace == 120) || ($this->namespace == 146))) {
                         $title = preg_replace('/^.*?:/', '', $title);
                     }
-                    $item = '<a href="https://'.$this->prefix.'.'.$this->project.'.org/wiki/'.htmlentities($row->title).'" title="'.substr($row->timestamp_local, 11, 8).' '.$this->timelabel.'">';
+                    $item = '<a href="https://'.$this->prefix.'.'.$this->project.'.org/wiki/'.htmlentities(str_replace(' ', '_', $row->title)).'" title="'.substr($row->timestamp_local, 11, 8).' '.$this->timelabel.'">';
                     if (isset($labels[$title])) {
                         $item .= htmlentities($labels[$title]).' ('.htmlentities($title).')';
                     } else {

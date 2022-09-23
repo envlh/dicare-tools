@@ -2,7 +2,7 @@
 
 require '../../inc/load.inc.php';
 
-define('PAGE_TITLE', '<a href="'.SITE_DIR.CWIKIDAYS_SITE_DIR.'">100 wiki days</a>');
+define('PAGE_TITLE', '<a href="'.SITE_DIR.CWIKIDAYS_SITE_DIR.'">#100wikidays</a>');
 
 require '../../inc/header.inc.php';
 
@@ -41,7 +41,8 @@ if (!empty($_GET['limit']) && preg_match('/^[1-9][0-9]*$/', $_GET['limit'])) {
 
 $challenge = new CWikiDays($username, $prefix, $project, $namespace, $timezone, $limit);
 
-echo '<h2>Search</h2>';
+echo '<h2>Search</h2>
+<p>This tool helps you tracking your progress in the challenge <a href="https://meta.wikimedia.org/wiki/100wikidays">#100wikidays</a>.</p>';
 $challenge->displayForm($projects);
 
 if (!empty($username)) {
