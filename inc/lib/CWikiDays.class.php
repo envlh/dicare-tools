@@ -7,8 +7,7 @@ class CWikiDays {
     private $project = 0;
     private $namespace = 0;
     private $timezone = 'utc';
-    private $timeoffset = 0;
-    private $timelabel = 'UTC';
+    private $timezone_infer = 'UTC';
     private $limit = 500;
     
     private $data = array();
@@ -37,16 +36,7 @@ class CWikiDays {
         if (!isset($json->query->general->timeoffset)) {
             throw new Exception('Unable to retrieve configuration (invalid response, check that the wiki <code>'.$this->prefix.'.'.$this->project.'.org</code> exists).');
         }
-        $this->timeoffset = $json->query->general->timeoffset;
-        if ($this->timeoffset < 0) {
-            $this->timelabel = 'UTC'.($this->timeoffset / 60);
-        }
-        elseif ($this->timeoffset > 0) {
-            $this->timelabel = 'UTC+'.($this->timeoffset / 60);
-        }
-        else {
-            $this->timelabel = 'UTC';
-        }
+        $this->timezone_infer = $json->query->general->timezone;
     }
     
     public function retrieveData() {
@@ -69,10 +59,8 @@ class CWikiDays {
         $this->count = count($json->query->usercontribs);
         foreach (array_reverse($json->query->usercontribs) as &$row) {
             $date = new DateTimeImmutable($row->timestamp);
-            if ($this->timeoffset != 0) {
-                $date = $date->add(new DateInterval('PT'.$this->timeoffset.'M'));
-            }
-            $row->timestamp_local = $date->format('Y-m-d\\TH:i:s\\Z');
+            $date = $date->setTimezone(new DateTimeZone($this->timezone_infer));
+            $row->date_local = $date;
             $date = $date->setTime(0, 0, 0, 0);
             $date_str = $date->format('Y-m-d');
             if (!isset($this->data[$date_str])) {
@@ -159,7 +147,7 @@ class CWikiDays {
                     if (($this->project == 'wikidata') && (($this->namespace == 120) || ($this->namespace == 146))) {
                         $title = preg_replace('/^.*?:/', '', $title);
                     }
-                    $item = '<a href="https://'.$this->prefix.'.'.$this->project.'.org/wiki/'.htmlentities(str_replace(' ', '_', $row->title)).'" title="'.substr($row->timestamp_local, 11, 8).' '.$this->timelabel.'">';
+                    $item = '<a href="https://'.$this->prefix.'.'.$this->project.'.org/wiki/'.htmlentities(str_replace(' ', '_', $row->title)).'" title="'.$row->date_local->format('H:i:s').' ('.$row->date_local->format('e P').')">';
                     if (isset($labels[$title])) {
                         $item .= htmlentities($labels[$title]).' ('.htmlentities($title).')';
                     } else {
