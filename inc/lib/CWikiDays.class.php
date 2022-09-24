@@ -7,7 +7,7 @@ class CWikiDays {
     private $project = 0;
     private $namespace = 0;
     private $redirects = true;
-    private $timezone = 'utc';
+    private $timezone = 'UTC';
     private $timezone_infer = 'UTC';
     private $limit = 500;
     
@@ -105,6 +105,8 @@ class CWikiDays {
     public function processData() {
         if ($this->timezone == 'wiki') {
             $this->retrieveWikiTimezone();
+        } else {
+            $this->timezone_infer = $this->timezone;
         }
         $usercontribs = $this->retrieveData();
         $redirects = $this->retrieveRedirects($usercontribs);
@@ -188,7 +190,14 @@ class CWikiDays {
         echo '</select></p>
         <p><label for="namespace">Namespace:</label> <input type="text" name="namespace" id="namespace" value="'.$this->namespace.'" size="3" /> (Main: 0, File: 6, Property: 120, Lexeme: 146)</p>
         <p><input type="checkbox" name="redirects" id="redirects" value="true"'.($this->redirects ? ' checked="checked"' : '').' /> <label for="redirects">Include redirects</label></p>
-        <p><label for="timezone">Timezone:</label> <select name="timezone" id="timezone"><option value="wiki"'.(($this->timezone == 'wiki') ? ' selected="selected"' : '').'>Wiki</option><option value="utc"'.(($this->timezone == 'utc') ? ' selected="selected"' : '').'>UTC</option></select></p>
+        <p><label for="timezone">Timezone:</label> <select name="timezone" id="timezone"><option value="wiki"'.(($this->timezone == 'wiki') ? ' selected="selected"' : '').'>Wiki</option><option value="UTC"'.(($this->timezone == 'UTC') ? ' selected="selected"' : '').'>UTC</option>';
+        $timezones = DateTimeZone::listIdentifiers();
+        foreach ($timezones as $timezone) {
+            if ($timezone != 'UTC') {
+                echo '<option value="'.htmlentities($timezone).'"'.(($this->timezone == $timezone) ? ' selected="selected"' : '').'>'.htmlentities($timezone).'</option>';
+            }
+        }
+        echo '</select></p>
         <p><label for="limit">Limit:</label> <input type="text" name="limit" id="limit" value="'.$this->limit.'" size="3" /></p>
         <p><input type="submit" value="Search" /></p>
         </form>';
@@ -199,7 +208,7 @@ class CWikiDays {
             echo '<p>No creation found on this wiki :(</p>';
         } else {
             $labels = $this->retrieveLabels();
-            echo '<p>'.$this->count.' creations found ('.($this->redirects ? 'including' : 'excluding').' '.$this->redirects_count.' redirect'.(($this->redirects_count > 1) ? 's' : '').') for <a href="https://'.$this->prefix.'.'.$this->project.'.org/wiki/User:'.urlencode(str_replace(' ', '_', $this->username)).'">User:'.htmlentities(str_replace(' ', '_', $this->username)).'</a> on <a href="https://'.$this->prefix.'.'.$this->project.'.org/">'.$this->prefix.'.'.$this->project.'.org</a>. Longest streak: '.$this->longest_streak_count.' day'.(($this->longest_streak_count > 1) ? 's' : '').', finished on '.$this->longest_streak_date->format('Y-m-d').'.</p>';
+            echo '<p>'.$this->count.' creations found ('.($this->redirects ? 'including' : 'excluding').' '.$this->redirects_count.' redirect'.(($this->redirects_count > 1) ? 's' : '').') for <a href="https://'.$this->prefix.'.'.$this->project.'.org/wiki/User:'.urlencode(str_replace(' ', '_', $this->username)).'">User:'.htmlentities(str_replace(' ', '_', $this->username)).'</a> on <a href="https://'.$this->prefix.'.'.$this->project.'.org/">'.$this->prefix.'.'.$this->project.'.org</a>. Longest streak: '.$this->longest_streak_count.' day'.(($this->longest_streak_count > 1) ? 's' : '').', finished on '.$this->longest_streak_date->format('Y-m-d').' (timezone: '.htmlentities($this->timezone_infer).').</p>';
             echo '<ol reversed="true">';
             $previous_date = null;
             foreach (array_reverse($this->data) as $date_str => $date) {

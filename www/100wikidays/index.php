@@ -35,8 +35,9 @@ if (!empty($_GET['redirects']) && ($_GET['redirects'] == 'true')) {
 }
 
 $timezone = 'wiki';
-if (!empty($_GET['timezone']) && ($_GET['timezone'] == 'utc')) {
-    $timezone = 'utc';
+$timezones = DateTimeZone::listIdentifiers();
+if (!empty($_GET['timezone']) && (($_GET['timezone'] == 'UTC') || in_array($_GET['timezone'], $timezones))) {
+    $timezone = $_GET['timezone'];
 }
 
 $limit = 500;
