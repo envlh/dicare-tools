@@ -29,6 +29,11 @@ if (!empty($_GET['namespace']) && preg_match('/^[1-9][0-9]*$/', $_GET['namespace
     $namespace = $_GET['namespace'];
 }
 
+$redirects = false;
+if (!empty($_GET['redirects']) && ($_GET['redirects'] == 'true')) {
+    $redirects = true;
+}
+
 $timezone = 'wiki';
 if (!empty($_GET['timezone']) && ($_GET['timezone'] == 'utc')) {
     $timezone = 'utc';
@@ -39,7 +44,7 @@ if (!empty($_GET['limit']) && preg_match('/^[1-9][0-9]*$/', $_GET['limit'])) {
     $limit = max(1, min(500, $_GET['limit']));
 }
 
-$challenge = new CWikiDays($username, $prefix, $project, $namespace, $timezone, $limit);
+$challenge = new CWikiDays($username, $prefix, $project, $namespace, $redirects, $timezone, $limit);
 
 echo '<h2>Search</h2>
 <p>This tool helps you tracking your progress in the challenge <a href="https://meta.wikimedia.org/wiki/100wikidays">#100wikidays</a>.</p>';

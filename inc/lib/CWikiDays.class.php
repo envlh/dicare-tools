@@ -6,6 +6,7 @@ class CWikiDays {
     private $prefix = 0;
     private $project = 0;
     private $namespace = 0;
+    private $redirects = true;
     private $timezone = 'utc';
     private $timezone_infer = 'UTC';
     private $limit = 500;
@@ -14,17 +15,19 @@ class CWikiDays {
     private $count = 0;
     private $longest_streak_count = 0;
     private $longest_streak_date = null;
+    private $redirects_count = 0;
     
-    public function __construct($username, $prefix, $project, $namespace, $timezone, $limit) {
+    public function __construct($username, $prefix, $project, $namespace, $redirects, $timezone, $limit) {
         $this->username = $username;
         $this->prefix = $prefix;
         $this->project = $project;
         $this->namespace = $namespace;
+        $this->redirects = $redirects;
         $this->timezone = $timezone;
         $this->limit = $limit;
     }
     
-    private function retrieveTimezoneConfiguration() {
+    private function retrieveWikiTimezoneConfiguration() {
         $results = http::request('GET', 'https://'.$this->prefix.'.'.$this->project.'.org/w/api.php?action=query&format=json&meta=siteinfo');
         if ($results === false) {
             throw new Exception('Unable to retrieve configuration (HTTP query, check that this wiki <code>'.$this->prefix.'.'.$this->project.'.org</code> exists).');
@@ -39,9 +42,37 @@ class CWikiDays {
         $this->timezone_infer = $json->query->general->timezone;
     }
     
+    private function retrieveRedirects($usercontribs) {
+        $redirects = array();
+        $chunks = array_chunk($usercontribs, 50);
+        foreach ($chunks as $chunk) {
+            $ids = array();
+            foreach ($chunk as $row) {
+                $ids[] = $row->pageid;
+            }
+            $results = http::request('GET', 'https://'.$this->prefix.'.'.$this->project.'.org/w/api.php?action=query&format=json&pageids='.implode('|', $ids).'&prop=info');
+            if ($results === false) {
+                throw new Exception('Unable to retrieve redirects (HTTP query, check that this wiki <code>'.$this->prefix.'.'.$this->project.'.org</code> exists).');
+            }
+            $json = json_decode($results);
+            if (isset($json->error)) {
+                throw new Exception('Error from Wikimedia server: <code>'.htmlentities($json->error->code).'</code>.');
+            }
+            if (!isset($json->query->pages)) {
+                throw new Exception('Unable to retrieve redirects (invalid response, check that the wiki <code>'.$this->prefix.'.'.$this->project.'.org</code> exists).');
+            }
+            foreach ($json->query->pages as $row) {
+                if (isset($row->redirect)) {
+                    $redirects[] = $row->pageid;
+                }
+            }
+        }
+        return $redirects;
+    }
+    
     public function retrieveData() {
         if ($this->timezone == 'wiki') {
-            $this->retrieveTimezoneConfiguration();
+            $this->retrieveWikiTimezoneConfiguration();
         }
         $results = http::request('GET', 'https://'.$this->prefix.'.'.$this->project.'.org/w/api.php?action=query&format=json&list=usercontribs&ucuser='.urlencode($this->username).'&ucshow=new&ucnamespace='.$this->namespace.'&uclimit='.$this->limit);
         if ($results === false) {
@@ -57,7 +88,15 @@ class CWikiDays {
         $loop_date = null;
         $streak = 0;
         $this->count = count($json->query->usercontribs);
+        $redirects = $this->retrieveRedirects($json->query->usercontribs);
         foreach (array_reverse($json->query->usercontribs) as &$row) {
+            if (in_array($row->pageid, $redirects)) {
+                $this->redirects_count++;
+                if (!$this->redirects) {
+                    continue;
+                }
+                $row->redirect = true;
+            }
             $date = new DateTimeImmutable($row->timestamp);
             $date = $date->setTimezone(new DateTimeZone($this->timezone_infer));
             $row->date_local = $date;
@@ -126,6 +165,7 @@ class CWikiDays {
         }
         echo '</select></p>
         <p><label for="namespace">Namespace:</label> <input type="text" name="namespace" id="namespace" value="'.$this->namespace.'" size="3" /> (Main: 0, File: 6, Property: 120, Lexeme: 146)</p>
+        <p><input type="checkbox" name="redirects" id="redirects" value="true"'.($this->redirects ? ' checked="checked"' : '').' /> <label for="redirects">Show redirects</label></p>
         <p><label for="timezone">Timezone:</label> <select name="timezone" id="timezone"><option value="wiki"'.(($this->timezone == 'wiki') ? ' selected="selected"' : '').'>Wiki</option><option value="utc"'.(($this->timezone == 'utc') ? ' selected="selected"' : '').'>UTC</option></select></p>
         <p><label for="limit">Limit:</label> <input type="text" name="limit" id="limit" value="'.$this->limit.'" size="3" /></p>
         <p><input type="submit" value="Search" /></p>
@@ -137,7 +177,7 @@ class CWikiDays {
             echo '<p>No creation found on this wiki :(</p>';
         } else {
             $labels = $this->retrieveLabels();
-            echo '<p>'.$this->count.' creations found. Longest streak: '.$this->longest_streak_count.' day'.(($this->longest_streak_count > 1) ? 's' : '').', finished on '.$this->longest_streak_date->format('Y-m-d').'.</p>';
+            echo '<p>'.$this->count.' creations found (including '.$this->redirects_count.' '.(!$this->redirects ? 'hidden ' : '').'redirect'.(($this->redirects_count > 1) ? 's' : '').'). Longest streak: '.$this->longest_streak_count.' day'.(($this->longest_streak_count > 1) ? 's' : '').', finished on '.$this->longest_streak_date->format('Y-m-d').'.</p>';
             echo '<ul class="streak">';
             $previous_date = null;
             foreach (array_reverse($this->data) as $date_str => $date) {
@@ -147,13 +187,20 @@ class CWikiDays {
                     if (($this->project == 'wikidata') && (($this->namespace == 120) || ($this->namespace == 146))) {
                         $title = preg_replace('/^.*?:/', '', $title);
                     }
-                    $item = '<a href="https://'.$this->prefix.'.'.$this->project.'.org/wiki/'.htmlentities(str_replace(' ', '_', $row->title)).'" title="'.$row->date_local->format('H:i:s').' ('.$row->date_local->format('e P').')">';
+                    $item = '';
+                    if (isset($row->redirect)) {
+                        $item .= '<em>';
+                    }
+                    $item .= '<a href="https://'.$this->prefix.'.'.$this->project.'.org/wiki/'.htmlentities(str_replace(' ', '_', $row->title)).'" title="'.$row->date_local->format('H:i:s').' ('.$row->date_local->format('e P').')">';
                     if (isset($labels[$title])) {
                         $item .= htmlentities($labels[$title]).' ('.htmlentities($title).')';
                     } else {
                         $item .= htmlentities($title);
                     }
                     $item .= '</a>';
+                    if (isset($row->redirect)) {
+                        $item .= '</em> (<abbr title="redirect">r</abbr>)';
+                    }
                     $items[] = $item;
                 }
                 if (($previous_date != null) && ((new DateTime($previous_date))->sub(new DateInterval('P1D'))->format('Y-m-d') != $date_str)) {
