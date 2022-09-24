@@ -87,7 +87,6 @@ class CWikiDays {
         }
         $loop_date = null;
         $streak = 0;
-        $this->count = count($json->query->usercontribs);
         $redirects = $this->retrieveRedirects($json->query->usercontribs);
         foreach (array_reverse($json->query->usercontribs) as &$row) {
             if (in_array($row->pageid, $redirects)) {
@@ -97,6 +96,7 @@ class CWikiDays {
                 }
                 $row->redirect = true;
             }
+            $this->count++;
             $date = new DateTimeImmutable($row->timestamp);
             $date = $date->setTimezone(new DateTimeZone($this->timezone_infer));
             $row->date_local = $date;
@@ -165,7 +165,7 @@ class CWikiDays {
         }
         echo '</select></p>
         <p><label for="namespace">Namespace:</label> <input type="text" name="namespace" id="namespace" value="'.$this->namespace.'" size="3" /> (Main: 0, File: 6, Property: 120, Lexeme: 146)</p>
-        <p><input type="checkbox" name="redirects" id="redirects" value="true"'.($this->redirects ? ' checked="checked"' : '').' /> <label for="redirects">Show redirects</label></p>
+        <p><input type="checkbox" name="redirects" id="redirects" value="true"'.($this->redirects ? ' checked="checked"' : '').' /> <label for="redirects">Include redirects</label></p>
         <p><label for="timezone">Timezone:</label> <select name="timezone" id="timezone"><option value="wiki"'.(($this->timezone == 'wiki') ? ' selected="selected"' : '').'>Wiki</option><option value="utc"'.(($this->timezone == 'utc') ? ' selected="selected"' : '').'>UTC</option></select></p>
         <p><label for="limit">Limit:</label> <input type="text" name="limit" id="limit" value="'.$this->limit.'" size="3" /></p>
         <p><input type="submit" value="Search" /></p>
@@ -177,7 +177,7 @@ class CWikiDays {
             echo '<p>No creation found on this wiki :(</p>';
         } else {
             $labels = $this->retrieveLabels();
-            echo '<p>'.$this->count.' creations found (including '.$this->redirects_count.' '.(!$this->redirects ? 'hidden ' : '').'redirect'.(($this->redirects_count > 1) ? 's' : '').'). Longest streak: '.$this->longest_streak_count.' day'.(($this->longest_streak_count > 1) ? 's' : '').', finished on '.$this->longest_streak_date->format('Y-m-d').'.</p>';
+            echo '<p>'.$this->count.' creations found ('.($this->redirects ? 'including' : 'excluding').' '.$this->redirects_count.' redirect'.(($this->redirects_count > 1) ? 's' : '').'). Longest streak: '.$this->longest_streak_count.' day'.(($this->longest_streak_count > 1) ? 's' : '').', finished on '.$this->longest_streak_date->format('Y-m-d').'.</p>';
             echo '<ol reversed="true">';
             $previous_date = null;
             foreach (array_reverse($this->data) as $date_str => $date) {
