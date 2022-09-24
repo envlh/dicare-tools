@@ -199,7 +199,7 @@ class CWikiDays {
             echo '<p>No creation found on this wiki :(</p>';
         } else {
             $labels = $this->retrieveLabels();
-            echo '<p>'.$this->count.' creations found ('.($this->redirects ? 'including' : 'excluding').' '.$this->redirects_count.' redirect'.(($this->redirects_count > 1) ? 's' : '').'). Longest streak: '.$this->longest_streak_count.' day'.(($this->longest_streak_count > 1) ? 's' : '').', finished on '.$this->longest_streak_date->format('Y-m-d').'.</p>';
+            echo '<p>'.$this->count.' creations found ('.($this->redirects ? 'including' : 'excluding').' '.$this->redirects_count.' redirect'.(($this->redirects_count > 1) ? 's' : '').') for <a href="https://'.$this->prefix.'.'.$this->project.'.org/wiki/User:'.urlencode(str_replace(' ', '_', $this->username)).'">User:'.htmlentities(str_replace(' ', '_', $this->username)).'</a> on <a href="https://'.$this->prefix.'.'.$this->project.'.org/">'.$this->prefix.'.'.$this->project.'.org</a>. Longest streak: '.$this->longest_streak_count.' day'.(($this->longest_streak_count > 1) ? 's' : '').', finished on '.$this->longest_streak_date->format('Y-m-d').'.</p>';
             echo '<ol reversed="true">';
             $previous_date = null;
             foreach (array_reverse($this->data) as $date_str => $date) {
