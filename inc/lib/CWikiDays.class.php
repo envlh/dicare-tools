@@ -178,7 +178,7 @@ class CWikiDays {
         } else {
             $labels = $this->retrieveLabels();
             echo '<p>'.$this->count.' creations found (including '.$this->redirects_count.' '.(!$this->redirects ? 'hidden ' : '').'redirect'.(($this->redirects_count > 1) ? 's' : '').'). Longest streak: '.$this->longest_streak_count.' day'.(($this->longest_streak_count > 1) ? 's' : '').', finished on '.$this->longest_streak_date->format('Y-m-d').'.</p>';
-            echo '<ul class="streak">';
+            echo '<ol reversed="true">';
             $previous_date = null;
             foreach (array_reverse($this->data) as $date_str => $date) {
                 $items = array();
@@ -204,12 +204,12 @@ class CWikiDays {
                     $items[] = $item;
                 }
                 if (($previous_date != null) && ((new DateTime($previous_date))->sub(new DateInterval('P1D'))->format('Y-m-d') != $date_str)) {
-                    echo '</ul><hr /><ul>';
+                    echo '</ol><hr /><ol reversed="true">';
                 }
                 echo '<li><strong>'.$date_str.'</strong> <code>['.count($items).']</code> '.implode(', ', $items).'</li>';
                 $previous_date = $date_str;
             }
-            echo '</ul>';
+            echo '</ol>';
         }
     }
     

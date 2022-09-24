@@ -38,9 +38,6 @@ ul, ol {
 p + ul {
     margin-top: -12px;
 }
-p + ul.streak {
-    margin-top: 0;
-}
 li > ul {
     margin-top: 0;
     margin-bottom: 0;
