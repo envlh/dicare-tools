@@ -191,7 +191,7 @@ class CWikiDays {
                     if (isset($row->redirect)) {
                         $item .= '<em>';
                     }
-                    $item .= '<a href="https://'.$this->prefix.'.'.$this->project.'.org/wiki/'.htmlentities(str_replace(' ', '_', $row->title)).'" title="'.$row->date_local->format('H:i:s').' ('.$row->date_local->format('e P').')">';
+                    $item .= '<a href="https://'.$this->prefix.'.'.$this->project.'.org/wiki/'.urlencode(str_replace(' ', '_', $row->title)).'" title="'.$row->date_local->format('H:i:s').' ('.$row->date_local->format('e P').')">';
                     if (isset($labels[$title])) {
                         $item .= htmlentities($labels[$title]).' ('.htmlentities($title).')';
                     } else {
