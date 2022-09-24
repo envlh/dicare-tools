@@ -41,7 +41,7 @@ if (!empty($_GET['timezone']) && ($_GET['timezone'] == 'utc')) {
 
 $limit = 500;
 if (!empty($_GET['limit']) && preg_match('/^[1-9][0-9]*$/', $_GET['limit'])) {
-    $limit = max(1, min(500, $_GET['limit']));
+    $limit = $_GET['limit'];
 }
 
 $challenge = new CWikiDays($username, $prefix, $project, $namespace, $redirects, $timezone, $limit);
@@ -53,7 +53,7 @@ $challenge->displayForm($projects);
 if (!empty($username)) {
     echo '<h2>Results</h2>';
     try {
-        $challenge->retrieveData();
+        $challenge->processData();
         $challenge->displayResults();
     } catch (Exception $e) {
         echo '<p>'.$e->getMessage().'</p>';

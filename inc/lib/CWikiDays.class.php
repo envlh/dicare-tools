@@ -27,7 +27,7 @@ class CWikiDays {
         $this->limit = $limit;
     }
     
-    private function retrieveWikiTimezoneConfiguration() {
+    private function retrieveWikiTimezone() {
         $results = http::request('GET', 'https://'.$this->prefix.'.'.$this->project.'.org/w/api.php?action=query&format=json&meta=siteinfo');
         if ($results === false) {
             throw new Exception('Unable to retrieve configuration (HTTP query, check that this wiki <code>'.$this->prefix.'.'.$this->project.'.org</code> exists).');
@@ -40,6 +40,38 @@ class CWikiDays {
             throw new Exception('Unable to retrieve configuration (invalid response, check that the wiki <code>'.$this->prefix.'.'.$this->project.'.org</code> exists).');
         }
         $this->timezone_infer = $json->query->general->timezone;
+    }
+    
+    private function retrieveData() {
+        $usercontribs = array();
+        $limit = $this->limit;
+        $has_next = true;
+        $uccontinue = null;
+        while (($limit > 0) && $has_next) {
+            $request_limit = 500;
+            if ($limit < 500) {
+                $request_limit = $limit;
+            }
+            $results = http::request('GET', 'https://'.$this->prefix.'.'.$this->project.'.org/w/api.php?action=query&format=json&list=usercontribs&ucuser='.urlencode($this->username).'&ucshow=new&ucnamespace='.$this->namespace.'&uclimit='.$request_limit.(!empty($uccontinue) ? '&uccontinue='.$uccontinue : ''));
+            if ($results === false) {
+                throw new Exception('Unable to retrieve data (HTTP query, check that this wiki <code>'.$this->prefix.'.'.$this->project.'.org</code> exists).');
+            }
+            $json = json_decode($results);
+            if (isset($json->error)) {
+                throw new Exception('Error from Wikimedia server: <code>'.htmlentities($json->error->code).'</code>.');
+            }
+            if (!isset($json->query->usercontribs)) {
+                throw new Exception('Unable to retrieve data (invalid response, check that the wiki <code>'.$this->prefix.'.'.$this->project.'.org</code> exists).');
+            }
+            $usercontribs = array_merge($usercontribs, $json->query->usercontribs);
+            if (!empty($json->continue->uccontinue)) {
+                $uccontinue = $json->continue->uccontinue;
+            } else {
+                $has_next = false;
+            }
+            $limit -= 500;
+        }
+        return array_reverse($usercontribs);
     }
     
     private function retrieveRedirects($usercontribs) {
@@ -70,25 +102,15 @@ class CWikiDays {
         return $redirects;
     }
     
-    public function retrieveData() {
+    public function processData() {
         if ($this->timezone == 'wiki') {
-            $this->retrieveWikiTimezoneConfiguration();
+            $this->retrieveWikiTimezone();
         }
-        $results = http::request('GET', 'https://'.$this->prefix.'.'.$this->project.'.org/w/api.php?action=query&format=json&list=usercontribs&ucuser='.urlencode($this->username).'&ucshow=new&ucnamespace='.$this->namespace.'&uclimit='.$this->limit);
-        if ($results === false) {
-            throw new Exception('Unable to retrieve data (HTTP query, check that this wiki <code>'.$this->prefix.'.'.$this->project.'.org</code> exists).');
-        }
-        $json = json_decode($results);
-        if (isset($json->error)) {
-            throw new Exception('Error from Wikimedia server: <code>'.htmlentities($json->error->code).'</code>.');
-        }
-        if (!isset($json->query->usercontribs)) {
-            throw new Exception('Unable to retrieve data (invalid response, check that the wiki <code>'.$this->prefix.'.'.$this->project.'.org</code> exists).');
-        }
+        $usercontribs = $this->retrieveData();
+        $redirects = $this->retrieveRedirects($usercontribs);
         $loop_date = null;
         $streak = 0;
-        $redirects = $this->retrieveRedirects($json->query->usercontribs);
-        foreach (array_reverse($json->query->usercontribs) as &$row) {
+        foreach ($usercontribs as &$row) {
             if (in_array($row->pageid, $redirects)) {
                 $this->redirects_count++;
                 if (!$this->redirects) {
