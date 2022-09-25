@@ -48,7 +48,7 @@ if (!empty($_GET['limit']) && preg_match('/^[1-9][0-9]*$/', $_GET['limit'])) {
 $challenge = new CWikiDays($username, $prefix, $project, $namespace, $redirects, $timezone, $limit);
 
 echo '<h2>Search</h2>
-<p>This tool helps you tracking your progress in the challenge <a href="https://meta.wikimedia.org/wiki/100wikidays">#100wikidays</a>.</p>';
+<p>This tool helps you tracking your progress on the challenge <a href="https://meta.wikimedia.org/wiki/100wikidays">#100wikidays</a>.</p>';
 $challenge->displayForm($projects);
 
 if (!empty($username)) {
