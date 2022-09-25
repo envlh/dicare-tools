@@ -102,6 +102,50 @@ class CWikiDays {
         return $redirects;
     }
     
+    private function retrieveLabels($items, $query) {
+        $labels = array();
+        $results = wdqs::query(str_replace('%ids%', 'wd:'.implode(' wd:', $items), $query))->results->bindings;
+        foreach ($results as $row) {
+            $id = substr($row->item->value, 31);
+            $label = $row->itemLabel->value;
+            if ($id != $label) {
+                $labels[$id] = $label;
+            }
+        }
+        return $labels;
+    }
+    
+    private function retrieveAllLabels() {
+        $labels = array();
+        if ($this->project == 'wikidata') {
+            // Q and P namespaces
+            $items = array();
+            foreach ($this->data as $data) {
+                foreach ($data as $row) {
+                    if (($row->ns == 0) || ($row->ns == 120)) {
+                        $items[] = preg_replace('/^.*?:/', '', $row->title);
+                    }
+                }
+            }
+            if (count($items) > 0) {
+                $labels = array_merge($labels, $this->retrieveLabels($items, 'SELECT ?item ?itemLabel { VALUES ?item { %ids% } . SERVICE wikibase:label { bd:serviceParam wikibase:language "en" } }'));
+            }
+            // L namespace
+            $items = array();
+            foreach ($this->data as $data) {
+                foreach ($data as $row) {
+                    if ($row->ns == 146) {
+                        $items[] = preg_replace('/^.*?:/', '', $row->title);
+                    }
+                }
+            }
+            if (count($items) > 0) {
+                $labels = array_merge($labels, $this->retrieveLabels($items, 'SELECT ?item (GROUP_CONCAT(DISTINCT ?lemma; SEPARATOR = " / ") AS ?itemLabel) { VALUES ?item { %ids% } . ?item wikibase:lemma ?lemma } GROUP BY ?item'));
+            }
+        }
+        return $labels;
+    }
+    
     public function processData() {
         if ($this->timezone == 'wiki') {
             $this->retrieveWikiTimezone();
@@ -149,37 +193,6 @@ class CWikiDays {
         }
     }
     
-    public function retrieveLabels() {
-        $labels = array();
-        if ($this->project == 'wikidata') {
-            $query = null;
-            if (($this->namespace == 0) || ($this->namespace == 120)) {
-                $query = 'SELECT ?item ?itemLabel { VALUES ?item { %ids% } . SERVICE wikibase:label { bd:serviceParam wikibase:language "en" } }';
-            }
-            elseif ($this->namespace == '146') {
-                $query = 'SELECT ?item (GROUP_CONCAT(DISTINCT ?lemma; SEPARATOR = " / ") AS ?itemLabel) { VALUES ?item { %ids% } . ?item wikibase:lemma ?lemma } GROUP BY ?item';
-            }
-            if ($query != null) {
-                $items = array();
-                foreach ($this->data as $data) {
-                    foreach ($data as $row) {
-                        $items[] = preg_replace('/^.*?:/', '', $row->title);
-                    }
-                }
-                $query = str_replace('%ids%', 'wd:'.implode(' wd:', $items), $query);
-                $results = wdqs::query($query)->results->bindings;
-                foreach ($results as $row) {
-                    $id = substr($row->item->value, 31);
-                    $label = $row->itemLabel->value;
-                    if ($id != $label) {
-                        $labels[$id] = $label;
-                    }
-                }
-            }
-        }
-        return $labels;
-    }
-    
     public function displayForm($projects) {
         echo '<form action="'.SITE_DIR.CWIKIDAYS_SITE_DIR.'" method="get">
         <p><label for="username">Username:</label> <input type="text" name="username" id="username"'.(!empty($this->username) ? ' value="'.htmlentities($this->username).'"' : '').' /></p>
@@ -207,7 +220,7 @@ class CWikiDays {
         if (count($this->data) == 0) {
             echo '<p>No creation found on this wiki :(</p>';
         } else {
-            $labels = $this->retrieveLabels();
+            $labels = $this->retrieveAllLabels();
             echo '<p>'.$this->count.' creations found ('.($this->redirects ? 'including' : 'excluding').' '.$this->redirects_count.' redirect'.(($this->redirects_count > 1) ? 's' : '').') for <a href="https://'.$this->prefix.'.'.$this->project.'.org/wiki/User:'.urlencode(str_replace(' ', '_', $this->username)).'">User:'.htmlentities(str_replace(' ', '_', $this->username)).'</a> on <a href="https://'.$this->prefix.'.'.$this->project.'.org/">'.$this->prefix.'.'.$this->project.'.org</a> in namespace '.$this->namespace.'. Longest streak: '.$this->longest_streak_count.' day'.(($this->longest_streak_count > 1) ? 's' : '').', finished on '.$this->longest_streak_date->format('Y-m-d').' (timezone'.(($this->timezone == 'wiki') ? ' from the wiki' : '').': '.htmlentities($this->timezone_infer).').</p>';
             echo '<ol reversed="true">';
             $previous_date = null;
@@ -215,7 +228,7 @@ class CWikiDays {
                 $items = array();
                 foreach ($date as $row) {
                     $title = $row->title;
-                    if (($this->project == 'wikidata') && (($this->namespace == 120) || ($this->namespace == 146))) {
+                    if (($this->project == 'wikidata') && (($row->ns == 120) || ($row->ns == 146))) {
                         $title = preg_replace('/^.*?:/', '', $title);
                     }
                     $item = '';
