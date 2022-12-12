@@ -71,7 +71,7 @@ else {
     $currentParty->setPath(LexemeChallenge::getPath());
     $currentParty->initLanguageDisplay();
     $currentParty->setConcepts($concepts);
-    $items = $currentParty->queryItems();
+    $items = $currentParty->queryItems(300);
     $currentParty->computeItems($items);
     
     // display
