@@ -1,0 +1,10 @@
+- name: maintenance
+  command: bash /data/project/dicare/dicare-tools/scripts/maintenance.cron.sh
+  image: php7.4
+  schedule: "4 4 * * *"
+  emails: onfailure
+- name: lexemes-challenge
+  command: bash /data/project/dicare/dicare-tools/scripts/lexemes-challenge.cron.sh
+  image: php7.4
+  schedule: "1 * * * *"
+  emails: onfailure

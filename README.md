@@ -72,10 +72,11 @@ Most important variables are:
 
 ### Crontab
 
-Example on [Wikimedia Toolforge](https://admin.toolforge.org/):
+Jobs are described in the file `conf/jobs.yaml`.
 
-    4 4 * * * jsub -N maintenance -once bash /data/project/dicare/dicare-tools/scripts/maintenance.cron.sh
-    1 * * * * jsub -N lexemes-challenge -once bash /data/project/dicare/dicare-tools/scripts/lexemes-challenge.cron.sh
+On [Wikimedia Toolforge](https://admin.toolforge.org/), run the following command to load them:
+
+    toolforge-jobs load conf/jobs.yaml
 
 ## Imports
 
