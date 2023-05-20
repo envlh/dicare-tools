@@ -4,7 +4,9 @@ require '../../inc/load.inc.php';
 
 $title = (!empty($_GET['title']) ? htmlentities($_GET['title']).' — ' : '').'<a href="'.SITE_DIR.LEXEMES_SITE_DIR.'party.php">Lexemes Party</a>';
 define('PAGE_TITLE', $title);
-page::addJs('js/lexemes.js');
+page::addJs('js/lexemes-party.js');
+page::addJs('sutton/font-ttf.js');
+page::addJs('js/lexemes-sutton.js');
 page::setMenu('lexemes');
 
 require '../../inc/header.inc.php';
@@ -62,6 +64,17 @@ if (!empty($party->errors)) {
     }
     echo '</ul>';
 }
+
+?>
+
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function () {
+    ssw.ttf.font.cssAppend('<?php echo SITE_STATIC_DIR; ?>sutton/');
+    sutton_replace();
+});
+</script>
+
+<?php
 
 require '../../inc/footer.inc.php';
 

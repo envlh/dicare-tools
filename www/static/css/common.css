@@ -322,3 +322,7 @@ tr:hover td.anchorlink a {
     padding: 4px 8px;
     text-align: left;
 }
+
+.sutton svg {
+    max-height: 36px;
+}

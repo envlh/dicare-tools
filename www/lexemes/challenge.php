@@ -25,6 +25,8 @@ if ($challenge === null) {
 
 $title = (!empty($challenge->title) ? htmlentities($challenge->title).' — ' : '').'<a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php">Lexemes Challenge</a>';
 define('PAGE_TITLE', $title);
+page::addJs('sutton/font-ttf.js');
+page::addJs('js/lexemes-sutton.js');
 page::setMenu('lexemes');
 if (!empty($challenge)) {
     page::setCard($challenge->title, 'Lexemes Challenge #'.$challenge->id, SITE_STATIC_DIR.'img/lexemes-challenge.png');
@@ -120,6 +122,17 @@ else {
     echo '&rarr; <a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenges-dashboard.php">Challenges Dashboard</a>';
     
 }
+
+?>
+
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function () {
+    ssw.ttf.font.cssAppend('<?php echo SITE_STATIC_DIR; ?>sutton/');
+    sutton_replace();
+});
+</script>
+
+<?php
 
 require '../../inc/footer.inc.php';
 

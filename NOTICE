@@ -7,6 +7,8 @@ This project includes work from third parties:
 
 Files in /www/static/sorttable/ are Copyright (c) 1997-date Stuart Langridge (MIT license)
 
+Files in /www/static/sutton/ are Copyright (c) Steve Slevinski https://github.com/sutton-signwriting (MIT license)
+
 Icons in /www/static/img/famfamfam/ are Copyright (c) Mark James http://www.famfamfam.com/lab/icons/silk/ (CC BY 2.5)
 
 Icon /www/static/img/search.png is Copyright (c) VisualEditor team https://commons.wikimedia.org/wiki/File:VisualEditor_-_Icon_-_Search-big.svg (MIT License)
