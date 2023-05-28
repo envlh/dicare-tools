@@ -16,14 +16,14 @@ echo '<h2>Lexemes Challenges History</h2>
 <li>edited during the challenge.</li>
 </ul>
 <table id="lexemes_challenge_archive">
-<tr><th>Challenge</th><th class="stat">Lexemes improved</th><th class="stat">Languages improved</th><th class="stat">Editors</th></tr>';
+<tr><th>Date</th><th>Challenge</th><th class="stat">Lexemes improved</th><th class="stat">Languages improved</th><th class="stat">Editors</th></tr>';
 $challenges_count = 0;
 $lexemes_count = 0;
 $languages_count = 0;
 $editors_count = 0;
-$res = db::query('SELECT `id`, `title`, `lexemes_improved`, `languages_improved`, `distinct_editors` FROM `lexemes_challenge` WHERE `date_start` IS NOT NULL ORDER BY `date_start` DESC');
+$res = db::query('SELECT `id`, `date_start`, `title`, `lexemes_improved`, `languages_improved`, `distinct_editors` FROM `lexemes_challenge` WHERE `date_start` IS NOT NULL ORDER BY `date_start` DESC');
 while ($challenge = $res->fetch_object('LexemeChallenge')) {
-    echo '<tr><td class="challenge"><a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php?id='.$challenge->id.'">'.htmlentities($challenge->title).'</a></td>';
+    echo '<tr><td>'.substr($challenge->date_start, 0, 10).'</td><td class="challenge"><a href="'.SITE_DIR.LEXEMES_SITE_DIR.'challenge.php?id='.$challenge->id.'">'.htmlentities($challenge->title).'</a></td>';
     if (isset($challenge->lexemes_improved)) {
         $challenges_count++;
         $lexemes_count += $challenge->lexemes_improved;
@@ -35,7 +35,7 @@ while ($challenge = $res->fetch_object('LexemeChallenge')) {
     }
     echo '</tr>';
 }
-echo '<tr><td><strong>'.$challenges_count.' challenges completed</strong></td><td>sum = '.$lexemes_count.'<br />average = '.round($lexemes_count / $challenges_count).'</td><td>average = '.round($languages_count / $challenges_count).'</td><td>average = '.round($editors_count / $challenges_count).'</td></tr>
+echo '<tr><td></td><td><strong>'.$challenges_count.' challenges completed</strong></td><td>sum = '.$lexemes_count.'<br />average = '.round($lexemes_count / $challenges_count).'</td><td>average = '.round($languages_count / $challenges_count).'</td><td>average = '.round($editors_count / $challenges_count).'</td></tr>
 </table>';
 
 require '../../inc/footer.inc.php';
