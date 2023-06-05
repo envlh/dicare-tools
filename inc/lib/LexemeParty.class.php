@@ -355,7 +355,7 @@ class LexemeParty {
         return wdqs::query('SELECT ?conceptLabel { VALUES ?concept { wd:'.$qid.' } . SERVICE wikibase:label { bd:serviceParam wikibase:language "en" . } }', LEXEMES_META_WDQS_CACHE)->results->bindings[0]->conceptLabel->value;
     }
 
-    public function display() {
+    public function display($referenceParty = null) {
         $this->fetchLexicalCategories();
         // sorting
         foreach ($this->languages as $language) {
@@ -470,11 +470,11 @@ class LexemeParty {
         }
 		$minutesElapsed = floor((time() - strtotime($this->items_query_time)) / 60);
         echo '</table>
-    <p>'.count($this->languages).' languages
-    &nbsp;&nbsp;&nbsp;&nbsp; <img src="'.SITE_STATIC_DIR.'img/famfamfam/medal_gold_3.png" alt="" class="medal" title="100%" /> '.$this->medals['gold'].'
-    &nbsp;&nbsp;&nbsp;&nbsp; <img src="'.SITE_STATIC_DIR.'img/famfamfam/medal_silver_3.png" alt="" class="medal" title="≥ 80%" /> '.$this->medals['silver'].'
-    &nbsp;&nbsp;&nbsp;&nbsp; <img src="'.SITE_STATIC_DIR.'img/famfamfam/medal_bronze_3.png" alt="" class="medal" title="≥ 50%" /> '.$this->medals['bronze'].'
-    &nbsp;&nbsp;&nbsp;&nbsp; &#8709; '.$this->medals[''].'</p>
+    <p>'.count($this->languages).' languages'.(!empty($referenceParty) ? ' ('.self::diff(count($this->languages), count($referenceParty->languages)).')' : '').'
+    &nbsp;&nbsp;&nbsp;&nbsp; <img src="'.SITE_STATIC_DIR.'img/famfamfam/medal_gold_3.png" alt="" class="medal" title="100%" /> '.$this->medals['gold'].(!empty($referenceParty) ? ' ('.self::diff($this->medals['gold'], $referenceParty->medals['gold']).')' : '').'
+    &nbsp;&nbsp;&nbsp;&nbsp; <img src="'.SITE_STATIC_DIR.'img/famfamfam/medal_silver_3.png" alt="" class="medal" title="≥ 80%" /> '.$this->medals['silver'].(!empty($referenceParty) ? ' ('.self::diff($this->medals['silver'], $referenceParty->medals['silver']).')' : '').'
+    &nbsp;&nbsp;&nbsp;&nbsp; <img src="'.SITE_STATIC_DIR.'img/famfamfam/medal_bronze_3.png" alt="" class="medal" title="≥ 50%" /> '.$this->medals['bronze'].(!empty($referenceParty) ? ' ('.self::diff($this->medals['bronze'], $referenceParty->medals['bronze']).')' : '').'
+    &nbsp;&nbsp;&nbsp;&nbsp; &#8709; '.$this->medals[''].(!empty($referenceParty) ? ' ('.self::diff($this->medals[''], $referenceParty->medals['']).')' : '').'</p>
 	<p>Last data update: '.$this->items_query_time.' UTC ('.($minutesElapsed > 0 ? $minutesElapsed.' minute'.($minutesElapsed > 1 ? 's' : '').' ago' : 'now').').</p>';
     }
     

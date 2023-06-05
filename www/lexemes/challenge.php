@@ -97,7 +97,7 @@ else {
     }
     $party->fetchConceptsMeta();
     $party->setDisplayMode('compact');
-    $party->display();
+    $party->display($referenceParty);
     
     // rankings
     if (!empty($finalParty)) {
