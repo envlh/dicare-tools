@@ -54,6 +54,9 @@ function displayClaim($claim) {
         case 'commonsMedia':
             $r .= '<a href="https://commons.wikimedia.org/wiki/File:'.htmlentities($claim->value).'">'.htmlentities($claim->value).'</a>';
             break;
+        case 'geo-shape':
+            $r .= '<a href="https://commons.wikimedia.org/wiki/'.htmlentities($claim->value).'">'.htmlentities($claim->value).'</a>';
+            break;
         case 'url':
             $r .= '<a href="'.htmlentities($claim->value).'">'.htmlentities($claim->value).'</a>';
             break;
@@ -108,6 +111,7 @@ if ($go === true) {
                         switch ($claim->mainsnak->datatype) {
                             case 'commonsMedia':
                             case 'external-id':
+                            case 'geo-shape':
                             case 'string':
                             case 'url':
                                 $value = $claim->mainsnak->datavalue->value;
