@@ -3,8 +3,14 @@
     padding: 0;
 }
 
+@font-face {
+    font-family: 'DIn pIqaD';
+    src: url('../font/DIn_pIqaD.woff');
+    unicode-range: U+F8D0-F8E9,U+F8F0-F8F9,U+F8FD-F8FF;
+}
+
 body, input, select {
-    font-family: "Open Sans", sans-serif;
+    font-family: 'Open Sans', 'DIn pIqaD', sans-serif;
     font-size: 14px;
     background: #FFF;
 }
