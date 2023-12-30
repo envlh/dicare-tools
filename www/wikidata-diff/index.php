@@ -1,5 +1,7 @@
 <?php
 
+define('EXTERNAL_ID_URL_WDQS_CACHE', 86400);
+
 require '../../inc/load.inc.php';
 
 $title = '<a href="'.SITE_DIR.DIFF_SITE_DIR.'">Wikidata Diff</a>';
@@ -47,12 +49,28 @@ tr:hover { background: transparent; }
 
 $labels = array();
 
+function getExternalIdURL($propertyId) {
+    $items = wdqs::query('SELECT DISTINCT ?url { wd:'.$propertyId.' wdt:P1630 ?url }', EXTERNAL_ID_URL_WDQS_CACHE)->results->bindings;
+    if (is_array($items) && (count($items) === 1)) {
+        return $items[0]->url->value;
+    }
+    return null;
+}
+
 function displayClaim($claim) {
     global $labels;
     $r = '<span title="Rank: '.$claim->rank.'">';
     switch ($claim->datatype) {
         case 'commonsMedia':
             $r .= '<a href="https://commons.wikimedia.org/wiki/File:'.htmlentities($claim->value).'">'.htmlentities($claim->value).'</a>';
+            break;
+        case 'external-id':
+            $url = getExternalIdURL('P'.$claim->pid);
+            if ($url != null) {
+                $r .= '<a href="'.htmlentities(str_replace('$1', $claim->value, $url)).'">'.htmlentities($claim->value).'</a>';
+            } else {
+                $r .= htmlentities($claim->value);
+            }
             break;
         case 'geo-shape':
             $r .= '<a href="https://commons.wikimedia.org/wiki/'.htmlentities($claim->value).'">'.htmlentities($claim->value).'</a>';
