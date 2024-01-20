@@ -149,7 +149,7 @@ WHERE {
             $uri = trim($value->value->value);
             // P213: ISNI ID
             if (preg_match('@^http://isni.org/isni/(\d{15}[0-9X])$@', $uri, $match)) {
-                echo $qid."\t".'P213'."\t".'"'.trim(chunk_split($match[1], 4, ' ')).'"'.$source."\n";
+                echo $qid."\t".'P213'."\t".'"'.trim($match[1]).'"'.$source."\n";
             }
             // P214: VIAF ID
             elseif (preg_match('@^http://viaf\.org/viaf/(\d+)$@', $uri, $match)) {
